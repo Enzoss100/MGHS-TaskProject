@@ -26,13 +26,13 @@ All documentation will be placed in an easily accessible Google Drive folder for
 Official Dev Notes Documents will be [here](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing) so that all changes can be documented properly.
 
 ## Project Accomplishments
-| :--------------------------: | :-------------: | ------------------- | :----: |
+
 | Objective                    | Dev In-Charge   | Repo Branch         | Merged |
-| ---------------------------- | --------------- | ------------------- | :----: |
+| :--------------------------: | :-------------: | ------------------- | :----: |
 | Initialize Project           | Enzoss100       | main                | N/A    |
 | Project Documentation        | Enzoss100       | main                | N/A    |
 | Project Dev Notes            | Enzoss100       | main                | N/A    |
-| Login Page                   | ReneeCharlene02 | renee               | - [x]  |
-| Onboarding Page              | ReneeCharlene02 | renee               | - [x]  |
+| Login Page                   | ReneeCharlene02 | renee               | Yes    |
+| Onboarding Page              | ReneeCharlene02 | renee               | Yes    |
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
