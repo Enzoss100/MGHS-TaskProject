@@ -1,0 +1,53 @@
+.container {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    min-height: 100vh; /* Ensure the container takes up the full viewport height */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #5E422B;
+    padding: 10px 20px;
+    color: white;
+  }
+  
+  .logo {
+    height: 50px;
+  }
+  
+  .welcome {
+    font-size: 20px;
+  }
+  
+  .logout img {
+    height: 30px;
+    cursor: pointer;
+  }
+  
+  .content {
+    background-color: white;
+    padding: 40px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    flex: 1; /* Ensure the content grows to fill available space */
+  }
+  
+  .content ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .content ul li {
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  

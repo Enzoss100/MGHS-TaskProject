@@ -1,0 +1,379 @@
+.container {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    min-height: 100vh; /* Ensure the container takes up the full viewport height */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #5E422B;
+    padding: 10px 20px;
+    color: white;
+}
+
+.menuLogo {
+    display: flex;
+    align-items: center;
+}
+
+.hamburgerMenu {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.logo {
+    height: 50px;
+}
+
+.welcome {
+    font-size: 18px;
+}
+
+.logout img {
+    height: 30px;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #5E422B;
+    color: black;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    top: 100%;
+    left: 0;
+}
+
+.dropdownContent a,
+.dropdownContent .dropdownItem {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+}
+
+.dropdownContent .dropdownItem {
+    cursor: default;
+}
+
+.dropdownContent a:hover,
+.dropdownContent .dropdownItem:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.dropdown:hover .dropdownContent {
+    display: block;
+}
+
+.dropdownSubmenu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #5E422B;
+}
+
+.dropdownContent .dropdownItem:hover .dropdownSubmenu {
+    display: block;
+}
+
+.submenuLink {
+    text-decoration: underline;
+}
+
+.content {
+    padding: 20px;
+    margin: 20px;
+}
+
+.dashboardh1 {
+    color: black;
+    text-align: left;
+}
+
+.squareContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid black;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.topButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dashboardbutton {
+    display: block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: underline;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.attendanceBtn,
+.tasksBtn {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.tasksBtn {
+    margin-right: 0;
+}
+
+.overtimeBtn {
+    width: 50%;
+    margin-top: 10px;
+}
+
+.attendanceTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tableHeader {
+    background-color: green;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.attendanceTable th,
+.attendanceTable td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Attendance Pop Up */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popupContent {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.closeBtn:hover,
+.closeBtn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dashboardform {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dashboardformlabel {
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.dashboardforminput {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.renderBtn {
+    display: block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: underline;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Task Pop Up */
+.taskpopup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+}
+
+.taskpopupContent {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    text-align: center;
+    align-items: center;
+}
+
+.popupContent h2 {
+    margin-bottom: 20px;
+}
+
+.popupContent textarea {
+    width: 95%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.renderBtn {
+    display: block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: underline;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Overtime Pop Up */
+.OTpopup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.OTpopupContent {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.popupContent h2 {
+    margin-bottom: 20px;
+}
+
+.popupContent textarea {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.popupContent input[type="text"] {
+    width: 50%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.renderBtn {
+    background-color: green;
+    color: white;
+    border: 2px solid black;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

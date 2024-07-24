@@ -1,0 +1,105 @@
+/* signup.module.css */
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Full height */
+}
+
+.left {
+    background-color: #418043;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo {
+    max-width: 50%;
+    height: auto;
+}
+
+.right {
+    background-color: white;
+    width: 60%;
+    padding: 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    height: auto;
+    max-height: none;
+}
+
+.header {
+    margin-top: 0;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.formsignup {
+    width: 100%;
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    row-gap: 15px; /* Space between rows */
+}
+
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    border: 2px solid #C05850;
+    cursor: pointer;
+    align-self: center;
+    grid-column: span 2; /* Span across both columns */
+    margin-top: 20px;
+}
+
+.backToLogin {
+    text-align: center;
+    grid-column: span 2; /* Span across both columns */
+    text-decoration: none;
+    color: #418043;
+    margin-top: 10px;
+}
+
+.backToLogin:hover {
+    text-decoration: underline;
+}
+
+.recoveryEmailSection {
+    grid-column: span 2; /* Span across both columns */
+}
+
+.recoveryEmailLabel {
+    grid-column: span 2; /* Span across both columns */
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#personalemail {
+    margin-bottom: 15px;
+}
