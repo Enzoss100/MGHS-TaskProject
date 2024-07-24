@@ -23,6 +23,6 @@ All documentation will be placed in an easily accessible Google Drive folder for
 - Firebase
 
 ## Dev Notes
-Official Dev Notes Documents will be here [GDocs](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing) so that all changes can be documented properly.  
+Official Dev Notes Documents will be [here](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing) so that all changes can be documented properly.  
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
