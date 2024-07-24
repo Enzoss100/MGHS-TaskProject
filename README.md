@@ -15,6 +15,12 @@ All documentation will be placed in an easily accessible Google Drive folder for
 - Backend Developer 2: [ReneeCharlene02](https://github.com/ReneeCharlene02)
 
 
-
+## Official Project Tech Stack
+- Next.js
+- HTML
+- CSS
+- TypeScript
+- ReactJS
+- Firebase
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
