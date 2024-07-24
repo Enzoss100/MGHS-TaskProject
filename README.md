@@ -8,7 +8,7 @@ All documentation will be placed in an easily accessible Google Drive folder for
 *if this is not clear to you right now, do not worry, all will be explained in the Documentation for this repository in said accessible Google Drive*
 
 ## Task Allocation
-- Project Head: [Enzoss100](https://www.github.com/Enzoss100)
+- Project Head: [ReneeCharlene02](https://github.com/ReneeCharlene02)
 - Frontend Developer 1: [RoseJeaEvanz1009](https://github.com/RoseJeaEvanz1009)
 - Frontend Developer 2: [DingyGhost](https://github.com/DingyGhost)
 - Backend Developer 1: [Enzoss100](https://www.github.com/Enzoss100)
