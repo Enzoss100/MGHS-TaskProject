@@ -22,13 +22,6 @@
     align-items: center;
 }
 
-.hamburgerMenu {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
 .logo {
     height: 50px;
 }
@@ -40,62 +33,6 @@
 .logout img {
     height: 30px;
     cursor: pointer;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdownContent {
-    display: none;
-    position: absolute;
-    background-color: #5E422B;
-    color: black;
-    min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    top: 100%;
-    left: 0;
-}
-
-.dropdownContent a,
-.dropdownContent .dropdownItem {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    white-space: nowrap;
-}
-
-.dropdownContent .dropdownItem {
-    cursor: default;
-}
-
-.dropdownContent a:hover,
-.dropdownContent .dropdownItem:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-.dropdown:hover .dropdownContent {
-    display: block;
-}
-
-.dropdownSubmenu {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: 0;
-    background-color: #5E422B;
-}
-
-.dropdownContent .dropdownItem:hover .dropdownSubmenu {
-    display: block;
-}
-
-.submenuLink {
-    text-decoration: underline;
 }
 
 .content {

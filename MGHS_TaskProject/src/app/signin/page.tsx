@@ -34,7 +34,7 @@ export default function Signin() {
               router.push('/intern/processing');
             }
             else{
-            router.push('/intern/dashboard');
+            router.push('/intern/onboarding');
             }
           }
         } else {

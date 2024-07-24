@@ -1,0 +1,112 @@
+.container {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    width: 100%;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #5E422B;
+    padding: 10px 20px;
+    color: white;
+  }
+  
+  .menuLogo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 50px;
+  }
+  
+  .welcome {
+    font-size: 18px;
+  }
+  
+  .logout {
+    height: 30px;
+  }
+  
+  .logout button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .content {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .intro {
+    text-align: left;
+    padding-bottom: 20px;
+  }
+  
+  .intro h2 {
+    color: black;
+  }
+  
+  .welcomeKit {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border: 2px solid black;
+    margin-top: 10px;
+  }
+  
+  .reminders {
+    text-align: left;
+    padding-bottom: 20px;
+  }
+  
+  .reminders h3 {
+    color: brown;
+  }
+  
+  .reminders ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .reminders ul li {
+    margin-bottom: 10px;
+  }
+  
+  .reminders a {
+    display: inline-block;
+    padding: 6px 15px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border: 2px solid black;
+  }
+  
+  .reminders u {
+    text-decoration: underline;
+    color: green;
+  }
+  
+  .closing {
+    text-align: left;
+    padding-top: 20px;
+  }
+  
+  .closing strong {
+    color: green;
+  }
+  
+  .closing em {
+    font-style: italic;
+  }
+  
