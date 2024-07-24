@@ -11,6 +11,9 @@ import { fetchUserDetails } from '@/app/services/UserService';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
+import AttendanceModal from './modals/AttendanceModal';
+import OvertimeModal from './modals/OvertimeModal';
+import TaskModal from './modals/TaskModal';
 
 export default function Dashboard() {
     const session = useSession({
@@ -21,6 +24,9 @@ export default function Dashboard() {
     });
 
     const [internName, setInternName] = useState('');
+    const [attendancePopup, setAttendancePopup] = useState(false);
+    const [taskPopup, setTaskPopup] = useState(false);
+    const [overtimePopup, setOvertimePopup] = useState(false);
 
     useEffect(() => {
         const getInternName = async () => {
@@ -48,10 +54,6 @@ export default function Dashboard() {
 
         getInternName();
     }, [session]);
-
-    const [attendancePopup, setAttendancePopup] = useState(false);
-    const [taskPopup, setTaskPopup] = useState(false);
-    const [overtimePopup, setOvertimePopup] = useState(false);
 
     return (
         <div className={styles.container}>
@@ -93,64 +95,19 @@ export default function Dashboard() {
                             <td>8:00 AM</td>
                             <td>5:00 PM</td>
                         </tr>
-                        {/* Add rows as needed */}
+                        {/* Add more rows as needed */}
                     </tbody>
                 </table>
             </main>
 
-            {/* Attendance Popup */}
-            {attendancePopup && (
-                <div className={styles.popup}>
-                    <div className={styles.popupContent}>
-                        <span className={styles.closeBtn} onClick={() => setAttendancePopup(false)}>&times;</span>
-                        <h2>ATTENDANCE MONITORING</h2>
-                        <form className={styles.dashboardform}>
-                            <label htmlFor="time-in" className={styles.dashboardformlabel}><b>Time In:</b></label>
-                            <input type="text" id="time-in" name="time-in" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="break-time-start" className={styles.dashboardformlabel}><b>Break Time:</b></label>
-                            <input type="text" id="break-time-start" name="break-time-start" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="break-time-end" className={styles.dashboardformlabel}><b>TO</b></label>
-                            <input type="text" id="break-time-end" name="break-time-end" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="time-out" className={styles.dashboardformlabel}><b>Time Out:</b></label>
-                            <input type="text" id="time-out" name="time-out" className={styles.dashboardforminput} required placeholder="Time" />
-                            <button type="submit" className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {/* Attendance Modal */}
+            <AttendanceModal isVisible={attendancePopup} onClose={() => setAttendancePopup(false)} />
 
-            {/* Task Popup */}
-            {taskPopup && (
-                <div className={styles.taskpopup}>
-                    <div className={styles.taskpopupContent}>
-                        <span className={styles.close} onClick={() => setTaskPopup(false)}>&times;</span>
-                        <h2>TASKS REPORT</h2>
-                        <textarea id="taskReport" rows={10} cols={50} placeholder="Enter your task report here..." />
-                        <button className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                    </div>
-                </div>
-            )}
+            {/* Task Modal */}
+            <TaskModal isVisible={taskPopup} onClose={() => setTaskPopup(false)} />
 
-            {/* Overtime Popup */}
-            {overtimePopup && (
-                <div className={styles.OTpopup}>
-                    <div className={styles.OTpopupContent}>
-                        <span className={styles.close} onClick={() => setOvertimePopup(false)}>&times;</span>
-                        <h2>OVERTIME RECORDING</h2>
-                        <label htmlFor="timeIn"><b>Time In:</b></label>
-                        <input type="text" id="timeIn" name="timeIn" placeholder="Time" />
-                        <label htmlFor="breakTime"><b>Break Time:</b></label>
-                        <input type="text" id="breakTime" name="breakTime" placeholder="Time" />
-                        <label htmlFor="to"><b>TO</b></label>
-                        <input type="text" id="to" name="to" placeholder="Time" />
-                        <label htmlFor="timeOut"><b>Time Out:</b></label>
-                        <input type="text" id="timeOut" name="timeOut" placeholder="Time" />
-                        <h2>TASKS REPORT</h2>
-                        <textarea id="overtimeTaskReport" rows={10} cols={50} placeholder="Enter your task report here..." />
-                        <button className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                    </div>
-                </div>
-            )}
+            {/* Overtime Modal */}
+            <OvertimeModal isVisible={overtimePopup} onClose={() => setOvertimePopup(false)} />
         </div>
     );
 }
