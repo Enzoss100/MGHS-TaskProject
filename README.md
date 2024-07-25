@@ -36,5 +36,6 @@ Please Update the README of the Main Repo by submitting a PR. Keeping track of w
 | Project Dev Notes            | Enzoss100       | main                | N/A    |
 | Login Page                   | ReneeCharlene02 | renee               | Yes    |
 | Onboarding Page              | ReneeCharlene02 | renee               | Yes    |
+| Dashboard UI                 | ReneeCharlene02 | renee               | Yes    |
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
