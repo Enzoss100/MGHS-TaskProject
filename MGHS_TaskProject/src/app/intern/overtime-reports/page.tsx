@@ -1,19 +1,19 @@
 'use client';
 
-import styles from './onboarding.module.css';
-import Image from 'next/image';
-import logo from './../../assets/logo.jpg';
-import { signOut, useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { FaSignOutAlt } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { UserDetails } from '@/types/user-details';
 import { fetchUserDetails } from '@/app/services/UserService';
+import { UserDetails } from '@/types/user-details';
+import { toast } from 'sonner';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
+import styles from '@/app/intern/dashboard/dashboard.module.css';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Timestamp } from 'firebase/firestore';
+import { deleteOT, fetchOT, Overtime } from '@/app/services/OvertimeService';
+import OvertimeModal from '../dashboard/modals/OvertimeModal';
 
-
-export default function Onboarding() {
+export default function OvertimeView() {
   const session = useSession({
     required: true,
     onUnauthenticated() {
@@ -22,6 +22,10 @@ export default function Onboarding() {
   });
 
   const [internName, setInternName] = useState('');
+  const [overtimePopup, setOvertimePopup] = useState(false);
+  const [overtimeRecords, setOvertimeRecords] = useState<{ [key: string]: any }[]>([]);
+  const [currentOTRecord, setCurrentOTRecord] = useState<Overtime | null>(null);
+  const [totalRenderedHours, setTotalRenderedHours] = useState<number>(0);
 
   useEffect(() => {
     const getInternName = async () => {
@@ -31,10 +35,8 @@ export default function Onboarding() {
         toast.error('Email is not available');
         return;
       }
-
       try {
         const userDetails: UserDetails[] = await fetchUserDetails(email);
-
         if (userDetails.length > 0) {
           const user = userDetails[0] as UserDetails;
           setInternName(user.firstname);
@@ -50,44 +52,134 @@ export default function Onboarding() {
     getInternName();
   }, [session]);
 
+  const getOvertimeRecords = useCallback(async () => {
+    if (session.data?.user?.email) {
+      try {
+        const overtimeData = await fetchOT(session.data.user.email);
+        console.log('Fetched Overtime Data:', overtimeData); // Add this line
+  
+        const recordsWithDate = overtimeData.map(record => ({
+          ...record,
+          otDate: record.otDate instanceof Timestamp ? record.otDate.toDate() : record.otDate,
+        }));
+        
+        // Calculate total rendered hours
+        const totalHours = recordsWithDate.reduce((sum, record) => sum + (record.otrenderedHours || 0), 0);
+        setTotalRenderedHours(totalHours);
+  
+        setOvertimeRecords(recordsWithDate);
+      } catch (error) {
+        toast.error('An error occurred while fetching overtime records');
+        console.error(error);
+      }
+    }
+  }, [session]);
+  
+  useEffect(() => {
+    getOvertimeRecords();
+  }, [session, getOvertimeRecords]);  
+
+  const handleEdit = (record: any) => {
+    setCurrentOTRecord(record);
+    setOvertimePopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setOvertimePopup(false);
+    getOvertimeRecords();
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmation = window.confirm("Are you sure you want to delete this Overtime?");
+    if (confirmation) {
+    try {
+      await deleteOT(id);
+      setOvertimeRecords(overtimeRecords.filter(record => record.id !== id));
+      getOvertimeRecords();
+      toast.success('Overtime record deleted successfully');
+    } catch (error) {
+      toast.error('An error occurred while deleting the overtime record');
+      console.error(error);
+    }}
+  };
+
   return (
     <div className={styles.container}>
       <HamburgerMenu internName={internName} />
       <main className={styles.content}>
-        <div className={styles.intro}>
-          <h2>To our Dear Onboarding Student-Interns</h2>
-          <p>Greetings from MGHS!</p>
-          <p>It is our great pleasure to be able to welcome you to MGHS as one of the new interns. As your excellent skills impressed us, we hope you will be excited to work with us on the most exciting projects.</p>
-          <p>We are delighted to send you our <a href="https://drive.google.com/drive/folders/1xXwRjqGGse4ZKUmo60tNuRQVYrjqzr6y?usp=sharing" className={styles.welcomeKit}>MGHS Welcome Kit</a>. Please take the time to understand each message fully.</p>
-          <p>Let us know if you have accessed the file. Kindly acknowledge.</p>
+        <h1 className={styles.dashboardh1}>Overtime With Task Report</h1>
+        <center>
+        <div className={styles.totalHoursContainer}>
+            <h3 className={styles.totalHoursHeader}>Total Overtime Hours Rendered</h3>
+            <p className={styles.totalHoursValue}>{totalRenderedHours} hours</p>
         </div>
-        
-        <div className={styles.reminders}>
-          <h3>We have just a few reminders to take note:</h3>
-          <ul>
-            <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.dtr}>The DTR</a> updated file can be accessed here.</li>
-            <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.worksheetDirectory}>Worksheet Directory</a> and study records - this is used to put all output links for easy navigation it serves as a map directory.</li>
-            <li>In some aspects, creating new emails for work purposes in MGHS will not work. Kindly change the pass from the date you begin your internship, for example. March192024</li>
-            <li>Remember that your supervisor should be informed of the request for signatures, as our signing, sealing, and validation will take time.</li>
-            <li>Always remember to send an update every day on the number of hours rendered and hours left, together with your accomplishments within the day, and plan for the next day, this will be done through Telegram. This will be proof as well that you are present.</li>
-            <li>Update your supervisor if you have 1 to 2 weeks left from your internship at MGHS so that all turnover files will be smoothly updated.</li>
-          </ul>
-          <p>Kindly note that all your school's signed documents must be in your <u>school requirements folder</u>. Once the school has signed all necessary documents, you must send your supervisor the link to the cloud folder.</p>
-          <p>After receiving this welcome email, please inform your supervisor of your newly created MGHS working email as instructed.</p>
-          <p>If you have questions or concerns, please email us at <span style={{ color: 'blue' }}>mghsconsultancyhr@gmail.com</span>, and we'll respond as soon as possible. Thank you, and God bless you.</p>
-        </div>
-
-        <div className={styles.closing}>
-          <p><strong>We welcome you once again to our company virtually, and we hope your talent and skills will significantly contribute to our company's tremendous success.</strong></p>
-          <p>We wish for a better future and a good experience.</p>
-          <p>Thank you.</p>
-          <p><em>N.B. If you receive this before your interview and other documents are required, please inform your supervisor immediately.</em></p>
-          <p>Best regards,</p>
-          <p><strong>(SGD) MS. JENNY DIMAANO<br />HR Coordinator for Virtual Internship Program</strong></p>
-          <p><strong>DISCLAIMER AND CONFIDENTIALITY NOTICE<br />
-            The information contained in this e-mail, including those in its attachments, is confidential and intended only for the person(s) or entity(ies) to which it is addressed. If you are not an intended recipient, you must not read, copy, store, disclose, distribute this message, or act in reliance upon the information contained in it. Any unauthorized dissemination, copying, or use or disclosure of information contained herein is STRICTLY PROHIBITED and ILLEGAL. If you receive this e-mail on error, please contact the sender and delete the material from any computer or system.</strong></p>
-        </div>
+        </center>
+      <table className={styles.attendanceTable}>
+  <thead>
+    <tr>
+      <th colSpan={6} className={styles.tableHeader}>Overview of Overtime</th>
+    </tr>
+    <tr>
+      <th className={styles.attendanceTableth}>Date</th>
+      <th className={styles.attendanceTableth}>Clock In</th>
+      <th className={styles.attendanceTableth}>Clock Out</th>
+      <th className={styles.attendanceTableth}>Hours Rendered</th>
+      <th className={styles.attendanceTableth}>Report</th>
+      <th className={styles.attendanceTableth}>Actions</th>
+    </tr>
+  </thead>
+    <tbody>
+        {overtimeRecords.length === 0 ? (
+        <tr>
+            <td colSpan={6} className={styles.noRecords}>No Recorded Overtime</td>
+        </tr>
+        ) : (
+        overtimeRecords.map((record) => (
+            <tr key={record.id}>
+            <td className={styles.attendanceTabletd}>
+                {new Date(record.otDate).toLocaleDateString()}
+            </td>
+            <td className={styles.attendanceTabletd}>{record.otStart}</td>
+            <td className={styles.attendanceTabletd}>{record.otEnd}</td>
+            <td className={styles.attendanceTabletd}>{record.otrenderedHours}</td>
+            <td className={styles.attendanceTabletd}>
+              {record.otReport.split(',').map((line: string, index: React.Key | null | undefined) => (
+                <React.Fragment key={index}>
+                  {line.trim()}
+                  <br />
+                </React.Fragment>
+              ))}
+            </td>
+            <td className={styles.attendanceTabletd}>
+                <button 
+                    className={`${styles.actionButton} ${styles.editButton}`} 
+                    onClick={() => handleEdit(record)}
+                >
+                    <FaEdit />
+                </button>
+                <button 
+                    className={`${styles.actionButton} ${styles.trashButton}`} 
+                    onClick={() => handleDelete(record.id)}
+                >
+                    <FaTrash />
+                </button>
+            </td>
+            </tr>
+        ))
+        )}
+    </tbody>
+    </table>
       </main>
+
+      {/* Overtime Modal */}
+      <OvertimeModal 
+        isVisible={overtimePopup} 
+        setModalState={handlePopupClose}
+        initialRecord={currentOTRecord || undefined}
+        recordID={currentOTRecord?.id || null}
+      />
+      
     </div>
+    
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { fetchUserDetails } from '@/app/services/UserService';
 import { fetchAttendance, Attendance, updateAttendance, deleteAttendance } from '@/app/services/AttendanceService';
 import { UserDetails } from '@/types/user-details';
@@ -14,6 +14,7 @@ import TaskModal from './modals/TaskModal';
 import styles from './dashboard.module.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
+import { Overtime } from '@/app/services/OvertimeService';
 
 export default function Dashboard() {
   const session = useSession({
@@ -23,12 +24,14 @@ export default function Dashboard() {
     },
   });
 
+  const router = useRouter();
+
   const [internName, setInternName] = useState('');
   const [attendancePopup, setAttendancePopup] = useState(false);
-  const [taskPopup, setTaskPopup] = useState(false);
   const [overtimePopup, setOvertimePopup] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState<{ [key: string]: any }[]>([]);
   const [currentRecord, setCurrentRecord] = useState<Attendance | null>(null);
+  const [currentOTRecord, setCurrentOTRecord] = useState<Overtime | null>(null);
   const [totalRenderedHours, setTotalRenderedHours] = useState<number>(0);
 
   useEffect(() => {
@@ -83,14 +86,35 @@ export default function Dashboard() {
     getAttendanceRecords();
   }, [session, getAttendanceRecords]);  
 
-  const handleEdit = (record: any) => {
+  const handleAttendanceEdit = (record: any) => {
     setCurrentRecord(record);
     setAttendancePopup(true);
+    setOvertimePopup(false);
   };
 
-  const handlePopupClose = () => {
+  const handleAttendanceAdd = () => {
+    setCurrentRecord(null);
+    setAttendancePopup(true);
+    setOvertimePopup(false);
+  };
+
+  const handleAddOT = () => {
+    setCurrentOTRecord(null);
+    setAttendancePopup(false);
+    setOvertimePopup(true);
+  };
+
+  const handleAttPopupClose = () => {
     setAttendancePopup(false);
     getAttendanceRecords();
+  };
+  
+  const handleOTPopupClose = () => {
+    setOvertimePopup(false);
+  };
+
+  const handleOTAddSuccess = () => {
+    router.push('/intern/overtime-reports');
   };
 
   const handleDelete = async (id: string) => {
@@ -113,11 +137,14 @@ export default function Dashboard() {
       <main className={styles.content}>
         <h1 className={styles.dashboardh1}>Dashboard</h1>
         <div className={styles.squareContainer}>
-          <div className={styles.topButtons}>
-            <button className={styles.attendanceBtn + ' ' + styles.dashboardbutton} onClick={() => setAttendancePopup(true)}>Attendance</button>
-            <button className={styles.tasksBtn + ' ' + styles.dashboardbutton} onClick={() => setTaskPopup(true)}>Tasks</button>
-          </div>
-          <button className={styles.overtimeBtn + ' ' + styles.dashboardbutton} onClick={() => setOvertimePopup(true)}>Overtime</button>
+            <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
+            onClick={handleAttendanceAdd}>
+                Render Attendance
+            </button>
+            <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
+            onClick={handleAddOT}>
+                Render Overtime
+            </button>
         </div>
         <center>
         <div className={styles.totalHoursContainer}>
@@ -155,7 +182,7 @@ export default function Dashboard() {
             <td className={styles.attendanceTabletd}>
                 <button 
                     className={`${styles.actionButton} ${styles.editButton}`} 
-                    onClick={() => handleEdit(record)}
+                    onClick={() => handleAttendanceEdit(record)}
                 >
                     <FaEdit />
                 </button>
@@ -176,21 +203,18 @@ export default function Dashboard() {
       {/* Attendance Modal */}
       <AttendanceModal 
         isVisible={attendancePopup} 
-        setModalState={handlePopupClose}
+        setModalState={handleAttPopupClose}
         initialRecord={currentRecord || undefined}
         recordID={currentRecord?.id || null}
-      />
-
-      {/* Task Modal */}
-      <TaskModal 
-        isVisible={taskPopup} 
-        onClose={() => setTaskPopup(false)} 
       />
 
       {/* Overtime Modal */}
       <OvertimeModal 
         isVisible={overtimePopup} 
-        onClose={() => setOvertimePopup(false)} 
+        setModalState={handleOTPopupClose}
+        initialRecord={undefined}
+        recordID={null}
+        onAddSuccess={handleOTAddSuccess}
       />
     </div>
   );

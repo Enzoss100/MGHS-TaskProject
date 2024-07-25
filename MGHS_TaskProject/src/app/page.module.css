@@ -35,3 +35,15 @@
     100% { transform: rotate(360deg); }
   }
   
+  .redirecting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .redirectingText {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
