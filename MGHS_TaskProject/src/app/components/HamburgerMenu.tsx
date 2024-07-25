@@ -21,7 +21,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ internName }) => {
               <span><a href="/intern/dashboard">DASHBOARD &#9662;</a></span>
               <div className={styles.dropdownSubmenu}>
                 <a href="/intern/task-view" className={styles.submenuLink}>TASK</a>
-                <a href="/intern/ot-task-report" className={styles.submenuLink}>OVERTIME</a>
+                <a href="/intern/overtime-reports" className={styles.submenuLink}>OVERTIME</a>
               </div>
             </div>
             <a href="/intern/onboarding">ONBOARDING</a>

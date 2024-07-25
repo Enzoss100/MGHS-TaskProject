@@ -36,6 +36,16 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         userID: session?.user?.email || '',
         renderedHours: initialRecord?.renderedHours || 0,
       });
+    } else {
+      setAttendance({
+        attendanceDate: new Date(),
+        timeStart: '',
+        timeEnd: '',
+        timeBreakStart: '',
+        timeBreakEnd: '',
+        userID: session?.user?.email || '',
+        renderedHours: 0,
+      });
     }
   }, [initialRecord, session]);
 

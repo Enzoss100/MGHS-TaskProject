@@ -7,7 +7,6 @@ import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { UserDetails } from '@/types/user-details';
-import router from 'next/router';
 import { toast } from 'sonner';
 import { fetchUserDetails } from '@/app/services/UserService';
 import { useEffect, useState } from 'react';

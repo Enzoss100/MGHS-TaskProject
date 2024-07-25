@@ -20,23 +20,24 @@
 
 .squareContainer {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     border: 2px solid black;
     padding: 20px;
     margin-bottom: 20px;
+    gap: 100px; 
 }
 
-.topButtons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 10px;
+.overtimeBtn {
+    width: auto; 
+    margin: 0; 
 }
 
 .dashboardbutton {
     display: block;
-    padding: 10px;
+    padding: 15px;
+    font-size: medium;
     background-color: green;
     color: white;
     text-decoration: underline;
@@ -45,19 +46,8 @@
     cursor: pointer;
 }
 
-.attendanceBtn,
-.tasksBtn {
-    flex: 1;
-    margin-right: 10px;
-}
-
 .tasksBtn {
     margin-right: 0;
-}
-
-.overtimeBtn {
-    width: 50%;
-    margin-top: 10px;
 }
 
 .attendanceTable {
@@ -79,6 +69,8 @@
     border: 1px solid black;
     padding: 8px;
     text-align: center;
+    word-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .actionButton {
