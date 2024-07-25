@@ -19,6 +19,7 @@
   
   .logo {
     height: 50px;
+    border-radius: 50%; 
   }
   
   .welcome {
@@ -28,6 +29,13 @@
   .logout img {
     height: 30px;
     cursor: pointer;
+  }
+
+  .logoutbutton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
   }
   
   .content {
