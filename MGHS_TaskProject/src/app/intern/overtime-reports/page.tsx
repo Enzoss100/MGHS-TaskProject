@@ -1,13 +1,17 @@
 'use client';
 
 import styles from './onboarding.module.css';
-import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import logo from './../../assets/logo.jpg';
+import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
+import { FaSignOutAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { UserDetails } from '@/types/user-details';
 import { fetchUserDetails } from '@/app/services/UserService';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
+
 
 export default function Onboarding() {
   const session = useSession({

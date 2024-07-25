@@ -83,8 +83,8 @@ export default function Signin() {
           <a href="/forgot-password" className={styles.forgotPassword}>Forgot Password?</a>
 
           <div className={styles.buttons}>
-            <button type="submit" className={styles.button + ' ' + styles.buttonSubmit}>Login</button>
-            <button type="button" onClick={() => router.push('signup')} className={styles.button + ' ' + styles.buttonRegister}>Register</button>
+            <button type="submit" className={`${styles.button} ${styles.buttonSubmit}`}>Login</button>
+            <button type="button" onClick={() => router.push('signup')} className={`${styles.button} ${styles.buttonRegister}`}>Register</button>
           </div>
         </form>
       </div>
