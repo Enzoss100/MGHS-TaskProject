@@ -8,33 +8,6 @@
     flex-direction: column;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #5E422B;
-    padding: 10px 20px;
-    color: white;
-}
-
-.menuLogo {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    height: 50px;
-}
-
-.welcome {
-    font-size: 18px;
-}
-
-.logout img {
-    height: 30px;
-    cursor: pointer;
-}
-
 .content {
     padding: 20px;
     margin: 20px;
@@ -101,216 +74,36 @@
     text-align: center;
 }
 
-.attendanceTable th,
-.attendanceTable td {
+.attendanceTableth,
+.attendanceTabletd {
     border: 1px solid black;
     padding: 8px;
     text-align: center;
 }
 
-/* Attendance Pop Up */
-.popup {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
+.actionButton {
+    background-color: transparent; 
+    border: none;
+    cursor: pointer; 
+    margin: 0 6px;
+    font-size: 18px;
+    transition: background-color 0.3s, color 0.3s;
+    align-items: center; 
+    justify-content: center; 
+  }
 
-.popupContent {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-}
-
-.closeBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #aaa;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.closeBtn:hover,
-.closeBtn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.dashboardform {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.dashboardformlabel {
-    align-self: flex-start;
-    margin-top: 10px;
-}
-
-.dashboardforminput {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.renderBtn {
-    display: block;
-    padding: 10px;
-    background-color: green;
-    color: white;
-    text-decoration: underline;
-    border: 2px solid black;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-/* Task Pop Up */
-.taskpopup {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-}
-
-.taskpopupContent {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-    text-align: center;
-    align-items: center;
-}
-
-.popupContent h2 {
-    margin-bottom: 20px;
-}
-
-.popupContent textarea {
-    width: 95%;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.renderBtn {
-    display: block;
-    padding: 10px;
-    background-color: green;
-    color: white;
-    text-decoration: underline;
-    border: 2px solid black;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Overtime Pop Up */
-.OTpopup {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow: auto;
-}
-
-.OTpopupContent {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-}
-
-.popupContent h2 {
-    margin-bottom: 20px;
-}
-
-.popupContent textarea {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.popupContent input[type="text"] {
-    width: 50%;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.renderBtn {
-    background-color: green;
-    color: white;
-    border: 2px solid black;
-    border-radius: 4px;
-    padding: 10px;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+  .editButton {
+    color: #252525;
+  }
+  
+  .editButton:hover {
+    color: #000000; 
+  }
+  
+  .trashButton {
+    color: #f44336;
+  }
+  
+  .trashButton:hover {
+    color: #d32f2f; 
+  }

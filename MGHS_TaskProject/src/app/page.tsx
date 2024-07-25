@@ -1,34 +1,48 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import {redirect} from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { UserDetails } from '@/types/user-details';
+import { fetchUserDetails } from './services/UserService';
+import styles from './page.module.css';
 
 export default function Home() {
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      if (session) {
-        console.log("User is already authenticated. Redirecting to Home page...");
-        redirect('/home');
-      } else {
-        console.log("User Unauthenticated. Redirecting to Sign In page...");
-        redirect('/signin');
-      }
-    },
-  });
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (status === "authenticated") {
-    console.log("User is already authenticated. Redirecting to Home page...");
-    return redirect('/home');
-  }
+  useEffect(() => {
+    const handleRedirect = async () => {
+      if (status === 'loading') return; 
+
+      if (!session) {
+        router.push('/signin');
+      } else {
+        const userDetails: UserDetails[] = await fetchUserDetails(session?.user?.email!);
+        
+        if (userDetails.length > 0) {
+          const user = userDetails[0] as UserDetails;
+          if (user.admin) {
+            router.push('/admin/dashboard');
+          } else {
+            router.push('/intern/dashboard');
+          }
+        } else {
+          console.error('User details not found');
+        }
+      }
+    };
+
+    handleRedirect();
+  }, [session, status, router]);
 
   return (
-    <div className="flex flex-col gap-y-4 items-center justify-center h-screen bg-gray-900 text-white">
+    <div className={styles.container}>
       {status === 'loading' && (
-        <>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <h1 className="text-2xl mb-4">Loading...</h1>
-        </>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <h1 className={styles.loadingText}>Loading...</h1>
+        </div>
       )}
     </div>
   );
