@@ -54,7 +54,7 @@ export default function Processing() {
           <Image src={logo.src} alt="Company Logo" width={50} height={50} className={styles.logo} />
           <div className={styles.welcome}>Hello, {internName}</div>
           <div className={styles.logout}>
-            <button onClick={() => signOut()}>
+            <button className={styles.logoutbutton} onClick={() => signOut()}>
                 <FaSignOutAlt size={30} />
             </button>
           </div>

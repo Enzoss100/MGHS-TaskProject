@@ -7,7 +7,7 @@ import logo from './../assets/logo.jpg';
 import { signOut } from 'next-auth/react';
 
 interface HamburgerMenuProps {
-  internName: string;
+  internName?: string;
 }
 
 const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ internName }) => {
