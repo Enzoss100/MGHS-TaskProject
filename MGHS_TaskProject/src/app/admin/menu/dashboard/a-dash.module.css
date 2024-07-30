@@ -14,13 +14,15 @@ body {
     position: relative;
 }
 
-.header .logo {
-    margin-right: 20px;
+.header .logo img {
+    width: 50px;
+    height: 50px;
 }
 
 .header h1 {
     flex-grow: 1;
     margin: 0;
+    text-align: center;
 }
 
 .hamburger-menu {
@@ -57,64 +59,33 @@ body {
     background-color: #5C4033;
 }
 
-
-main {
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
     padding: 20px;
+    margin-top: 20px;
 }
 
-.info {
-    margin-bottom: 20px;
-}
-
-.batch-container {
-    margin-bottom: 20px;
-}
-
-.batch {
-    margin-bottom: 10px;
-}
-
-.batch-header {
-    width: 100%;
-    padding: 10px;
+.dashboard-card {
     background-color: #4CAF50;
     color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border: none;
-    text-align: left;
     cursor: pointer;
 }
 
-.intern-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    display: none;
+.dashboard-card h2,
+.dashboard-card p {
+    margin: 0;
 }
 
-.intern-table th,
-.intern-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.intern-table th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.intern-table input,
-.intern-table select {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.create-batch {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
+@media (max-width: 768px) {
+    .nav-menu {
+        position: relative;
+        top: 0;
+    }
 }

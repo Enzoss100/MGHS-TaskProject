@@ -14,13 +14,15 @@ body {
     position: relative;
 }
 
-.header .logo {
-    margin-right: 20px;
+.header .logo img {
+    width: 50px;
+    height: 50px;
 }
 
 .header h1 {
     flex-grow: 1;
     margin: 0;
+    text-align: center;
 }
 
 .hamburger-menu {
@@ -57,64 +59,67 @@ body {
     background-color: #5C4033;
 }
 
-
 main {
+    display: flex;
+}
+
+.sidebar {
+    background-color: #5C4033;
     padding: 20px;
+    width: 200px;
 }
 
-.info {
-    margin-bottom: 20px;
-}
-
-.batch-container {
-    margin-bottom: 20px;
-}
-
-.batch {
-    margin-bottom: 10px;
-}
-
-.batch-header {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-}
-
-.intern-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    display: none;
-}
-
-.intern-table th,
-.intern-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.intern-table th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.intern-table input,
-.intern-table select {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.create-batch {
+.sidebar .add-role {
     background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.role-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.role {
+    background-color: #5C4033;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.role:hover {
+    background-color: #4CAF50;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.add-intern {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.intern-list {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.intern-list .intern {
+    background-color: #d3d3d3;
+    padding: 10px;
+    margin-bottom: 10px;
 }

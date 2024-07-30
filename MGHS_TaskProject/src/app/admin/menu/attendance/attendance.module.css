@@ -14,13 +14,15 @@ body {
     position: relative;
 }
 
-.header .logo {
-    margin-right: 20px;
+.header .logo img {
+    width: 50px;
+    height: 50px;
 }
 
 .header h1 {
     flex-grow: 1;
     margin: 0;
+    text-align: center;
 }
 
 .hamburger-menu {
@@ -57,64 +59,60 @@ body {
     background-color: #5C4033;
 }
 
-
-main {
+.batch-container {
     padding: 20px;
 }
 
-.info {
-    margin-bottom: 20px;
-}
-
-.batch-container {
-    margin-bottom: 20px;
-}
-
 .batch {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .batch-header {
-    width: 100%;
-    padding: 10px;
     background-color: #4CAF50;
     color: white;
     border: none;
+    padding: 10px;
+    width: 100%;
     text-align: left;
     cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.intern-table {
+.batch-header .arrow {
+    font-size: 24px;
+}
+
+.batch-table {
+    display: none;
+    margin-top: 10px;
+}
+
+.batch-table table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    display: none;
 }
 
-.intern-table th,
-.intern-table td {
+.batch-table th,
+.batch-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
-.intern-table th {
+.batch-table th {
     background-color: #4CAF50;
     color: white;
 }
 
-.intern-table input,
-.intern-table select {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.create-batch {
+.add-batch {
     background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
 }

@@ -45,10 +45,10 @@ const InternTable: React.FC = () => {
                     &#9776;
                 </div>
                 <div className="logo">[INSERT LOGO]</div>
-                <h1>HELLO, [admin]</h1>
+                <h1>Intern Pool</h1>
             </header>
             <nav className="nav-menu">
-                <button className="dashboard">Dashboard</button>
+            <button className="dashboard">Dashboard</button>
                 <button className="internpool">Intern Pool</button>
                 <button className="batches">Intern Batches</button>
                 <button className='internrole'>Intern Role</button>
