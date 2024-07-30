@@ -1,37 +1,69 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import {redirect} from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { UserDetails } from '@/types/user-details';
+import { fetchUserDetails } from './services/UserService';
+import styles from './page.module.css';
 
 export default function Home() {
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      if (session) {
-        console.log("User is already authenticated. Redirecting to Home page...");
-        redirect('/home');
-      } else {
-        console.log("User Unauthenticated. Redirecting to Sign In page...");
-        redirect('/signin');
-      }
-    },
-  });
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  if (status === "authenticated") {
-    console.log("User is already authenticated. Redirecting to Home page...");
-    return redirect('/home');
-  }
+  useEffect(() => {
+    if (status === 'loading') {
+      // Optionally, you can handle loading state here
+      return;
+    }
+
+    if (!session) {
+      console.log("User Unauthenticated. Redirecting to Sign In page...");
+      setIsRedirecting(true);
+      router.push('/signin');
+      return;
+    }
+
+    const fetchAndRedirect = async () => {
+      try {
+        setIsRedirecting(true);
+        const userDetails: UserDetails[] = await fetchUserDetails(session.user?.email!);
+
+        if (userDetails.length > 0) {
+          const user = userDetails[0];
+          if (user.admin) {
+            router.push('/admin/dashboard');
+          } else {
+            router.push('/intern/dashboard');
+          }
+        } else {
+          console.error('User details not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      } finally {
+        setIsRedirecting(false); // Optional: hide the message once redirection is complete
+      }
+    };
+
+    fetchAndRedirect();
+  }, [session, status, router]);
 
   return (
-    <div className="flex flex-col gap-y-4 items-center justify-center h-screen bg-gray-900 text-white">
-      {status === 'loading' && (
-        <>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <h1 className="text-2xl mb-4">Loading...</h1>
-        </>
+    <div className={styles.container}>
+      {isRedirecting ? (
+        <div className={styles.redirecting}>
+          <h1 className={styles.redirectingText}>Redirecting...</h1>
+        </div>
+      ) : (
+        status === 'loading' && (
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <h1 className={styles.loadingText}>Loading...</h1>
+          </div>
+        )
       )}
     </div>
   );
 }
-
-Home.requireAuth = true;

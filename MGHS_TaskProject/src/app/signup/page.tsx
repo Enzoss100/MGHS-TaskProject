@@ -50,6 +50,8 @@ export default function Signup() {
         uid: user.uid, // adding UID for reference
         admin: false,
         onboarded: false,
+        role: 'intern',
+        position: 'Junior Web Manager',
       });
 
       toast.success('Account Successfully Created!');

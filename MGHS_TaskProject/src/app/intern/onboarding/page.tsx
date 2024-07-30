@@ -1,17 +1,13 @@
 'use client';
 
 import styles from './onboarding.module.css';
-import Image from 'next/image';
-import logo from './../../assets/logo.jpg';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { FaSignOutAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { UserDetails } from '@/types/user-details';
 import { fetchUserDetails } from '@/app/services/UserService';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
-
 
 export default function Onboarding() {
   const session = useSession({
@@ -52,18 +48,7 @@ export default function Onboarding() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.menuLogo}>
-          <HamburgerMenu />
-          <Image src={logo.src} alt="Company Logo" width={50} height={50} className={styles.logo} />
-        </div>
-        <div className={styles.welcome}>Hello, {internName}</div>
-        <div className={styles.logout}>
-          <button onClick={() => signOut()}>
-            <FaSignOutAlt size={30} />
-          </button>
-        </div>
-      </header>
+      <HamburgerMenu internName={internName} />
       <main className={styles.content}>
         <div className={styles.intro}>
           <h2>To our Dear Onboarding Student-Interns</h2>

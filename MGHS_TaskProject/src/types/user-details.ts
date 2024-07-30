@@ -8,4 +8,7 @@ export interface UserDetails {
   id?: string;
   admin: boolean;
   onboarded: boolean;
+  role?:string;
+  position?:string;
+  startDate: Date;
 }

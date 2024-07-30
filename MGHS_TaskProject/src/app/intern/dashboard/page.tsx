@@ -1,156 +1,221 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { FaSignOutAlt } from 'react-icons/fa';
-import styles from './dashboard.module.css';
-import logo from './../../assets/logo.jpg';
-import { signOut, useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { redirect, useRouter } from 'next/navigation';
 import { fetchUserDetails } from '@/app/services/UserService';
+import { fetchAttendance, Attendance, updateAttendance, deleteAttendance } from '@/app/services/AttendanceService';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
+import AttendanceModal from './modals/AttendanceModal';
+import OvertimeModal from './modals/OvertimeModal';
+import TaskModal from './modals/TaskModal';
+import styles from './dashboard.module.css';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Timestamp } from 'firebase/firestore';
+import { Overtime } from '@/app/services/OvertimeService';
 
 export default function Dashboard() {
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/signin');
-        },
-    });
+  const session = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/signin');
+    },
+  });
 
-    const [internName, setInternName] = useState('');
+  const router = useRouter();
 
-    useEffect(() => {
-        const getInternName = async () => {
-            const email = session.data?.user?.email;
+  const [internName, setInternName] = useState('');
+  const [attendancePopup, setAttendancePopup] = useState(false);
+  const [overtimePopup, setOvertimePopup] = useState(false);
+  const [attendanceRecords, setAttendanceRecords] = useState<{ [key: string]: any }[]>([]);
+  const [currentRecord, setCurrentRecord] = useState<Attendance | null>(null);
+  const [currentOTRecord, setCurrentOTRecord] = useState<Overtime | null>(null);
+  const [totalRenderedHours, setTotalRenderedHours] = useState<number>(0);
 
-            if (!email) {
-                toast.error('Email is not available');
-                return;
-            }
+  useEffect(() => {
+    const getInternName = async () => {
+      const email = session.data?.user?.email;
 
-            try {
-                const userDetails: UserDetails[] = await fetchUserDetails(email);
+      if (!email) {
+        toast.error('Email is not available');
+        return;
+      }
+      try {
+        const userDetails: UserDetails[] = await fetchUserDetails(email);
+        if (userDetails.length > 0) {
+          const user = userDetails[0] as UserDetails;
+          setInternName(user.firstname);
+        } else {
+          toast.error('User not found');
+        }
+      } catch (error) {
+        toast.error('An error occurred while fetching user details');
+        console.error(error);
+      }
+    };
 
-                if (userDetails.length > 0) {
-                    const user = userDetails[0] as UserDetails;
-                    setInternName(user.firstname);
-                } else {
-                    toast.error('User not found');
-                }
-            } catch (error) {
-                toast.error('An error occurred while fetching user details');
-                console.error(error);
-            }
-        };
+    getInternName();
+  }, [session]);
 
-        getInternName();
-    }, [session]);
+  const getAttendanceRecords = useCallback(async () => {
+    if (session.data?.user?.email) {
+      try {
+        const attendanceData = await fetchAttendance(session.data.user.email);
+        console.log('Fetched Attendance Data:', attendanceData); // Add this line
+  
+        const recordsWithDate = attendanceData.map(record => ({
+          ...record,
+          attendanceDate: record.attendanceDate instanceof Timestamp ? record.attendanceDate.toDate() : record.attendanceDate,
+        }));
+        
+        // Calculate total rendered hours
+        const totalHours = recordsWithDate.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
+        setTotalRenderedHours(totalHours);
+  
+        setAttendanceRecords(recordsWithDate);
+      } catch (error) {
+        toast.error('An error occurred while fetching attendance records');
+        console.error(error);
+      }
+    }
+  }, [session]);
+  
+  useEffect(() => {
+    getAttendanceRecords();
+  }, [session, getAttendanceRecords]);  
 
-    const [attendancePopup, setAttendancePopup] = useState(false);
-    const [taskPopup, setTaskPopup] = useState(false);
-    const [overtimePopup, setOvertimePopup] = useState(false);
+  const handleAttendanceEdit = (record: any) => {
+    setCurrentRecord(record);
+    setAttendancePopup(true);
+    setOvertimePopup(false);
+  };
 
-    return (
-        <div className={styles.container}>
-            <header className={styles.header}>
-                <div className={styles.menuLogo}>
-                    <HamburgerMenu />
-                    <Image src={logo.src} alt="Company Logo" className={styles.logo} width={50} height={50} />
-                </div>
-                <div className={styles.welcome}>Hello, {internName}</div>
-                <div className={styles.logout}>
-                    <button onClick={() => signOut()}>
-                        <FaSignOutAlt size={30} />
-                    </button>
-                </div>
-            </header>
-            <main className={styles.content}>
-                <h1 className={styles.dashboardh1}>Dashboard</h1>
-                <div className={styles.squareContainer}>
-                    <div className={styles.topButtons}>
-                        <button className={styles.attendanceBtn + ' ' + styles.dashboardbutton} onClick={() => setAttendancePopup(true)}>Attendance</button>
-                        <button className={styles.tasksBtn + ' ' + styles.dashboardbutton} onClick={() => setTaskPopup(true)}>Tasks</button>
-                    </div>
-                    <button className={styles.overtimeBtn + ' ' + styles.dashboardbutton} onClick={() => setOvertimePopup(true)}>Overtime</button>
-                </div>
-                <table className={styles.attendanceTable}>
-                    <thead>
-                        <tr>
-                            <th colSpan={3} className={styles.tableHeader}>Overview of Attendance</th>
-                        </tr>
-                        <tr>
-                            <th>Date</th>
-                            <th>Clock In</th>
-                            <th>Clock Out</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>16/07/2024</td>
-                            <td>8:00 AM</td>
-                            <td>5:00 PM</td>
-                        </tr>
-                        {/* Add rows as needed */}
-                    </tbody>
-                </table>
-            </main>
+  const handleAttendanceAdd = () => {
+    setCurrentRecord(null);
+    setAttendancePopup(true);
+    setOvertimePopup(false);
+  };
 
-            {/* Attendance Popup */}
-            {attendancePopup && (
-                <div className={styles.popup}>
-                    <div className={styles.popupContent}>
-                        <span className={styles.closeBtn} onClick={() => setAttendancePopup(false)}>&times;</span>
-                        <h2>ATTENDANCE MONITORING</h2>
-                        <form className={styles.dashboardform}>
-                            <label htmlFor="time-in" className={styles.dashboardformlabel}><b>Time In:</b></label>
-                            <input type="text" id="time-in" name="time-in" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="break-time-start" className={styles.dashboardformlabel}><b>Break Time:</b></label>
-                            <input type="text" id="break-time-start" name="break-time-start" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="break-time-end" className={styles.dashboardformlabel}><b>TO</b></label>
-                            <input type="text" id="break-time-end" name="break-time-end" className={styles.dashboardforminput} required placeholder="Time" />
-                            <label htmlFor="time-out" className={styles.dashboardformlabel}><b>Time Out:</b></label>
-                            <input type="text" id="time-out" name="time-out" className={styles.dashboardforminput} required placeholder="Time" />
-                            <button type="submit" className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                        </form>
-                    </div>
-                </div>
-            )}
+  const handleAddOT = () => {
+    setCurrentOTRecord(null);
+    setAttendancePopup(false);
+    setOvertimePopup(true);
+  };
 
-            {/* Task Popup */}
-            {taskPopup && (
-                <div className={styles.taskpopup}>
-                    <div className={styles.taskpopupContent}>
-                        <span className={styles.close} onClick={() => setTaskPopup(false)}>&times;</span>
-                        <h2>TASKS REPORT</h2>
-                        <textarea id="taskReport" rows={10} cols={50} placeholder="Enter your task report here..." />
-                        <button className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                    </div>
-                </div>
-            )}
+  const handleAttPopupClose = () => {
+    setAttendancePopup(false);
+    getAttendanceRecords();
+  };
+  
+  const handleOTPopupClose = () => {
+    setOvertimePopup(false);
+  };
 
-            {/* Overtime Popup */}
-            {overtimePopup && (
-                <div className={styles.OTpopup}>
-                    <div className={styles.OTpopupContent}>
-                        <span className={styles.close} onClick={() => setOvertimePopup(false)}>&times;</span>
-                        <h2>OVERTIME RECORDING</h2>
-                        <label htmlFor="timeIn"><b>Time In:</b></label>
-                        <input type="text" id="timeIn" name="timeIn" placeholder="Time" />
-                        <label htmlFor="breakTime"><b>Break Time:</b></label>
-                        <input type="text" id="breakTime" name="breakTime" placeholder="Time" />
-                        <label htmlFor="to"><b>TO</b></label>
-                        <input type="text" id="to" name="to" placeholder="Time" />
-                        <label htmlFor="timeOut"><b>Time Out:</b></label>
-                        <input type="text" id="timeOut" name="timeOut" placeholder="Time" />
-                        <h2>TASKS REPORT</h2>
-                        <textarea id="overtimeTaskReport" rows={10} cols={50} placeholder="Enter your task report here..." />
-                        <button className={styles.renderBtn + ' ' + styles.dashboardbutton}>Render</button>
-                    </div>
-                </div>
-            )}
+  const handleOTAddSuccess = () => {
+    router.push('/intern/overtime-reports');
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmation = window.confirm("Are you sure you want to delete this Attendance?");
+    if (confirmation) {
+    try {
+      await deleteAttendance(id);
+      setAttendanceRecords(attendanceRecords.filter(record => record.id !== id));
+      getAttendanceRecords();
+      toast.success('Attendance record deleted successfully');
+    } catch (error) {
+      toast.error('An error occurred while deleting the attendance record');
+      console.error(error);
+    }}
+  };
+
+  return (
+    <div className={styles.container}>
+      <HamburgerMenu internName={internName} />
+      <main className={styles.content}>
+        <h1 className={styles.dashboardh1}>Dashboard</h1>
+        <div className={styles.squareContainer}>
+            <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
+            onClick={handleAttendanceAdd}>
+                Render Attendance
+            </button>
+            <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
+            onClick={handleAddOT}>
+                Render Overtime
+            </button>
         </div>
-    );
+        <center>
+        <div className={styles.totalHoursContainer}>
+            <h3 className={styles.totalHoursHeader}>Total Rendered Hours</h3>
+            <p className={styles.totalHoursValue}>{totalRenderedHours} hours</p>
+        </div>
+        </center>
+        <table className={styles.attendanceTable}>
+  <thead>
+    <tr>
+      <th colSpan={5} className={styles.tableHeader}>Overview of Attendance</th>
+    </tr>
+    <tr>
+      <th className={styles.attendanceTableth}>Date</th>
+      <th className={styles.attendanceTableth}>Clock In</th>
+      <th className={styles.attendanceTableth}>Clock Out</th>
+      <th className={styles.attendanceTableth}>Total Hours Rendered</th>
+      <th className={styles.attendanceTableth}>Actions</th>
+    </tr>
+  </thead>
+    <tbody>
+        {attendanceRecords.length === 0 ? (
+        <tr>
+            <td colSpan={5} className={styles.noRecords}>No Recorded Attendance</td>
+        </tr>
+        ) : (
+        attendanceRecords.map((record) => (
+            <tr key={record.id}>
+            <td className={styles.attendanceTabletd}>
+                {new Date(record.attendanceDate).toLocaleDateString()}
+            </td>
+            <td className={styles.attendanceTabletd}>{record.timeStart}</td>
+            <td className={styles.attendanceTabletd}>{record.timeEnd}</td>
+            <td className={styles.attendanceTabletd}>{record.renderedHours}</td>
+            <td className={styles.attendanceTabletd}>
+                <button 
+                    className={`${styles.actionButton} ${styles.editButton}`} 
+                    onClick={() => handleAttendanceEdit(record)}
+                >
+                    <FaEdit />
+                </button>
+                <button 
+                    className={`${styles.actionButton} ${styles.trashButton}`} 
+                    onClick={() => handleDelete(record.id)}
+                >
+                    <FaTrash />
+                </button>
+            </td>
+            </tr>
+        ))
+        )}
+    </tbody>
+    </table>
+      </main>
+
+      {/* Attendance Modal */}
+      <AttendanceModal 
+        isVisible={attendancePopup} 
+        setModalState={handleAttPopupClose}
+        initialRecord={currentRecord || undefined}
+        recordID={currentRecord?.id || null}
+      />
+
+      {/* Overtime Modal */}
+      <OvertimeModal 
+        isVisible={overtimePopup} 
+        setModalState={handleOTPopupClose}
+        initialRecord={undefined}
+        recordID={null}
+        onAddSuccess={handleOTAddSuccess}
+      />
+    </div>
+  );
 }

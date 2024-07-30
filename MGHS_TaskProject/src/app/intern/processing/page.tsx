@@ -7,7 +7,6 @@ import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { UserDetails } from '@/types/user-details';
-import router from 'next/router';
 import { toast } from 'sonner';
 import { fetchUserDetails } from '@/app/services/UserService';
 import { useEffect, useState } from 'react';
@@ -55,7 +54,7 @@ export default function Processing() {
           <Image src={logo.src} alt="Company Logo" width={50} height={50} className={styles.logo} />
           <div className={styles.welcome}>Hello, {internName}</div>
           <div className={styles.logout}>
-            <button onClick={() => signOut()}>
+            <button className={styles.logoutbutton} onClick={() => signOut()}>
                 <FaSignOutAlt size={30} />
             </button>
           </div>

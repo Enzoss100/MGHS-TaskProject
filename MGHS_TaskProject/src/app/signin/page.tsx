@@ -53,7 +53,12 @@ export default function Signin() {
    return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <Image src={logo.src} alt="Company Logo" width={500} height={500} className={styles.logo}/>
+      <div className={styles.logoContainer}>
+      <Image src={logo.src} alt="Company Logo" width={250} height={250} className={styles.logo} /><br/>
+      <div className={styles.logoLabelContainer}>
+        <p className={styles.logoLabel}>MGHS Solution Advertising Services</p>
+      </div>
+      </div>
       </div>
       <div className={styles.right}>
         <h2 className={styles.loginh2}>Login</h2>
@@ -83,8 +88,8 @@ export default function Signin() {
           <a href="/forgot-password" className={styles.forgotPassword}>Forgot Password?</a>
 
           <div className={styles.buttons}>
-            <button type="submit" className={styles.button + ' ' + styles.buttonSubmit}>Login</button>
-            <button type="button" onClick={() => router.push('signup')} className={styles.button + ' ' + styles.buttonRegister}>Register</button>
+            <button type="submit" className={`${styles.button} ${styles.buttonSubmit}`}>Login</button>
+            <button type="button" onClick={() => router.push('signup')} className={`${styles.button} ${styles.buttonRegister}`}>Register</button>
           </div>
         </form>
       </div>

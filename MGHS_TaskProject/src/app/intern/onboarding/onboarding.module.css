@@ -5,39 +5,6 @@
     width: 100%;
   }
   
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #5E422B;
-    padding: 10px 20px;
-    color: white;
-  }
-  
-  .menuLogo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 50px;
-  }
-  
-  .welcome {
-    font-size: 18px;
-  }
-  
-  .logout {
-    height: 30px;
-  }
-  
-  .logout button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: white;
-  }
-  
   .content {
     background-color: white;
     padding: 20px;
