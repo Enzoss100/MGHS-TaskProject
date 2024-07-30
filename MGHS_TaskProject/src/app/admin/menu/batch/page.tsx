@@ -41,11 +41,11 @@ const InternTable: React.FC = () => {
     return (
         <div>
             <header className="header">
-                <div className="hamburger-menu" onClick={toggleMenu}>
+            <div className="hamburger-menu" onClick={toggleMenu}>
                     &#9776;
                 </div>
-                <div className="logo">[INSERT LOGO]</div>
-                <h1>HELLO, [admin]</h1>
+                <div className="logo"><img src="logo.png" alt="Logo" /></div>
+                <h1>Intern Batches</h1>
             </header>
             <nav className="nav-menu">
                 <button className="dashboard">Dashboard</button>
