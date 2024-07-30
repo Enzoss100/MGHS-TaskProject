@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import './a-menu.module.css';
+import './a-batch.module.css';
 
 const InternTable: React.FC = () => {
     const [students, setStudents] = useState([
@@ -48,9 +48,12 @@ const InternTable: React.FC = () => {
                 <h1>HELLO, [admin]</h1>
             </header>
             <nav className="nav-menu">
-                <button className="onboarding">Onboarding</button>
-                <button className="batches">Batches</button>
-                <button className="task">Task</button>
+                <button className="dashboard">Dashboard</button>
+                <button className="internpool">Intern Pool</button>
+                <button className="batches">Intern Batches</button>
+                <button className='internrole'>Intern Role</button>
+                <button className='accomplishment'>Intern Accomplishments</button>
+                <button className='attendance'>Intern Attendance</button>
             </nav>
             <main>
                 <table className="intern-table">
