@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #5C4033;
+    padding: 10px 20px;
+    color: white;
+    position: relative;
+}
+
+.header .logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.header h1 {
+    flex-grow: 1;
+    margin: 0;
+    text-align: center;
+}
+
+.hamburger-menu {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #5C4033;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+}
+
+.nav-menu button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.nav-menu button.dashboard,
+.nav-menu button.internpool,
+.nav-menu button.batches,
+.nav-menu button.internrole,
+.nav-menu button.accomplishment,
+.nav-menu button.attendance {
+    background-color: #5C4033;
+}
+
+.batch-container {
+    padding: 20px;
+}
+
+.batch {
+    margin-bottom: 20px;
+}
+
+.batch-header {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.batch-header .arrow {
+    font-size: 24px;
+}
+
+.batch-table {
+    display: none;
+    margin-top: 10px;
+}
+
+.batch-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.batch-table th,
+.batch-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.batch-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.add-batch {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}

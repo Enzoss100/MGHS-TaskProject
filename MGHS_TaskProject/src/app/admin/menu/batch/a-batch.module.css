@@ -1,0 +1,120 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #5C4033;
+    padding: 10px 20px;
+    color: white;
+    position: relative;
+}
+
+.header .logo {
+    margin-right: 20px;
+}
+
+.header h1 {
+    flex-grow: 1;
+    margin: 0;
+}
+
+.hamburger-menu {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #5C4033;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+}
+
+.nav-menu button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.nav-menu button.dashboard,
+.nav-menu button.internpool,
+.nav-menu button.batches,
+.nav-menu button.internrole,
+.nav-menu button.accomplishment,
+.nav-menu button.attendance {
+    background-color: #5C4033;
+}
+
+
+main {
+    padding: 20px;
+}
+
+.info {
+    margin-bottom: 20px;
+}
+
+.batch-container {
+    margin-bottom: 20px;
+}
+
+.batch {
+    margin-bottom: 10px;
+}
+
+.batch-header {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.intern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    display: none;
+}
+
+.intern-table th,
+.intern-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.intern-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.intern-table input,
+.intern-table select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.create-batch {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
