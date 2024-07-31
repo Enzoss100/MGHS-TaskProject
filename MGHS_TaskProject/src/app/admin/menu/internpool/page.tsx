@@ -29,6 +29,10 @@ const InternTable: React.FC = () => {
         }
     };
 
+    const logout = () => {
+        alert('Logged out');
+    };
+
     useEffect(() => {
         const selects = document.querySelectorAll('.status-select');
         selects.forEach((select) => {
@@ -46,6 +50,9 @@ const InternTable: React.FC = () => {
                 </div>
                 <div className="logo">[INSERT LOGO]</div>
                 <h1>Intern Pool</h1>
+                <button className="logout" onClick={logout}>
+                    <img src="logout.png" alt="Logout" className="logout-icon" />
+                </button>
             </header>
             <nav className="nav-menu">
             <button className="dashboard">Dashboard</button>

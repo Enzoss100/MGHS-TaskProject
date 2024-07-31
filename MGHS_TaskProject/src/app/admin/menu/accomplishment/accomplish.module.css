@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    box-sizing: border-box;
 }
 
 .header {
@@ -26,7 +26,6 @@ body {
 }
 
 .hamburger-menu {
-    font-size: 30px;
     cursor: pointer;
 }
 
@@ -59,6 +58,10 @@ body {
     background-color: #5C4033;
 }
 
+.logo img {
+    height: 40px;
+}
+
 .logout {
     background-color: transparent;
     border: none;
@@ -72,78 +75,66 @@ body {
 
 main {
     display: flex;
+    flex: 1;
 }
 
 .sidebar {
-    background-color: #5C4033;
-    padding: 20px;
+    background-color: #2E8B57;
+    color: white;
     width: 200px;
+    padding: 20px;
 }
 
-.sidebar .add-role {
-    background-color: #4CAF50;
+.add-task {
+    background-color: #32CD32;
     color: white;
     border: none;
-    padding: 10px 20px;
-    cursor: pointer;
+    padding: 10px;
     width: 100%;
+    cursor: pointer;
     margin-bottom: 20px;
 }
 
-.role-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.role {
-    background-color: #5C4033;
+.task-list .task {
+    background-color: transparent;
     color: white;
     border: none;
-    padding: 10px 20px;
-    cursor: pointer;
     text-align: left;
-    margin-bottom: 10px;
-}
-
-.role:hover {
-    background-color: #4CAF50;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .content {
-    flex-grow: 1;
+    flex: 1;
     padding: 20px;
+    background-color: #F5F5F5;
 }
 
-.add-intern {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
+.search-bar input {
+    width: 100%;
+    padding: 10px;
     margin-bottom: 20px;
 }
 
-.intern-list {
-    background-color: #f4f4f4;
-    padding: 20px;
-    border: 1px solid #ddd;
-}
-
-.intern-list .intern {
-    background-color: #d3d3d3;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
+.accomplishments {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
-#root {
-    flex-grow: 1;
+.accomplishment {
+    background-color: #D3D3D3;
+    padding: 20px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+}
+
+.accomplishment h2 {
+    margin-top: 0;
+}
+
+.accomplishment a {
+    color: #0000EE;
 }
