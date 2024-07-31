@@ -14,7 +14,16 @@ const App: React.FC = () => {
     });
 
     const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+        const navMenu = document.querySelector('.nav-menu') as HTMLElement;
+        if (navMenu.style.display === 'block') {
+            navMenu.style.display = 'none';
+        } else {
+            navMenu.style.display = 'block';
+        }
+    };
+
+    const logout = () => {
+        alert('Logged out');
     };
 
     useEffect(() => {
@@ -41,8 +50,11 @@ const App: React.FC = () => {
                 </div>
                 <div className="logo"><img src="logo.png" alt="Logo" /></div>
                 <h1>Dashboard</h1>
-                {isMenuOpen && (
-                    <nav className="nav-menu">
+                <button className="logout" onClick={logout}>
+                    <img src="logout.png" alt="Logout" className="logout-icon" />
+                </button>
+            </header>
+            <nav className="nav-menu">
                         <button className="dashboard">Dashboard</button>
                         <button className="internpool">Intern Pool</button>
                         <button className="batches">Intern Batches</button>
@@ -50,8 +62,6 @@ const App: React.FC = () => {
                         <button className="accomplishment">Intern Accomplishments</button>
                         <button className="attendance">Intern Attendance</button>
                     </nav>
-                )}
-            </header>
             <main>
                 <div className="dashboard-container">
                     <button className="dashboard-card" id="totalBatches">

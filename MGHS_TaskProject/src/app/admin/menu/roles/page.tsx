@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import './App.css';
+import ReactDOM from 'react-dom';
+import './roles.module.css';
+
+ReactDOM.render(
+    <React.StrictMode>
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
 
 const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<string>('Team Leader');
@@ -32,12 +39,28 @@ const App: React.FC = () => {
     }
   };
 
+  const toggleMenu = () => {
+    const navMenu = document.querySelector('.nav-menu') as HTMLElement;
+    if (navMenu.style.display === 'block') {
+        navMenu.style.display = 'none';
+    } else {
+        navMenu.style.display = 'block';
+    }
+};
+
+  const logout = () => {
+    alert('Logged out');
+};
+
   return (
     <div className="app">
       <header className="header">
         <div className="hamburger-menu" onClick={() => toggleMenu()}>&#9776;</div>
         <div className="logo"><img src="logo.png" alt="Logo" /></div>
         <h1>Intern Roles</h1>
+        <button className="logout" onClick={logout}>
+                    <img src="logout.png" alt="Logout" className="logout-icon" />
+                </button>
       </header>
       <nav className="nav-menu">
             <button className="dashboard">Dashboard</button>

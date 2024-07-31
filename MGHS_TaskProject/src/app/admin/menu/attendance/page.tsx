@@ -55,6 +55,10 @@ const App: React.FC = () => {
         return rows;
     };
 
+    const logout = () => {
+        alert('Logged out');
+    };
+
     useEffect(() => {
         const addEventListeners = (batchId: string) => {
             const tbody = document.getElementById(batchId);
@@ -91,7 +95,11 @@ const App: React.FC = () => {
                 <div className="hamburger-menu" onClick={toggleMenu}>&#9776;</div>
                 <div className="logo"><img src="logo.png" alt="Logo" /></div>
                 <h1>Intern Attendance</h1>
-                <nav className="nav-menu">
+                <button className="logout" onClick={logout}>
+                    <img src="logout.png" alt="Logout" className="logout-icon" />
+                </button>
+            </header>
+            <nav className="nav-menu">
                     <button className="dashboard">Dashboard</button>
                     <button className="internpool">Intern Pool</button>
                     <button className="batches">Intern Batches</button>
@@ -99,7 +107,6 @@ const App: React.FC = () => {
                     <button className='accomplishment'>Intern Accomplishments</button>
                     <button className='attendance'>Intern Attendance</button>
                 </nav>
-            </header>
             <main>
                 <div className="batch-container">
                     {batches.map((batch) => (
