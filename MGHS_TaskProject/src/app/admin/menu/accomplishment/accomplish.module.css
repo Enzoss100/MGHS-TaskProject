@@ -49,12 +49,7 @@ body {
     width: 100%;
 }
 
-.nav-menu button.dashboard,
-.nav-menu button.internpool,
-.nav-menu button.batches,
-.nav-menu button.internrole,
-.nav-menu button.accomplishment,
-.nav-menu button.attendance {
+.nav-menu button:hover {
     background-color: #5C4033;
 }
 
