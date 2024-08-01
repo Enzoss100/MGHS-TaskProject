@@ -30,7 +30,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ internName }) => {
         </div>
         <Image src={logo.src} alt="Company Logo" width={50} height={50} className={styles.logo} />
       </div>
-      <div className={styles.welcome}>Hello, {internName}</div>
+      <div className={styles.welcome}>Hello, {internName == null ? 'loading' : internName}</div>
       <div className={styles.logout}>
         <button className={styles.logoutbutton} onClick={() => signOut()}>
           <FaSignOutAlt size={30} />
