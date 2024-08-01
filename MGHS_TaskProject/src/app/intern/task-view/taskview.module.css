@@ -1,3 +1,136 @@
-.p{
-  font-size: xx-large;  
+/* taskview.module.css */
+.container {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #418043;
+  color: white;
+  position: fixed;
+  top: 74px;
+  bottom: 0;
+  padding: 20px;
+}
+
+.sidebarTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.divider {
+  border: 1px solid black;
+  margin: 10px 0;
+}
+
+.sidebarLink {
+  color: white;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.content {
+  margin-left: 220px;
+  padding: 5px;
+  background-color: white;
+}
+
+.contentTitle {
+  text-align: center;
+  background-color: white;
+  font-size: 30px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.description {
+  margin-bottom: 20px;
+  text-align: left;
+  background-color: white;
+  margin-left: 50px;
+}
+
+.accomplishmentsBtn {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: 1px solid black;
+  text-decoration: underline;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.accomplishmentsBtn:hover {
+  background-color: darkgreen;
+}
+
+.accomplishmentSection {
+  background-color: #c2c5c9;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.accomplishmentTitle,
+.accomplishmentDescription {
+  margin: 0;
+  margin-left: 50px;
+}
+
+.accomplishmentLink {
+  color: black;
+  text-decoration: underline;
+  margin-left: 50px;
+}
+
+/* Add Accomplishment Pop up*/
+.popup {
+  display: flex; /* Changed to flex */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popupContent {
+  background-color: white;
+  padding: 15px;
+  border: 1px solid black;
+  width: 60%;
+  position: relative;
+  text-align: center;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+}
+
+.submitBtn {
+  display: block;
+  margin: 20px auto 0 auto;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: 1px solid black;
+  text-decoration: underline;
+  border-radius: 4px;
+  cursor: pointer;
 }
