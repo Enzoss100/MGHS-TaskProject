@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import './accomplish.module.css';
 
@@ -67,7 +69,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="app">
+        <div className="container">
             <header className="header">
             <div className="hamburger-menu" onClick={toggleMenu}>&#9776;</div>
                 <div className="logo">

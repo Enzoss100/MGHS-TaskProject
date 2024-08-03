@@ -6,9 +6,12 @@ export interface UserDetails {
   schoolemail: string;
   uid: string;
   id?: string;
-  admin: boolean;
-  onboarded: boolean;
   role?:string;
+  admin: boolean;
   position?:string;
+  onboarded: string;
   startDate: Date;
+  hoursNeeded: number;
+  totalHoursRendered: number;
+  batchName: string;
 }

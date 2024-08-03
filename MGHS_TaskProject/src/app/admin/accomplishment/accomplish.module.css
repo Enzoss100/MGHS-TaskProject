@@ -1,74 +1,11 @@
-body {
+.container {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    background-color: #5C4033;
-    padding: 10px 20px;
-    color: white;
-    position: relative;
-}
-
-.header .logo img {
-    width: 50px;
-    height: 50px;
-}
-
-.header h1 {
-    flex-grow: 1;
-    margin: 0;
-    text-align: center;
-}
-
-.hamburger-menu {
-    cursor: pointer;
-}
-
-.nav-menu {
-    display: none;
-    flex-direction: column;
-    background-color: #5C4033;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-}
-
-.nav-menu button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-}
-
-.nav-menu button:hover {
-    background-color: #5C4033;
-}
-
-.logo img {
-    height: 40px;
-}
-
-.logout {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.logout-icon {
-    height: 24px;
-    width: 24px;
-}
-
-main {
+.main {
     display: flex;
     flex: 1;
 }
