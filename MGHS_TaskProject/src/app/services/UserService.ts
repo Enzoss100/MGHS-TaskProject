@@ -33,6 +33,16 @@ export const fetchInternsByBatch = async (batchName: string): Promise<UserDetail
     });
   };
 
+  export const fetchInternsByRole = async (roleName: string): Promise<UserDetails[]> => {
+    const q = query(collection(db, 'users'), where('admin', '==', false), where('onboarded', '==', 'approved'), where('role', '==', roleName));
+    const querySnapshot = await getDocs(q);
+  
+    return querySnapshot.docs.map((doc) => {
+        const data = doc.data() as UserDetails;
+        return { ...data, id: doc.id };  
+    });
+  };
+
 export const fetchAllStudents = async (): Promise<UserDetails[]> => {
     const q = query(collection(db, 'users'), where('admin', '==', false));
     const querySnapshot = await getDocs(q);
