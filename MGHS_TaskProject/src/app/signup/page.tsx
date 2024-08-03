@@ -50,7 +50,7 @@ export default function Signup() {
         uid: user.uid, // adding UID for reference
         admin: false,
         onboarded: false,
-        role: 'intern',
+        role: 'Intern',
         position: 'Junior Web Manager',
       });
 

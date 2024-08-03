@@ -1,7 +1,7 @@
 // services/RoleService.ts
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
-import { deleteUser, fetchAllInternDetails, fetchInternsByRole, updateUserDetails } from './UserService';
+import { deleteUser, fetchInternsByRole} from './UserService';
 
 export interface Role {
   id?: string;
