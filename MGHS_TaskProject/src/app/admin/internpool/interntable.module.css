@@ -1,0 +1,152 @@
+.container {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #5C4033;
+    padding: 10px 20px;
+    color: white;
+    position: relative;
+}
+
+.header .logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.header h1 {
+    flex-grow: 1;
+    margin: 0;
+    text-align: center;
+}
+
+.hamburger-menu {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #5C4033;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+}
+
+.nav-menu button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.nav-menu button.dashboard,
+.nav-menu button.internpool,
+.nav-menu button.batches,
+.nav-menu button.internrole,
+.nav-menu button.accomplishment,
+.nav-menu button.attendance {
+    background-color: #5C4033;
+}
+
+.main {
+    padding: 20px;
+}
+
+table.intern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table.intern-table th,
+table.intern-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+table.intern-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Status cell background colors */
+.status-pending {
+    background-color: yellow;
+    color: black;
+}
+
+.status-approved {
+    background-color: green;
+    color: white;
+}
+
+.status-backout {
+    background-color: red;
+    color: white;
+}
+
+table.intern-table input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+table.intern-table select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.icon-container {
+    display: flex;
+    gap: 10px; /* Adjust spacing as needed */
+    align-items: center;
+}
+
+.icon-container svg {
+    cursor: pointer;
+    font-size: 20px; /* Adjust icon size as needed */
+}
+
+/* Button styles */
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+.button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+}
+
+.buttonSave {
+    background-color: green;
+}
+
+.buttonCancel {
+    background-color: red;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: relative;
+        top: 0;
+    }
+}

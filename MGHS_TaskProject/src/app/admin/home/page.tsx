@@ -1,1 +1,0 @@
-<p>Intern home</p>

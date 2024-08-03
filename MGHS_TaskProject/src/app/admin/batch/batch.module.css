@@ -1,0 +1,188 @@
+
+.container {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main {
+    padding: 20px;
+}
+
+.info {
+    margin-bottom: 20px;
+}
+
+.batchContainer {
+    margin-bottom: 20px;
+}
+
+.batch {
+    margin-bottom: 10px;
+}
+
+.batchHeader {
+    width: 100%;
+    padding: 10px;
+    background-color: #418043;
+    color: white;
+    border: 3px solid #000000;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.batchHeader h3 {
+    margin: 0;
+    margin-right: 20px;
+}
+
+.collapseIcon {
+    cursor: pointer;
+    width: 50px;
+}
+
+.intern-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.intern-table th,
+.intern-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 3px solid #000000;
+    border-left: 3px solid #000000;
+    border-right: 3px solid #000000;
+}
+
+.intern-table th {
+    background-color: #418043;
+    color: white;
+}
+
+.icon-container {
+    display: flex;
+    gap: 10px;
+}
+
+.intern-table input,
+.intern-table select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+}
+
+.create-batch {
+    background-color: #418043;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    position: relative;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.submitBtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.add-batch-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 50px;
+    background-color: #418043;
+    color: white;
+    border: 2px solid black;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buttonSave {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.buttonCancel {
+    background-color: #f44336;
+    color: white;
+}
+
+.select {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+}
+
+.iconContainer {
+    display: flex;
+    gap: 10px; 
+    margin-left: auto;
+}
+
+.iconContainer svg {
+    cursor: pointer;
+}
