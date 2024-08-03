@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './attendance.module.css';
 
-const App: React.FC = () => {
+export default function AdminAttendance () {
     const [batchCount, setBatchCount] = useState(1);
     const [batches, setBatches] = useState<number[]>([1]);
 
@@ -141,4 +141,3 @@ const App: React.FC = () => {
     );
 };
 
-export default App;

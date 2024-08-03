@@ -220,6 +220,18 @@ export default function InternDetails() {
                                 required 
                             />
                         </div>
+                        <div className={styles.infoItem}>
+                            <label htmlFor="hoursNeeded" className={styles.detailLabel}>Hours Needed:</label>
+                            <input 
+                                type="text" 
+                                id="hoursNeeded" 
+                                name="hoursNeeded" 
+                                className={styles.detailInput}
+                                value={internDetails?.hoursNeeded || ''}
+                                onChange={handleInputChange}
+                                readOnly={!isEditing}
+                                placeholder="Position" />
+                        </div>
                         <div className={styles.buttonContainer}>
                             {isEditing ? (
                                 <>
