@@ -48,10 +48,10 @@ const accomplishmentsData: { [key: string]: Accomplishment[] } = {
 
 const toggleMenu = () => {
     const navMenu = document.querySelector('.nav-menu') as HTMLElement;
-    if (navMenu.style.display === 'block') {
+    if (navMenu.style.display === 'flex') {
         navMenu.style.display = 'none';
     } else {
-        navMenu.style.display = 'block';
+        navMenu.style.display = 'flex';
     }
 };
 
@@ -79,8 +79,7 @@ const App: React.FC = () => {
                 <button className="logout" onClick={logout}>
                     <img src="logout.png" alt="Logout" className="logout-icon" />
                 </button>
-            </header>
-            <nav className="nav-menu">
+                <nav className="nav-menu">
             <button className="dashboard">Dashboard</button>
                 <button className="internpool">Intern Pool</button>
                 <button className="batches">Intern Batches</button>
@@ -88,6 +87,7 @@ const App: React.FC = () => {
                 <button className='accomplishment'>Intern Accomplishments</button>
                 <button className='attendance'>Intern Attendance</button>
             </nav>
+            </header>
             <main>
                 <div className="sidebar">
                     <button className="add-task">Add Task</button>
