@@ -3,14 +3,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
-import { fetchUserDetails } from '@/app/services/UserService';
+import { fetchUserDetails, updateUserDetails } from '@/app/services/UserService';
 import { fetchAttendance, Attendance, updateAttendance, deleteAttendance } from '@/app/services/AttendanceService';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import AttendanceModal from './modals/AttendanceModal';
 import OvertimeModal from './modals/OvertimeModal';
-import TaskModal from './modals/TaskModal';
 import styles from './dashboard.module.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
@@ -73,10 +72,22 @@ export default function Dashboard() {
         // Calculate total rendered hours
         const totalHours = recordsWithDate.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
         setTotalRenderedHours(totalHours);
-  
         setAttendanceRecords(recordsWithDate);
+  
+        // Fetch user details to update
+        const userDetails: UserDetails[] = await fetchUserDetails(session.data.user.email);
+        if (userDetails.length > 0) {
+          const user = userDetails[0] as UserDetails;
+          // Update user details with the total rendered hours
+          const updatedUserDetails: UserDetails = {
+            ...user,
+              totalHoursRendered: totalHours, // update the field as per your structure
+          };
+          await updateUserDetails(user.id!, updatedUserDetails);
+          toast.success('User details updated with total rendered hours');
+        }
       } catch (error) {
-        toast.error('An error occurred while fetching attendance records');
+        toast.error('An error occurred while fetching attendance records or updating user details');
         console.error(error);
       }
     }

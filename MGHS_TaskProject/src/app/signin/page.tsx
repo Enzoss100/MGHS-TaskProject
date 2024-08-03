@@ -28,13 +28,13 @@ export default function Signin() {
 
           // Redirect based on admin status
           if (user.admin) {
-            router.push('/admin/home'); 
+            router.push('/admin/dashboard'); 
           } else {
-            if(!user.onboarded){
-              router.push('/intern/processing');
+            if(user.onboarded == "approved"){
+              router.push('/intern/onboarding');
             }
             else{
-            router.push('/intern/onboarding');
+            router.push('/intern/processing');
             }
           }
         } else {
