@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './attendance.module.css';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 export default function AdminAttendance () {
     const [batchCount, setBatchCount] = useState(1);
@@ -90,6 +91,7 @@ export default function AdminAttendance () {
     }, [batches]);
 
     return (
+        <ProtectedRoute>
         <div>
             <header className="header">
                 <div className="hamburger-menu" onClick={toggleMenu}>&#9776;</div>
@@ -138,6 +140,7 @@ export default function AdminAttendance () {
                 <button className="add-batch" onClick={addBatch}>Add New Batch</button>
             </main>
         </div>
+        </ProtectedRoute>
     );
 };
 

@@ -9,15 +9,9 @@ import { fetchAllRoles, Role, deleteRole } from '@/app/services/RoleService';
 import { fetchInternsByRole } from '@/app/services/UserService';
 import RoleModal from './RoleModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 export default function InternRoles() {
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/signin');
-        },
-    });
-
     const [currentRole, setCurrentRole] = useState<Role | null>(null);
     const [modalStat, setModalState] = useState(false);
     const [roles, setRoles] = useState<Role[]>([]);
@@ -62,6 +56,7 @@ export default function InternRoles() {
     };
 
     return (
+        <ProtectedRoute>
         <div className={styles.container}>
             <AdminMenu pageName='Intern Roles'/>
             <main className={styles.main}>
@@ -113,5 +108,6 @@ export default function InternRoles() {
                 />
             )}
         </div>
+        </ProtectedRoute>
     );
 };

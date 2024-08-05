@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { UserDetails } from '@/types/user-details';
 import { fetchUserDetails } from '@/app/services/UserService';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
+import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function Onboarding() {
   const session = useSession({
@@ -47,6 +48,7 @@ export default function Onboarding() {
   }, [session]);
 
   return (
+    <InternProtectedRoute>
     <div className={styles.container}>
       <HamburgerMenu internName={internName} />
       <main className={styles.content}>
@@ -85,5 +87,6 @@ export default function Onboarding() {
         </div>
       </main>
     </div>
+    </InternProtectedRoute>
   );
 }

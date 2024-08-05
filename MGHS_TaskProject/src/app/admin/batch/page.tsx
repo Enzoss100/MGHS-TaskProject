@@ -13,15 +13,9 @@ import AdminMenu from '@/app/components/AdminMenu';
 import { Batch, deleteBatch, fetchAllBatches, updateUserBatches } from '@/app/services/BatchService';
 import BatchModal from './BatchModal';
 import { Timestamp } from 'firebase/firestore';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 export default function InternTable() {
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/signin');
-        },
-    });
-
     const [students, setStudents] = useState<UserDetails[]>([]);
     const [batches, setBatches] = useState<Batch[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
@@ -206,6 +200,7 @@ export default function InternTable() {
     };
 
     return (
+        <ProtectedRoute>
         <div className={styles.container}>
             <AdminMenu pageName='Batches' />
             <button className={styles['add-batch-btn']} onClick={handleBatchAdd}>Add New Batch</button>
@@ -293,5 +288,6 @@ export default function InternTable() {
                     ))
                     )}
                 </div>
+                </ProtectedRoute>
                 );
             }
