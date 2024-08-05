@@ -1,120 +1,117 @@
 'use client';
 
-import React, { useState } from 'react';
-import './accomplish.module.css';
+import React, { useState, useEffect, useCallback } from 'react';
+import AdminMenu from '@/app/components/AdminMenu'; 
+import styles from './accomplish.module.css'; 
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { fetchTasks, Task, deleteTask } from '@/app/services/TaskService';
+import TaskModal from './TaskModal';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { fetchAccompByTask } from '@/app/services/AccomplishmentService';
 
-interface Accomplishment {
-    title: string;
-    description: string;
-    link: string;
-    internName: string;
-    date: string;
-}
-
-const accomplishmentsData: { [key: string]: Accomplishment[] } = {
-    'AI TASK': [
-        {
-            title: 'Accomplishment Title 1',
-            description: 'Accomplishment Description 1',
-            link: 'https://example.com/1',
-            internName: 'Intern Name 1',
-            date: '2024-07-01',
+export default function InternTasks() {
+    const session = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/signin');
         },
-        {
-            title: 'Accomplishment Title 2',
-            description: 'Accomplishment Description 2',
-            link: 'https://example.com/2',
-            internName: 'Intern Name 2',
-            date: '2024-07-02',
-        },
-    ],
-    'WEBSITE': [
-        {
-            title: 'Accomplishment Title 3',
-            description: 'Accomplishment Description 3',
-            link: 'https://example.com/3',
-            internName: 'Intern Name 3',
-            date: '2024-07-03',
-        },
-        {
-            title: 'Accomplishment Title 4',
-            description: 'Accomplishment Description 4',
-            link: 'https://example.com/4',
-            internName: 'Intern Name 4',
-            date: '2024-07-04',
-        },
-    ],
-};
+    });
 
-const toggleMenu = () => {
-    const navMenu = document.querySelector('.nav-menu') as HTMLElement;
-    if (navMenu.style.display === 'flex') {
-        navMenu.style.display = 'none';
-    } else {
-        navMenu.style.display = 'flex';
-    }
-};
+    const [currentTask, setCurrentTask] = useState<Task | null>(null);
+    const [modalStat, setModalState] = useState(false);
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [accomplishments, setAccomplishments] = useState<{ [key: string]: string[] }>({});
 
+    const getTasks = useCallback(async () => {
+        const tasks = await fetchTasks();
+        setTasks(tasks);
+    }, []);
 
+    useEffect(() => {
+        getTasks();
+    }, [getTasks]);
 
-const App: React.FC = () => {
-    const [selectedTask, setSelectedTask] = useState<string>('AI TASK');
-
-    const showAccomplishments = (task: string) => {
-        setSelectedTask(task);
+    const addTask = () => {
+        setCurrentTask(null);
+        setModalState(true);
     };
 
-    const logout = () => {
-        alert('Logged out');
+    const handleModalClose = () => {
+        setModalState(false);
+        getTasks();
+    };
+
+    const showAccomplishments = async (task: Task) => {
+        const internAccomplishments = await fetchAccompByTask(task.taskName);
+        setAccomplishments((prev) => ({ ...prev, [task.taskName]: internAccomplishments.map(accomp => accomp.id) }));
+        setCurrentTask(task);
+    };
+
+    const handleEditTask = (task: Task) => {
+        setCurrentTask(task);
+        setModalState(true);
+    };
+
+    const handleDeleteTask = async (taskName: string) => {
+        if (confirm(`Are you sure you want to delete the task "${taskName}"?`)) {
+            await deleteTask(taskName);
+            getTasks();
+            setCurrentTask(null);
+        }
     };
 
     return (
-        <div className="container">
-            <header className="header">
-            <div className="hamburger-menu" onClick={toggleMenu}>&#9776;</div>
-                <div className="logo">
-                    <img src="logo.png" alt="Logo" />
-                </div>
-                <h1>Accomplishments</h1>
-                <button className="logout" onClick={logout}>
-                    <img src="logout.png" alt="Logout" className="logout-icon" />
-                </button>
-                <nav className="nav-menu">
-            <button className="dashboard">Dashboard</button>
-                <button className="internpool">Intern Pool</button>
-                <button className="batches">Intern Batches</button>
-                <button className='internrole'>Intern Role</button>
-                <button className='accomplishment'>Intern Accomplishments</button>
-                <button className='attendance'>Intern Attendance</button>
-            </nav>
-            </header>
-            <main>
-                <div className="sidebar">
-                    <button className="add-task">Add Task</button>
-                    <div className="task-list">
-                        <button className="task" onClick={() => showAccomplishments('AI TASK')}>AI TASK</button>
-                        <button className="task" onClick={() => showAccomplishments('WEBSITE')}>WEBSITE</button>
-                    </div>
-                </div>
-                <div className="content">
-                    <div className="search-bar">
-                        <input type="text" placeholder="Search" id="search" />
-                    </div>
-                    <div className="accomplishments" id="accomplishments">
-                        {accomplishmentsData[selectedTask].map((acc, index) => (
-                            <div className="accomplishment" key={index}>
-                                <h2>{acc.title}</h2>
-                                <p>{acc.description}</p>
-                                <a href={acc.link} target="_blank" rel="noopener noreferrer">{acc.link}</a>
-                                <p>by {acc.internName}</p>
-                                <p>{acc.date}</p>
-                            </div>
+        <div className={styles.container}>
+            <AdminMenu pageName='Intern Tasks'/>
+            <main className={styles.main}>
+                <div className={styles.sidebar}>
+                    <button className={styles.addTask} onClick={addTask}>Add Intern Tasks</button>
+                    <div className={styles.taskList}>
+                        {tasks.map((task) => (
+                            <button 
+                                key={task.taskName} 
+                                className={`${styles.task} ${currentTask?.taskName === task.taskName ? styles.activeTask : ''}`} 
+                                onClick={() => showAccomplishments(task)}
+                            >
+                                {task.taskName}
+                            </button>
                         ))}
                     </div>
                 </div>
+                <div className={styles.content}>
+                    {currentTask ? (
+                        <>
+                            <div className={styles.taskHeader}>
+                                <h2 className={styles.heading}>{currentTask.taskName}</h2>
+                                <div className={styles.taskActions}>
+                                    <FaEdit className={styles.editIcon} onClick={() => handleEditTask(currentTask)} />
+                                    <FaTrash className={styles.deleteIcon} onClick={() => handleDeleteTask(currentTask.taskName)} />
+                                </div>
+                            </div>
+                            <p className={styles.description}>{currentTask.taskDesc}</p>
+                            <div className={styles.internList}>
+                                {accomplishments[currentTask.taskName] && accomplishments[currentTask.taskName].length > 0 ? (
+                                    accomplishments[currentTask.taskName].map((intern, index) => (
+                                        <div key={index} className={styles.intern}>{intern}</div>
+                                    ))
+                                ) : (
+                                    <div>No Interns Have Submitted Accomplishments for this Task</div>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <div className={styles.noTaskSelected}>No Task Selected</div>
+                    )}
+                </div>
             </main>
+            {modalStat && (
+                <TaskModal 
+                    setModalState={handleModalClose} 
+                    initialTask={currentTask || undefined} 
+                    taskID={currentTask?.id || null}
+                />
+            )}
         </div>
     );
 };
-
-export default App;
