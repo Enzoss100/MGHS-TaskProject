@@ -1,4 +1,7 @@
 .container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -6,15 +9,17 @@
 
 .main {
     display: flex;
+    flex: 1;
 }
 
 .sidebar {
     background-color: #5C4033;
     padding: 20px;
     width: 200px;
+    flex-shrink: 0;
 }
 
-.sidebar .addRole {
+.addRole {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -55,6 +60,28 @@
     padding: 20px;
 }
 
+.roleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.roleActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editIcon,
+.deleteIcon {
+    color: #5C4033;
+    cursor: pointer;
+}
+
+.editIcon:hover,
+.deleteIcon:hover {
+    color: #4CAF50;
+}
+
 .internList {
     background-color: #f4f4f4;
     padding: 20px;
@@ -62,33 +89,37 @@
     margin-top: 20px;
 }
 
-.internList .intern {
+.intern {
     background-color: #d3d3d3;
     padding: 10px;
     margin-bottom: 10px;
 }
 
-.content h2 {
+.heading {
     font-size: 24px;
     margin-bottom: 10px;
 }
 
-.content p {
+.description {
     font-size: 18px;
     margin-bottom: 20px;
 }
 
-.body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+.noRoleSelected {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 20px;
 }
 
-#root {
-    flex-grow: 1;
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
 }
 
 /*For the Modal*/
@@ -152,7 +183,7 @@
 }
   
 .tasktextarea {
-    width: 100%; 
+    width: 90%; 
     max-width: 600px; 
     height: 200px; 
     margin-bottom: 20px;

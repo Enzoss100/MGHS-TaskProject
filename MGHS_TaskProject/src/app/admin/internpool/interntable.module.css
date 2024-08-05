@@ -65,13 +65,13 @@ table.intern-table {
 
 table.intern-table th,
 table.intern-table td {
-    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    border: 3px solid #000000;
 }
 
 table.intern-table th {
-    background-color: #4CAF50;
+    background-color: #418043;
     color: white;
 }
 
@@ -82,7 +82,7 @@ table.intern-table th {
 }
 
 .status-approved {
-    background-color: green;
+    background-color: #4CAF50;
     color: white;
 }
 

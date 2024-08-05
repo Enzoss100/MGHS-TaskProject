@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { fetchAllInternDetails, fetchInternsByBatch, updateUserDetails, deleteUser } from '@/app/services/UserService';
+import { fetchAllRoles, Role } from '@/app/services/RoleService';
 import { UserDetails } from '@/types/user-details';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
@@ -23,6 +24,7 @@ export default function InternTable() {
 
     const [students, setStudents] = useState<UserDetails[]>([]);
     const [batches, setBatches] = useState<Batch[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
     const [currentBatch, setCurrentBatch] = useState<Batch | null>(null);
@@ -34,14 +36,12 @@ export default function InternTable() {
         const fetchDetails = async () => {
             try {
                 const internDetails = await fetchAllInternDetails();
-
                 const internRecords = internDetails.map(intern => ({
                     ...intern,
-                    startDate: intern.startDate instanceof Timestamp? intern.startDate.toDate() : intern.startDate,
-                }))
+                    startDate: intern.startDate instanceof Timestamp ? intern.startDate.toDate() : intern.startDate,
+                }));
 
                 setStudents(internRecords);
-                console.log('Students:', internRecords);
 
                 const initialRoles = internDetails.reduce((acc, student, index) => {
                     acc[index] = student.role || '';
@@ -50,20 +50,19 @@ export default function InternTable() {
                 setLocalRoles(initialRoles);
 
                 const batchDetails = await fetchAllBatches();
-
                 const batchRecord = batchDetails.map(batch => ({
                     ...batch,
-                    startDate: batch.startDate instanceof Timestamp? batch.startDate.toDate() : batch.startDate,
-                    endDate: batch.endDate instanceof Timestamp? batch.endDate.toDate() : batch.endDate,
-                }))
+                    startDate: batch.startDate instanceof Timestamp ? batch.startDate.toDate() : batch.startDate,
+                    endDate: batch.endDate instanceof Timestamp ? batch.endDate.toDate() : batch.endDate,
+                }));
 
                 setBatches(batchRecord);
-                
-                // Ensure batches are up-to-date
                 await updateUserBatches();
 
+                const roleDetails = await fetchAllRoles();
+                setRoles(roleDetails);
             } catch (error) {
-                console.error('Error fetching intern details:', error);
+                console.error('Error fetching details:', error);
             }
         };
 
@@ -81,12 +80,10 @@ export default function InternTable() {
         setSelectedBatch(batch);
         try {
             const internDetails = await fetchInternsByBatch(batch.name);
-
             const internRecords = internDetails.map(intern => ({
                 ...intern,
-                startDate: intern.startDate instanceof Timestamp? intern.startDate.toDate() : intern.startDate,
-            }))
-
+                startDate: intern.startDate instanceof Timestamp ? intern.startDate.toDate() : intern.startDate,
+            }));
             setStudents(internRecords);
         } catch (error) {
             console.error('Error fetching interns by batch:', error);
@@ -167,18 +164,14 @@ export default function InternTable() {
         const confirmation = window.confirm("Are you sure you want to delete this Batch? This will also delete the records of all users inside the batch.");
         if (confirmation) {
             try {
-                // Delete the batch
                 await deleteBatch(id);
 
-                // Update the batches state
                 const updatedBatches = batches.filter(batch => batch.id !== id);
                 setBatches(updatedBatches);
 
-                // Fetch the latest list of batches to ensure consistency
                 const refreshedBatches = await fetchAllBatches();
                 setBatches(refreshedBatches);
 
-                // Clear students if the deleted batch was selected
                 if (selectedBatch?.id === id) {
                     setStudents([]);
                     setSelectedBatch(null);
@@ -211,7 +204,6 @@ export default function InternTable() {
         const day = ('0' + date.getDate()).slice(-2);
         return `${day}-${month}-${year}`;
     };
-
 
     return (
         <div className={styles.container}>
@@ -256,52 +248,50 @@ export default function InternTable() {
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {students
-                                        .filter(student => student.batchName === batch.name)
-                                        .map((student, index) => (
-                                            <tr key={student.id}>
-                                                <td>{index + 1}</td>
-                                                <td>{student.firstname} {student.lastname}</td>
-                                                <td>
-                                                    {editingIndex === index ? (
-                                                        <select
-                                                            value={localRoles[index] || ''}
-                                                            onChange={event => handleRoleChange(index, event)}
-                                                        >
-                                                            <option value="">Select a role</option>
-                                                            <option value="Role1">Role1</option>
-                                                            <option value="Role2">Role2</option>
-                                                            <option value="Role3">Role3</option>
-                                                            {/* Add more options as needed */}
-                                                        </select>
-                                                    ) : (
-                                                        student.role || 'N/A'
-                                                    )}
-                                                </td>
-                                                <td>{student.position}</td>
-                                                <td>{formatDate(student.startDate)}</td>
-                                                <td className={styles.actionButtons}>
-                                                    {editingIndex === index ? (
-                                                        <div className={styles['button-group']}>
-                                                            <button onClick={() => handleSaveClick(index)} className={styles['save-button']}>Save</button>
-                                                            <button onClick={handleCancelClick} className={styles['cancel-button']}>Cancel</button>
-                                                        </div>
-                                                    ) : (
-                                                        <div className={styles['icon-container']}>
-                                                            <FiEdit size={20} onClick={() => handleEditClick(index)} />
-                                                            <FiTrash size={20} onClick={() => handleDeleteClick(index)} />
-                                                        </div>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
+                            <tbody>
+                            
+                            {students.map((student, index) => (
+                            <tr key={student.id}>
+                                <td>{index + 1}</td>
+                                <td>{student.firstname} {student.lastname}</td>
+                                <td>
+                                    {editingIndex === index ? (
+                                    <select
+                                        value={localRoles[index]}
+                                        onChange={(event) => handleRoleChange(index, event)}
+                                    >
+                                    <option value="">Select Role</option>
+                                        
+                                    {roles.map((role) => (
+                                        <option key={role.id} value={role.roleName}>{role.roleName}</option>
+                                    ))}
+                                    </select>
+                                    ) : (student.role)}
+                                </td>
+                                <td>{student.position}</td>
+                                <td>{formatDate(student.startDate)}</td>
+                                <td>
+                                    {editingIndex === index ? (
+                                        <>
+                                        <button onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button onClick={handleCancelClick}>Cancel</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                        <button onClick={() => handleEditClick(index)}><FiEdit size={20} /></button>
+                                        <button onClick={() => handleDeleteClick(index)}><FiTrash size={20} /></button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                            ))}
+
+                            </tbody>
+                        </table>
                         )}
                     </div>
-                ))
-            )}
-        </div>
-    );
-}
+                    ))
+                    )}
+                </div>
+                );
+            }
