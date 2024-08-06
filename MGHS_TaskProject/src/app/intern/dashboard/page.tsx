@@ -14,6 +14,7 @@ import styles from './dashboard.module.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
 import { Overtime } from '@/app/services/OvertimeService';
+import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function Dashboard() {
   const session = useSession({
@@ -143,6 +144,7 @@ export default function Dashboard() {
   };
 
   return (
+    <InternProtectedRoute>
     <div className={styles.container}>
       <HamburgerMenu internName={internName} />
       <main className={styles.content}>
@@ -228,5 +230,6 @@ export default function Dashboard() {
         onAddSuccess={handleOTAddSuccess}
       />
     </div>
+    </InternProtectedRoute>
   );
 }

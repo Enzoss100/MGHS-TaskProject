@@ -12,6 +12,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
 import { deleteOT, fetchOT, Overtime } from '@/app/services/OvertimeService';
 import OvertimeModal from '../dashboard/modals/OvertimeModal';
+import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function OvertimeView() {
   const session = useSession({
@@ -104,6 +105,7 @@ export default function OvertimeView() {
   };
 
   return (
+    <InternProtectedRoute>
     <div className={styles.container}>
       <HamburgerMenu internName={internName} />
       <main className={styles.content}>
@@ -180,6 +182,6 @@ export default function OvertimeView() {
       />
       
     </div>
-    
+    </InternProtectedRoute>
   );
 }
