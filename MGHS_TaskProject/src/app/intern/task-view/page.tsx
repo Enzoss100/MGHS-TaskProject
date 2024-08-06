@@ -5,108 +5,154 @@ import { redirect } from 'next/navigation';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
 import { fetchUserDetails } from '@/app/services/UserService';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import styles from './taskview.module.css';
 import InternProtectedRoute from '@/app/components/InternProtectedRoute';
+import { fetchTasks, Task } from '@/app/services/TaskService';
+import { fetchAccomplishments, Accomplishment, deleteAccomplishment } from '@/app/services/AccomplishmentService';
+import AccomplishmentModal from '@/app/intern/task-view/AccomplishmentModal';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function TaskView() {
-    const session = useSession({
+    const { data: session } = useSession({
         required: true,
         onUnauthenticated() {
-          redirect('/signin');
+            redirect('/signin');
         },
     });
-      
+
     const [internName, setInternName] = useState('');
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-      
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [accomplishments, setAccomplishments] = useState<Accomplishment[]>([]);
+    const [selectedAccomplishment, setSelectedAccomplishment] = useState<Accomplishment | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const getTasks = useCallback(async () => {
+        const tasks = await fetchTasks();
+        setTasks(tasks);
+    }, []);
+
+    const getAccomplishments = useCallback(async (taskId: string) => {
+        if (session?.user?.email) {
+            const accomplishments = await fetchAccomplishments(session.user.email);
+            setAccomplishments(accomplishments.filter(accomp => accomp.taskID === taskId));
+        }
+    }, [session?.user?.email]);
+
     useEffect(() => {
         const getInternName = async () => {
-          const email = session.data?.user?.email;
-      
-          if (!email) {
-            toast.error('Email is not available');
-            return;
-          }
+            const email = session?.user?.email;
 
-          try {
-            const userDetails: UserDetails[] = await fetchUserDetails(email);
-      
-            if (userDetails.length > 0) {
-              const user = userDetails[0] as UserDetails;
-              setInternName(user.firstname);
-            } else {
-              toast.error('User not found');
+            if (!email) {
+                toast.error('Email is not available');
+                return;
             }
-          } catch (error) {
-            toast.error('An error occurred while fetching user details');
-            console.error(error);
-          }
+
+            try {
+                const userDetails: UserDetails[] = await fetchUserDetails(email);
+
+                if (userDetails.length > 0) {
+                    const user = userDetails[0] as UserDetails;
+                    setInternName(user.firstname);
+                } else {
+                    toast.error('User not found');
+                }
+            } catch (error) {
+                toast.error('An error occurred while fetching user details');
+                console.error(error);
+            }
         };
-      
-        getInternName();  
-      }, [session]);
 
-    const openPopup = () => {
-        setIsPopupOpen(true);
+        getInternName();
+        getTasks();
+    }, [session, getTasks]);
+
+    const openModal = (accomplishment?: Accomplishment) => {
+        setSelectedAccomplishment(accomplishment || null);
+        setIsModalOpen(true);
     };
 
-    const closePopup = () => {
-        setIsPopupOpen(false);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        if (selectedTask) {
+            getAccomplishments(selectedTask.id!);
+        }
     };
+
+    const handleTaskClick = (task: Task) => {
+        setSelectedTask(task);
+        getAccomplishments(task.id!);
+    };
+
+    const handleDelete = async (accomplishmentid: string) => {
+        if (confirm(`Are you sure you want to delete this Accomplishment?`)) {
+          await deleteAccomplishment(accomplishmentid);
+          getAccomplishments(selectedTask?.id!);
+        }
+      };
 
     return (
-      <InternProtectedRoute>
-      <div className={styles.container}>
-        <HamburgerMenu internName={internName} />
-        <main>
-          <div className={styles.sidebar}>
-            <h3 className={styles.sidebarTitle}><b>TASK VIEW</b></h3>
-            <hr className={styles.divider} />
-            <a href="#" className={styles.sidebarLink}><b>AI Task</b></a>
-            <hr className={styles.divider} />
-            <a href="#" className={styles.sidebarLink}><b>Website</b></a>
-            <hr className={styles.divider} />
-          </div>
-          <div className={styles.content}>
-            <h3 className={styles.contentTitle}>TASK DESCRIPTION</h3>
-            <p className={styles.description}>Insert description here</p>
-            <h3 className={styles.contentTitle}>ACCOMPLISHMENTS</h3>
-            <button className={styles.accomplishmentsBtn} onClick={openPopup}>Add Accomplishments</button>
-            <hr className={styles.divider} />
-            <div className={styles.accomplishmentSection}>
-              <p className={styles.accomplishmentTitle}>Accomplishment Title</p>
-              <p className={styles.accomplishmentDescription}>Accomplishment Description</p>
-              <a href="#" className={styles.accomplishmentLink}>Accomplishment Link</a>
+        <InternProtectedRoute>
+            <div className={styles.container}>
+                <HamburgerMenu internName={internName} />
+                <main className={styles.main}>
+                    <div className={styles.sidebar}>
+                        <h3 className={styles.sidebarTitle}><b>TASK VIEW</b></h3>
+                        <hr className={styles.divider} />
+                        {tasks.map((task) => (
+                            <a
+                                key={task.id}
+                                className={`${styles.task} ${selectedTask?.id === task.id ? styles.activeTask : ''}`}
+                                onClick={() => handleTaskClick(task)}
+                            >
+                                <b>{task.taskName}</b>
+                            </a>
+                        ))}
+                        <hr className={styles.divider} />
+                    </div>
+                    <div className={styles.content}>
+                        {selectedTask ? (
+                            <>
+                                <div className={styles.taskHeader}>
+                                    <h3 className={styles.heading}>{selectedTask.taskName}</h3>
+                                </div>
+                                <p className={styles.description}>{selectedTask.taskDesc}</p>
+                                <div className={styles.taskHeader}>
+                                    <h3 className={styles.heading}>ACCOMPLISHMENTS</h3>
+                                    <button className={styles.addTask} onClick={() => openModal()}>Add Accomplishments</button>
+                                </div>
+                                <hr className={styles.divider} />
+                                {accomplishments.map(accomplishment => (
+                                    <div key={accomplishment.id} className={styles.intern}>
+                                        <div className={styles.iconContainer}>
+                                            <button className={styles.editIcon} onClick={() => openModal(accomplishment)}>
+                                                <FaEdit />
+                                            </button>
+                                            <button className={styles.deleteIcon} onClick={() => handleDelete(accomplishment.id!)}>
+                                                <FaTrash />
+                                            </button>
+                                        </div>
+                                        <h4>{accomplishment.title}</h4>
+                                        <p className={styles.description}>{accomplishment.description}</p>
+                                        {accomplishment.link && <a href={accomplishment.link} target="_blank" rel="noopener noreferrer">View Link</a>}
+                                    </div>
+                                ))}
+                            </>
+                        ) : (
+                            <p className={styles.noTaskSelected}>Please select a task to view details</p>
+                        )}
+                    </div>
+                </main>
             </div>
-            <hr className={styles.divider} />
-            <div className={styles.accomplishmentSection}>
-              <p className={styles.accomplishmentTitle}>Accomplishment Title</p>
-              <p className={styles.accomplishmentDescription}>Accomplishment Description</p>
-              <a href="#" className={styles.accomplishmentLink}>Accomplishment Link</a>
-            </div>
-            <hr className={styles.divider} />
-          </div>
-
-          {isPopupOpen && (
-            <div className={styles.popup}>
-              <div className={styles.popupContent}>
-                <span className={styles.closeBtn} onClick={closePopup}>&times;</span>
-                <h2>Accomplishment</h2>
-                <label htmlFor="title">Title:</label>
-                <input type="text" id="title" name="title" /><br /><br />
-                <label htmlFor="description">Description:</label> 
-                <input type="text" id="description" name="description" /><br /><br />
-                <label htmlFor="link">Submission Link:</label> 
-                <input type="text" id="link" name="link" /><br /><br />
-                <button className={styles.submitBtn}>Submit</button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-      </InternProtectedRoute>
+            {isModalOpen && (
+                <AccomplishmentModal
+                    setModalState={closeModal}
+                    initialAccomplishment={selectedAccomplishment}
+                    taskID={selectedTask?.id || null}
+                />
+            )}
+        </InternProtectedRoute>
     );
 }
-

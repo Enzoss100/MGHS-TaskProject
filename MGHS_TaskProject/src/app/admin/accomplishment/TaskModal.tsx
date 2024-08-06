@@ -66,8 +66,8 @@ const TaskModal = ({ setModalState, initialTask, taskID }: Props) => {
         >
           &times;
         </span>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Task Title</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Task Title</label>
           <input
             className={styles.input}
             id="taskName"
@@ -80,8 +80,8 @@ const TaskModal = ({ setModalState, initialTask, taskID }: Props) => {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Task Description</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Task Description</label>
           <textarea
             className={styles.tasktextarea}
             id="taskDesc"

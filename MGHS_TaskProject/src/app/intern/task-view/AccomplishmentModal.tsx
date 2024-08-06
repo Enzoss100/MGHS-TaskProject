@@ -1,43 +1,59 @@
 import { updateAccomplishment, createAccomplishment, Accomplishment } from '@/app/services/AccomplishmentService';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import styles from './accomplishments.module.css';
+import styles from './taskview.module.css';
 import { useSession } from 'next-auth/react';
+import { fetchUserDetails } from '@/app/services/UserService';
 
 interface Props {
   setModalState: (state: boolean) => void;
-  initialAccomplishment?: Accomplishment;
-  accomplishmentID?: string | null;
+  initialAccomplishment?: Accomplishment | null;
+  taskID: string | null;
 }
 
-const AccomplishmentModal = ({ setModalState, initialAccomplishment, accomplishmentID }: Props) => {
-  
-    const { data: session } = useSession();
-
-    const [accomplishment, setAccomplishment] = useState<Accomplishment>({
+const AccomplishmentModal = ({ setModalState, initialAccomplishment, taskID }: Props) => {
+  const { data: session } = useSession();
+  const [accomplishment, setAccomplishment] = useState<Accomplishment>({
     title: initialAccomplishment?.title || '',
     description: initialAccomplishment?.description || '',
     link: initialAccomplishment?.link || '',
     accDate: initialAccomplishment?.accDate ? new Date(initialAccomplishment.accDate) : new Date(),
+    userName: '',
     userID: session?.user?.email || '',
-    taskID: initialAccomplishment?.taskID || '',
-    });
+    taskID: taskID || '',
+  });
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchUserDetails(session.user.email).then(userDetails => {
+        if (userDetails.length > 0) {
+          const user = userDetails[0];
+          setAccomplishment(prev => ({
+            ...prev,
+            userName: `${user.firstname} ${user.lastname}`, // Setting userName with full name
+          }));
+        }
+      }).catch(error => {
+        console.error('Error fetching user details:', error);
+      });
+    }
+  }, [session, taskID, initialAccomplishment]);
 
   useEffect(() => {
     if (initialAccomplishment) {
       setAccomplishment({
         ...initialAccomplishment,
+        userID: session?.user?.email || '',
+        taskID: taskID || '',
       });
     }
-  }, [initialAccomplishment]);
+  }, [initialAccomplishment, session, taskID]);
 
-  // Handles the change of input for title
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAccomplishment({ ...accomplishment, [name]: value });
   };
 
-  // Handles the change of input for content
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setAccomplishment({ ...accomplishment, [name]: value });
@@ -50,13 +66,11 @@ const AccomplishmentModal = ({ setModalState, initialAccomplishment, accomplishm
     }
 
     try {
-      if (accomplishmentID) {
-        // Update existing accomplishment
-        await updateAccomplishment(accomplishmentID, accomplishment);
+      if (initialAccomplishment && initialAccomplishment.id) {
+        await updateAccomplishment(initialAccomplishment.id, accomplishment);
         toast.success('Accomplishment Updated Successfully!');
       } else {
-        // Create new accomplishment
-        await createAccomplishment(accomplishment);  
+        await createAccomplishment(accomplishment);
         toast.success('Accomplishment Created Successfully!');
       }
       setModalState(false);
@@ -74,13 +88,13 @@ const AccomplishmentModal = ({ setModalState, initialAccomplishment, accomplishm
         >
           &times;
         </span>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Accomplishment Title</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Accomplishment Title</label>
           <input
             className={styles.input}
-            id="accomplishmentName"
+            id="title"
             type="text"
-            name="accomplishmentName"
+            name="title"
             value={accomplishment.title}
             onChange={handleInputChange}
             placeholder="Accomplishment Title"
@@ -88,44 +102,37 @@ const AccomplishmentModal = ({ setModalState, initialAccomplishment, accomplishm
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Accomplishment Content</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Accomplishment Content</label>
           <textarea
             className={styles.tasktextarea}
-            id="accomplishmentDesc"
-            name="accomplishmentDesc"
+            id="description"
+            name="description"
             value={accomplishment.description}
             onChange={handleTextareaChange}
             placeholder="Place your accomplishment description here..."
-            required
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Accomplishment Link</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Accomplishment Link</label>
           <input
             className={styles.input}
-            id="accomplishmentName"
+            id="link"
             type="text"
-            name="accomplishmentName"
+            name="link"
             value={accomplishment.link}
             onChange={handleInputChange}
-            placeholder="Accomplishment Title"
-            required
+            placeholder="Accomplishment Link"
           />
         </div>
 
         <button
-          onClick={() => setModalState(false)}
           className={styles.renderBtn}
-        >
-          Cancel
-        </button>
-        <button
+          type="button"
           onClick={saveAccomplishment}
-          className={styles.renderBtn}
         >
-          {accomplishmentID ? 'Update' : 'Create'}
+          {initialAccomplishment ? 'Update' : 'Create'}
         </button>
       </div>
     </div>

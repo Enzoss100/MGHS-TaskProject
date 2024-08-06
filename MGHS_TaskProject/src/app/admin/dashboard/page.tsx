@@ -59,6 +59,7 @@ export default function Dashboard() {
 
     return (
         <ProtectedRoute>
+            <div className={styles.pageBackground}>
             <AdminMenu pageName='Admin Dashboard'/>
             <div className={styles.container}>
                 <main className={styles.mainContainer}>
@@ -97,6 +98,7 @@ export default function Dashboard() {
                         </div>
                     </section>
                 </main>
+            </div>
             </div>
         </ProtectedRoute>
     );
