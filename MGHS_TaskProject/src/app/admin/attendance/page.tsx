@@ -1,124 +1,92 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import './attendance.module.css';
+import styles from './attendance.module.css';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import AdminMenu from '@/app/components/AdminMenu';
+import { fetchAllBatches, Batch } from '@/app/services/BatchService';
+import { fetchAllStudents, updateUserDetails } from '@/app/services/UserService';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { toast } from 'sonner';
+import { UserDetails } from '@/types/user-details';
+import AbsenceModal from './AbsenceModal';
 
-export default function AdminAttendance () {
-    const [batchCount, setBatchCount] = useState(1);
-    const [batches, setBatches] = useState<number[]>([1]);
-
-    const toggleMenu = () => {
-        const navMenu = document.querySelector('.nav-menu') as HTMLElement;
-        if (navMenu.style.display === 'block') {
-            navMenu.style.display = 'none';
-        } else {
-            navMenu.style.display = 'block';
-        }
-    };
-
-    const toggleBatch = (batchId: string) => {
-        const batchTables = document.querySelectorAll('.batch-table');
-        batchTables.forEach((table) => {
-            if (table.id !== batchId) {
-                (table as HTMLElement).style.display = 'none';
-            }
-        });
-
-        const batchTable = document.getElementById(batchId);
-        if (batchTable && batchTable.style.display === 'block') {
-            batchTable.style.display = 'none';
-        } else if (batchTable) {
-            batchTable.style.display = 'block';
-        }
-    };
-
-    const addBatch = () => {
-        setBatchCount((prevBatchCount) => {
-            const newBatchCount = prevBatchCount + 1;
-            setBatches([...batches, newBatchCount]);
-            return newBatchCount;
-        });
-    };
-
-    const generateEmptyRows = (count: number) => {
-        let rows = [];
-        for (let i = 1; i <= count; i++) {
-            rows.push(
-                <tr key={i}>
-                    <td>{i}</td>
-                    <td><input type="text" name="studentName" placeholder="Student Name" /></td>
-                    <td><input type="text" name="absences" placeholder="Number of Absences" /></td>
-                    <td><input type="text" name="hoursRendered" placeholder="Total Hours Rendered" /></td>
-                    <td><input type="text" name="hoursNeeded" placeholder="Hours Needed" /></td>
-                    <td><input type="text" name="hoursLeft" placeholder="Hours Left for Completion" /></td>
-                </tr>
-            );
-        }
-        return rows;
-    };
-
-    const logout = () => {
-        alert('Logged out');
-    };
+export default function AdminAttendance() {
+    const [batches, setBatches] = useState<Batch[]>([]);
+    const [students, setStudents] = useState<UserDetails[]>([]);
+    const [collapsedBatches, setCollapsedBatches] = useState<{ [key: string]: boolean }>({});
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedStudent, setSelectedStudent] = useState<UserDetails | null>(null);
 
     useEffect(() => {
-        const addEventListeners = (batchId: string) => {
-            const tbody = document.getElementById(batchId);
-            if (tbody) {
-                tbody.addEventListener('input', () => {
-                    const rows = tbody.querySelectorAll('tr');
-                    const lastRow = rows[rows.length - 1];
-                    const inputs = lastRow.querySelectorAll('input');
-                    const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-                    if (allFilled && rows.length < 20) {
-                        const newRow = document.createElement('tr');
-                        newRow.innerHTML = `
-                            <td>${rows.length + 1}</td>
-                            <td><input type="text" name="studentName" placeholder="Student Name"></td>
-                            <td><input type="text" name="absences" placeholder="Number of Absences"></td>
-                            <td><input type="text" name="hoursRendered" placeholder="Total Hours Rendered"></td>
-                            <td><input type="text" name="hoursNeeded" placeholder="Hours Needed"></td>
-                            <td><input type="text" name="hoursLeft" placeholder="Hours Left for Completion"></td>
-                        `;
-                        tbody.appendChild(newRow);
-                    }
-                });
+        const fetchData = async () => {
+            try {
+                const batchDetails = await fetchAllBatches();
+                setBatches(batchDetails);
+
+                const studentDetails = await fetchAllStudents();
+                setStudents(studentDetails);
+            } catch (error) {
+                console.error('Error fetching details:', error);
             }
         };
 
-        batches.forEach((batch) => {
-            addEventListeners(`batch${batch}-body`);
-        });
-    }, [batches]);
+        fetchData();
+    }, []);
+
+    const toggleBatchCollapse = (batchName: string) => {
+        setCollapsedBatches(prevState => ({
+            ...prevState,
+            [batchName]: !prevState[batchName],
+        }));
+    };
+
+    const handleMarkAbsent = (student: UserDetails) => {
+        setSelectedStudent(student);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setSelectedStudent(null);
+    };
+
+    const handleModalSave = async (updatedStudent: UserDetails) => {
+        try {
+            await updateUserDetails(updatedStudent.id!, updatedStudent);
+            const updatedStudents = students.map(student => student.id === updatedStudent.id ? updatedStudent : student);
+            setStudents(updatedStudents);
+            toast.success('Student marked as absent successfully!');
+        } catch (error) {
+            console.error('Error marking student absent:', error);
+            toast.error('Failed to mark student absent.');
+        }
+        handleModalClose();
+    };
 
     return (
         <ProtectedRoute>
-        <div>
-            <header className="header">
-                <div className="hamburger-menu" onClick={toggleMenu}>&#9776;</div>
-                <div className="logo"><img src="logo.png" alt="Logo" /></div>
-                <h1>Intern Attendance</h1>
-                <button className="logout" onClick={logout}>
-                    <img src="logout.png" alt="Logout" className="logout-icon" />
-                </button>
-            </header>
-            <nav className="nav-menu">
-                    <button className="dashboard">Dashboard</button>
-                    <button className="internpool">Intern Pool</button>
-                    <button className="batches">Intern Batches</button>
-                    <button className='internrole'>Intern Role</button>
-                    <button className='accomplishment'>Intern Accomplishments</button>
-                    <button className='attendance'>Intern Attendance</button>
-                </nav>
-            <main>
-                <div className="batch-container">
-                    {batches.map((batch) => (
-                        <div className="batch" key={batch}>
-                            <button className="batch-header" onClick={() => toggleBatch(`batch${batch}`)}>
-                                Batch {batch} Table
-                                <span className="arrow">&#9660;</span>
-                            </button>
-                            <div className="batch-table" id={`batch${batch}`}>
-                                <table>
+            <div className={styles.container}>
+                <AdminMenu pageName='Attendance' />
+
+                {batches.length === 0 ? (
+                    <center><p>No Batch Tables were created yet</p></center>
+                ) : (
+                    batches.map(batch => (
+                        <div key={batch.id}>
+                            <div className={styles.batchHeader}>
+                                <div onClick={() => toggleBatchCollapse(batch.name)} className={styles.batchTitle}>
+                                    <div className={styles.headerActions}>
+                                        <h3>{batch.name}</h3>
+                                    </div>
+                                </div>
+                                <div onClick={() => toggleBatchCollapse(batch.name)} className={styles.collapseIcon}>
+                                    {collapsedBatches[batch.name] ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
+                                </div>
+                            </div>
+
+                            {!collapsedBatches[batch.name] && (
+                                <table className={styles['attendance-table']}>
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -127,20 +95,50 @@ export default function AdminAttendance () {
                                             <th>Total Hours Rendered</th>
                                             <th>Hours Needed</th>
                                             <th>Hours Left for Completion</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id={`batch${batch}-body`}>
-                                        {generateEmptyRows(1)}
+                                    <tbody>
+                                        {students.filter(student => student.batchName === batch.name).map((student, index) => (
+                                            <tr key={student.id}>
+                                                <td>{index + 1}</td>
+                                                <td>
+                                                    {`${student.firstname} ${student.lastname}`}
+                                                </td>
+                                                <td>
+                                                    {student.absences ? student.absences.length : 0}
+                                                </td>
+                                                <td>
+                                                    {student.totalHoursRendered ?? 'None'}
+                                                </td>
+                                                <td>
+                                                    {student.hoursNeeded ?? 'None'}
+                                                </td>
+                                                <td>
+                                                    {student.hoursNeeded && student.totalHoursRendered
+                                                        ? student.hoursNeeded - student.totalHoursRendered
+                                                        : 'None'}
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => handleMarkAbsent(student)} className={styles.buttonMarkAbsent}>Mark Absent</button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
-                            </div>
+                            )}
                         </div>
-                    ))}
-                </div>
-                <button className="add-batch" onClick={addBatch}>Add New Batch</button>
-            </main>
-        </div>
+                    ))
+                )}
+
+                {isModalOpen && selectedStudent && (
+                    <AbsenceModal
+                        student={selectedStudent}
+                        onClose={handleModalClose}
+                        onSave={handleModalSave}
+                    />
+                )}
+            </div>
         </ProtectedRoute>
     );
-};
-
+}
