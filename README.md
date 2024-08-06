@@ -29,27 +29,28 @@ Official Dev Notes Documents will be [here](https://docs.google.com/document/d/1
 
 Please Update the README of the Main Repo by submitting a PR. Keeping track of what is accomplished will help with the overall Project Tracking. Notes on how to update the project will be in the [Dev Notes](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing)
 
-| Objective                    | Dev In-Charge    | Repo Branch         | Merged |
-| :--------------------------: | :--------------: | ------------------- | :----: |
-| Initialize Project           | Enzoss100        | main                | N/A    |
-| Project Documentation        | Enzoss100        | main                | N/A    |
-| Project Dev Notes            | Enzoss100        | main                | N/A    |
-| Login Page                   | ReneeCharlene02  | renee               | Yes    |
-| Onboarding Page              | ReneeCharlene02  | renee               | Yes    |
-| Dashboard UI                 | ReneeCharlene02  | renee               | Yes    |
-| Attendance Function          | ReneeCharlene02  | renee               | Yes    |
-| Overtime Function            | ReneeCharlene02  | renee               | Yes    |
-| Intern Details               | ReneeCharlene02  | renee               | Yes    |
-| User Details CRUD            | ReneeCharlene02  | renee               | Yes    |
-| Admin UI Frontend            | RoseJeaEvanz1009 | rose                | Yes    |
-| Task View for Interns        | ReneeCharlene02  | renee               | Yes    |
-| Intern Batch Pools           | ReneeCharlene02  | renee               | Yes    |
-| Admin Edits User Status      | ReneeCharlene02  | renee               | Yes    |
-| Automated Status Update      | ReneeCharlene02  | renee               | Yes    |
-| Batch Pages                  | ReneeCharlene02  | renee               | Yes    |
-| CRUD for Batches             | ReneeCharlene02  | renee               | Yes    |
-| Admin Edits User Roles       | ReneeCharlene02  | renee               | Yes    |
-| Roles Page                   | ReneeCharlene02  | renee               | No     |
-| Added Role Functions         | ReneeCharlene02  | renee               | No     |
+| Objective                    | Dev In-Charge    | Repo Branch         | Merged to `main` |
+| :--------------------------: | :--------------: | ------------------- | :--------------: |
+| Initialize Project           | Enzoss100        | main                | N/A              |
+| Project Documentation        | Enzoss100        | main                | N/A              |
+| Project Dev Notes            | Enzoss100        | main                | N/A              |
+| Login Page                   | ReneeCharlene02  | renee               | Yes              |
+| Onboarding Page              | ReneeCharlene02  | renee               | Yes              |
+| Dashboard UI                 | ReneeCharlene02  | renee               | Yes              |
+| Attendance Function          | ReneeCharlene02  | renee               | Yes              |
+| Overtime Function            | ReneeCharlene02  | renee               | Yes              |
+| Intern Details               | ReneeCharlene02  | renee               | Yes              |
+| User Details CRUD            | ReneeCharlene02  | renee               | Yes              |
+| Admin UI Frontend            | RoseJeaEvanz1009 | rose                | Yes              |
+| Task View for Interns        | ReneeCharlene02  | renee               | Yes              |
+| Intern Batch Pools           | ReneeCharlene02  | renee               | Yes              |
+| Admin Edits User Status      | ReneeCharlene02  | renee               | Yes              |
+| Automated Status Update      | ReneeCharlene02  | renee               | Yes              |
+| Batch Pages                  | ReneeCharlene02  | renee               | Yes              |
+| CRUD for Batches             | ReneeCharlene02  | renee               | Yes              |
+| Admin Edits User Roles       | ReneeCharlene02  | renee               | Yes              |
+| Roles Page                   | ReneeCharlene02  | renee               | Yes              |
+| Added Role Functions         | ReneeCharlene02  | renee               | Yes              |
+| Added Absences Functionality | ReneeCharlene02  | renee               | Yes              |
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
