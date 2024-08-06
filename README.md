@@ -52,5 +52,6 @@ Please Update the README of the Main Repo by submitting a PR. Keeping track of w
 | Roles Page                   | ReneeCharlene02  | renee               | Yes              |
 | Added Role Functions         | ReneeCharlene02  | renee               | Yes              |
 | Added Absences Functionality | ReneeCharlene02  | renee               | Yes              |
+| Dashboard for Intern Details | ReneeCharlene02  | renee               | No               |
 
 *THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
