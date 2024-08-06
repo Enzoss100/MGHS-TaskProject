@@ -132,6 +132,11 @@
     cursor: pointer;
 }
 
+.submitBtn:hover {
+    background-color: #449d47;
+    color: #e0e0e0;
+}
+
 .add-batch-btn {
     display: block;
     margin: 20px auto;
@@ -142,6 +147,11 @@
     text-decoration: underline;
     cursor: pointer;
     text-align: center;
+}
+
+.add-batch-btn:hover {
+    background-color: #356c2f;
+    color: #e0e0e0;
 }
 
 .button-group {
@@ -161,9 +171,17 @@
     color: white;
 }
 
+.buttonSave:hover {
+    background-color: #3f9043;
+}
+
 .buttonCancel {
     background-color: #f44336;
     color: white;
+}
+
+.buttonCancel:hover {
+    background-color: #e53935;
 }
 
 .select {
@@ -185,4 +203,11 @@
 
 .iconContainer svg {
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 5px;
+    font-size: 20px;
+}
+
+.iconContainer svg:hover {
+    background-color: #e0e0e0;
 }

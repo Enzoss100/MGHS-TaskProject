@@ -267,15 +267,15 @@ export default function InternTable() {
                                 <td>{formatDate(student.startDate)}</td>
                                 <td>
                                     {editingIndex === index ? (
-                                        <>
-                                        <button onClick={() => handleSaveClick(index)}>Save</button>
-                                        <button onClick={handleCancelClick}>Cancel</button>
-                                        </>
+                                        <div className={styles['button-group']}>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
+                                        </div>
                                     ) : (
-                                        <>
-                                        <button onClick={() => handleEditClick(index)}><FiEdit size={20} /></button>
-                                        <button onClick={() => handleDeleteClick(index)}><FiTrash size={20} /></button>
-                                        </>
+                                        <div className={styles.iconContainer}>
+                                            <FiEdit onClick={() => handleEditClick(index)} />
+                                            <FiTrash onClick={() => handleDeleteClick(index)} />
+                                        </div>
                                     )}
                                 </td>
                             </tr>
