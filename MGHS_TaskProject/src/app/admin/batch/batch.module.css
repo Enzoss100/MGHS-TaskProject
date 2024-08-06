@@ -211,3 +211,24 @@
 .iconContainer svg:hover {
     background-color: #e0e0e0;
 }
+
+.changeBatchBtn {
+    background-color: #007BFF; 
+    color: #ffffff; 
+    border: none;
+    border-radius: 4px; 
+    padding: 8px 16px;
+    font-size: 14px; 
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+}
+
+.changeBatchBtn:hover {
+    background-color: #0056b3; /* Darker shade for hover */
+    color: #e0e0e0; /* Lighter text color on hover */
+}
+
+.changeBatchBtn:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5); /* Add a focus shadow for accessibility */
+}

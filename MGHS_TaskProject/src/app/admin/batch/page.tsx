@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllInternDetails, fetchInternsByBatch, updateUserDetails, deleteUser } from '@/app/services/UserService';
 import { fetchAllRoles, Role } from '@/app/services/RoleService';
 import { UserDetails } from '@/types/user-details';
-import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
 import styles from './batch.module.css';
 import { FiEdit, FiTrash, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { toast } from 'sonner';
@@ -25,6 +23,8 @@ export default function InternTable() {
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [localRoles, setLocalRoles] = useState<{ [key: number]: string }>({});
     const [collapsedBatches, setCollapsedBatches] = useState<{ [key: string]: boolean }>({});
+    const [batchEditingIndex, setBatchEditingIndex] = useState<number | null>(null);
+    const [localBatches, setLocalBatches] = useState<{ [key: number]: string }>({});
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -42,6 +42,12 @@ export default function InternTable() {
                     return acc;
                 }, {} as { [key: number]: string });
                 setLocalRoles(initialRoles);
+
+                const initialBatches = internDetails.reduce((acc, student, index) => {
+                    acc[index] = student.batchName || '';
+                    return acc;
+                }, {} as { [key: number]: string });
+                setLocalBatches(initialBatches);
 
                 const batchDetails = await fetchAllBatches();
                 const batchRecord = batchDetails.map(batch => ({
@@ -92,36 +98,52 @@ export default function InternTable() {
         }));
     };
 
+    const handleBatchChange = (index: number, event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newBatch = event.target.value;
+        setLocalBatches(prevBatches => ({
+            ...prevBatches,
+            [index]: newBatch
+        }));
+    };
+
     const handleEditClick = (index: number) => {
         setEditingIndex(index);
     };
 
+    const handleBatchEditClick = (index: number) => {
+        setBatchEditingIndex(index);
+    };
+
     const handleSaveClick = async (index: number) => {
         const newRole = localRoles[index];
+        const newBatch = localBatches[index];
 
-        if (window.confirm('Are you sure you want to change the role?')) {
+        if (window.confirm('Are you sure you want to save the changes?')) {
             const newStudents = [...students];
             const updatedStudent = { ...newStudents[index] };
 
             updatedStudent.role = newRole;
+            updatedStudent.batchName = newBatch;
 
             newStudents[index] = updatedStudent;
             setStudents(newStudents);
 
             try {
                 await updateUserDetails(updatedStudent.id!, updatedStudent);
-                toast.success('User role updated successfully!');
+                toast.success('User details updated successfully!');
             } catch (error) {
                 console.error('Error updating user details:', error);
-                toast.error('Failed to update user role.');
+                toast.error('Failed to update user details.');
             }
 
             setEditingIndex(null);
+            setBatchEditingIndex(null);
         }
     };
 
     const handleCancelClick = () => {
         setEditingIndex(null);
+        setBatchEditingIndex(null);
     };
 
     const handleDeleteClick = async (index: number) => {
@@ -135,6 +157,11 @@ export default function InternTable() {
                     const newRoles = { ...prevRoles };
                     delete newRoles[index];
                     return newRoles;
+                });
+                setLocalBatches(prevBatches => {
+                    const newBatches = { ...prevBatches };
+                    delete newBatches[index];
+                    return newBatches;
                 });
                 toast.success('User deleted successfully!');
             } catch (error) {
@@ -201,22 +228,22 @@ export default function InternTable() {
 
     return (
         <ProtectedRoute>
-        <div className={styles.container}>
-            <AdminMenu pageName='Batches' />
-            <button className={styles['add-batch-btn']} onClick={handleBatchAdd}>Add New Batch</button>
-            <BatchModal 
-                isVisible={isModalVisible} 
-                setModalState={setModalVisible} 
-                initialBatch={currentBatch || undefined}
-                batchID={currentBatch?.id || null}
-            />
+            <div className={styles.container}>
+                <AdminMenu pageName='Batches' />
+                <button className={styles['add-batch-btn']} onClick={handleBatchAdd}>Add New Batch</button>
+                <BatchModal
+                    isVisible={isModalVisible}
+                    setModalState={setModalVisible}
+                    initialBatch={currentBatch || undefined}
+                    batchID={currentBatch?.id || null}
+                />
 
-            {batches.length === 0 ? (
-                <center><p>No Batch Tables were created yet</p></center>
-            ) : (
-                batches.map(batch => (
-                    <div key={batch.name}>
-                        <div className={styles.batchHeader}>
+                {batches.length === 0 ? (
+                    <center><p>No Batch Tables were created yet</p></center>
+                ) : (
+                    batches.map(batch => (
+                        <div key={batch.name}>
+                            <div className={styles.batchHeader}>
                             <div onClick={() => handleBatchSelect(batch)} className={styles.batchTitle}>
                                 <div className={styles.headerActions}>
                                     <h3>{batch.name}</h3>
@@ -225,69 +252,85 @@ export default function InternTable() {
                                         <FiTrash size={20} onClick={(e) => {e.stopPropagation(); handleDeleteBatch(batch.id!); }} />
                                     </div>
                                 </div>
+                                </div>
+                                <div onClick={() => toggleBatchCollapse(batch.name)} className={styles.collapseIcon}>
+                                    {collapsedBatches[batch.name] ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
+                                </div>
                             </div>
-                            <div onClick={() => toggleBatchCollapse(batch.name)} className={styles.collapseIcon}>
-                                {collapsedBatches[batch.name] ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
-                            </div>
-                        </div>
 
-                        {!collapsedBatches[batch.name] && (
-                            <table className={styles['intern-table']}>
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Student Name</th>
-                                        <th>Role</th>
-                                        <th>Position</th>
-                                        <th>Start Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
-                            
-                            {students.map((student, index) => (
-                            <tr key={student.id}>
-                                <td>{index + 1}</td>
-                                <td>{student.firstname} {student.lastname}</td>
-                                <td>
-                                    {editingIndex === index ? (
-                                    <select
-                                        value={localRoles[index]}
-                                        onChange={(event) => handleRoleChange(index, event)}
-                                    >
-                                    <option value="">Select Role</option>
-                                        
-                                    {roles.map((role) => (
-                                        <option key={role.id} value={role.roleName}>{role.roleName}</option>
-                                    ))}
-                                    </select>
-                                    ) : (student.role)}
-                                </td>
-                                <td>{student.position}</td>
-                                <td>{formatDate(student.startDate)}</td>
-                                <td>
-                                    {editingIndex === index ? (
-                                        <div className={styles['button-group']}>
-                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
-                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
-                                        </div>
-                                    ) : (
-                                        <div className={styles.iconContainer}>
-                                            <FiEdit onClick={() => handleEditClick(index)} />
-                                            <FiTrash onClick={() => handleDeleteClick(index)} />
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                            ))}
+                            {!collapsedBatches[batch.name] && (
+                                    <table className={styles['intern-table']}>
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Start Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
 
-                            </tbody>
-                        </table>
-                        )}
-                    </div>
+                                        {students.map((student, index) => (
+                                        <tr key={student.id}>
+                                            <td>{index + 1}</td>
+                                            <td>{`${student.firstname} ${student.lastname}`}</td>
+                                            <td>
+                                                {editingIndex === index ? (
+                                                    <select value={localRoles[index]} onChange={event => handleRoleChange(index, event)}>
+                                                        <option value="">Select Role</option>
+                                                        {roles.map(role => (
+                                                            <option key={role.id} value={role.roleName}>{role.roleName}</option>
+                                                        ))}
+                                                    </select>
+                                                ) : (
+                                                    student.role || 'N/A'
+                                                )}
+                                            </td>
+                                            <td>{formatDate(student.startDate)}</td>
+                                            <td>
+                                                {editingIndex === index ? (
+                                                    <div className={styles['button-group']}>
+                                                      <button className={styles.button + ' ' + styles.buttonSave} onClick={() => handleSaveClick(index)}>Save</button>
+                                                      <button className={styles.button + ' ' + styles.buttonCancel} onClick={handleCancelClick}>Cancel</button>
+                                                    </div>
+                                                ) : (
+                                                    <div className={styles.iconContainer}>
+                                                      <FiEdit onClick={() => handleEditClick(index)} />
+                                                      <FiTrash onClick={() => handleDeleteClick(index)} />
+                                                    </div>        
+                                                  )}
+                                                                                        
+                                                {batchEditingIndex === index ? (
+                                                    <div className={styles['button-group']}>
+                                                         <select value={localBatches[index]} onChange={event => handleBatchChange(index, event)}>
+                                                            <option value="">Select Batch</option>
+                                                             {batches.map(batch => (
+                                                                  <option key={batch.id} value={batch.name}>{batch.name}</option>
+                                                              ))}
+                                                          </select>
+                                                          <button className={styles.button + ' ' + styles.buttonSave} onClick={() => handleSaveClick(index)}>Save</button>
+                                                        <button className={styles.button + ' ' + styles.buttonCancel} onClick={handleCancelClick}>Cancel</button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                    className={styles.changeBatchBtn}
+                                                    onClick={() => handleBatchEditClick(index)}
+                                                >
+                                                    Change Batch
+                                                </button>
+                                                )}
+                                           </td>
+                                        </tr>
+                                      ))}
+                             </tbody>
+                         </table>
+                
+                         )}
+                     </div>
                     ))
-                    )}
-                </div>
-                </ProtectedRoute>
-                );
-            }
+                )}
+            </div>
+        </ProtectedRoute>
+    );
+}
