@@ -1,118 +1,234 @@
-body {
+
+.container {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+    padding: 20;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    background-color: #5C4033;
-    padding: 10px 20px;
-    color: white;
-    position: relative;
-}
-
-.header .logo img {
-    width: 50px;
-    height: 50px;
-}
-
-.header h1 {
-    flex-grow: 1;
-    margin: 0;
-    text-align: center;
-}
-
-.hamburger-menu {
-    font-size: 30px;
-    cursor: pointer;
-}
-
-.nav-menu {
-    display: none;
-    flex-direction: column;
-    background-color: #5C4033;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-}
-
-.nav-menu button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-}
-
-.nav-menu button.dashboard,
-.nav-menu button.internpool,
-.nav-menu button.batches,
-.nav-menu button.internrole,
-.nav-menu button.accomplishment,
-.nav-menu button.attendance {
-    background-color: #5C4033;
-}
-
-.batch-container {
+.main {
     padding: 20px;
 }
 
-.batch {
+.info {
     margin-bottom: 20px;
 }
 
-.batch-header {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
+.batchContainer {
+    margin-bottom: 20px;
+}
+
+.batch {
+    margin-bottom: 10px;
+}
+
+.batchHeader {
     width: 100%;
-    text-align: left;
+    padding: 10px;
+    background-color: #418043;
+    color: white;
+    border: 3px solid #000000;
     cursor: pointer;
-    font-size: 18px;
+    text-align: center;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    box-sizing: border-box;
+    margin-top: 4%;
 }
 
-.batch-header .arrow {
-    font-size: 24px;
+.batchHeader h3 {
+    margin: 0;
+    margin-right: 20px;
 }
 
-.batch-table {
-    display: none;
-    margin-top: 10px;
+.collapseIcon {
+    cursor: pointer;
+    width: 50px;
 }
 
-.batch-table table {
+.attendance-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.batch-table th,
-.batch-table td {
-    border: 1px solid #ddd;
+.attendance-table th,
+.attendance-table td {
     padding: 8px;
     text-align: left;
+    border-bottom: 3px solid #000000;
+    border-left: 3px solid #000000;
+    border-right: 3px solid #000000;
 }
 
-.batch-table th {
-    background-color: #4CAF50;
+.attendance-table th {
+    background-color: #418043;
     color: white;
 }
 
-.add-batch {
-    background-color: #4CAF50;
-    color: white;
+.icon-container {
+    display: flex;
+    gap: 10px;
+}
+
+.attendance-table input,
+.attendance-table select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+}
+
+.buttonMarkAbsent {
+    background-color: #4CAF50; 
+    color: #fff;
     border: none;
     padding: 10px 20px;
+    border-radius: 5px; 
     cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
+    font-size: 16px; 
+    font-weight: bold; 
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
+.buttonMarkAbsent:hover {
+    background-color: #449b46;
+}
+
+
+/*Modal Content*/
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modalContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.closeBtn:hover {
+    color: #f44336;
+}
+
+.modalTitle {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.modalSubtitle {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #666;
+}
+
+.sectionTitle {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #444;
+}
+
+.absenceList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.absenceListItem {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.absenceListItemText {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #555;
+}
+
+.inputDate,
+.inputText {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.inputText::placeholder {
+    color: #aaa;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.buttonSave {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.buttonSave:hover {
+    background-color: #45a049;
+}
+
+.buttonCancel {
+    background-color: #f44336;
+    color: white;
+}
+
+.buttonCancel:hover {
+    background-color: #e53935;
+}
+

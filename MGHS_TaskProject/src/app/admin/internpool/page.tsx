@@ -11,6 +11,7 @@ import { FiEdit, FiTrash } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { fetchAllBatches, createBatch, Batch, updateUserBatches } from '@/app/services/BatchService';
 import { Timestamp } from 'firebase/firestore';
+import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 // Function to get the current date
 const getCurrentDate = () => {
@@ -27,12 +28,6 @@ const generateBatchName = (startDate: Date) => {
 };
 
 export default function InternPool() {
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/signin');
-        },
-    });
 
     const [students, setStudents] = useState<UserDetails[]>([]);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -165,6 +160,7 @@ export default function InternPool() {
     };
 
     return (
+        <ProtectedRoute>
         <div className={styles.container}>
             <AdminMenu pageName='Intern Pool Table'/>
             <main className={styles.main}>
@@ -221,5 +217,6 @@ export default function InternPool() {
                 </table>
             </main>
         </div>
+        </ProtectedRoute>
     );
 }

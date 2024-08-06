@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import styles from './details.module.css';
 import { getAuth, updateEmail, sendEmailVerification } from 'firebase/auth';
+import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function InternDetails() {
     const { data: session } = useSession({
@@ -101,6 +102,7 @@ export default function InternDetails() {
     };
 
     return (
+        <InternProtectedRoute>
         <div className={styles.container}>
             <HamburgerMenu internName={internDetails?.firstname} />
             <div className={styles.content}>
@@ -269,5 +271,6 @@ export default function InternDetails() {
                 </div>
             </div>
         </div>
+        </InternProtectedRoute>
     );
 }

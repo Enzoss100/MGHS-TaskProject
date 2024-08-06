@@ -2,18 +2,19 @@ import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, 
 import { db } from '../firebase';
 
 export type Task = {
-    reportDate: Date;
-    reportTime: Date;
-    report: string;
-    userId: string;
+    id?: string;
+    taskName: string;
+    taskDesc: string;
 }
   
-export const fetchTasks = async (userID: string) => {
-  const q = query(collection(db, 'tasks'), 
-  where('userId','==', userID));
+export const fetchTasks = async (): Promise<Task[]> => {
+  const q = query(collection(db, 'tasks'));
 
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+})) as unknown as Task[];
 };
 
 export const createTask = async (task: Task) => {

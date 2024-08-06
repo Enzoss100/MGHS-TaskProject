@@ -1,8 +1,10 @@
 .container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 .main {
@@ -11,62 +13,202 @@
 }
 
 .sidebar {
-    background-color: #2E8B57;
-    color: white;
-    width: 200px;
+    background-color: #5C4033;
     padding: 20px;
+    width: 200px;
+    flex-shrink: 0;
 }
 
-.add-task {
-    background-color: #32CD32;
+.addTask {
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px;
-    width: 100%;
+    padding: 10px 20px;
     cursor: pointer;
+    width: 100%;
     margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-.task-list .task {
-    background-color: transparent;
+.taskList {
+    display: flex;
+    flex-direction: column;
+}
+
+.task {
+    background-color: #5C4033;
     color: white;
     border: none;
-    text-align: left;
-    padding: 10px;
-    width: 100%;
+    padding: 10px 20px;
     cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
     font-size: 16px;
 }
 
-.content {
-    flex: 1;
-    padding: 20px;
-    background-color: #F5F5F5;
+.task:hover {
+    background-color: #4CAF50;
 }
 
-.search-bar input {
-    width: 100%;
+.activeTask {
+    background-color: #4CAF50;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.taskHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.taskActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editIcon,
+.deleteIcon {
+    color: #5C4033;
+    cursor: pointer;
+}
+
+.editIcon:hover,
+.deleteIcon:hover {
+    color: #4CAF50;
+}
+
+.internList {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+.intern {
+    background-color: #d3d3d3;
     padding: 10px;
+    margin-bottom: 10px;
+}
+
+.heading {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 18px;
     margin-bottom: 20px;
 }
 
-.accomplishments {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.noTaskSelected {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 20px;
 }
 
-.accomplishment {
-    background-color: #D3D3D3;
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+}
+
+/*For the Modal*/
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto; 
+}
+  
+.modalContent {
+    background-color: white;
+    margin: 0 auto; 
     padding: 20px;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-height: 90vh; 
+    overflow: auto;
 }
-
-.accomplishment h2 {
-    margin-top: 0;
+  
+.show {
+    display: block;
 }
-
-.accomplishment a {
-    color: #0000EE;
+  
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+  
+.closeBtn:hover, .closeBtn:focus {
+    color: black;
+    text-decoration: none;
+}
+  
+.input {
+    width: 100%; 
+    max-width: 600px; 
+    height: 40px; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+  
+.tasktextarea {
+    width: 90%; 
+    max-width: 600px; 
+    height: 200px; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: auto; 
+}
+  
+.renderBtn {
+    display: inline-block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+  
+.renderBtn.cancel {
+    background-color: gray;
+}
+  
+.renderBtn.cancel:hover {
+    background-color: darkgray;
 }
