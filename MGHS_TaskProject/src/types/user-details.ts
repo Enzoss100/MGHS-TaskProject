@@ -6,12 +6,18 @@ export interface UserDetails {
   schoolemail: string;
   uid: string;
   id?: string;
-  role?:string;
+  role?: string;
   admin: boolean;
-  position?:string;
+  position?: string;
   onboarded: string;
   startDate: Date;
   hoursNeeded: number;
   totalHoursRendered: number;
   batchName: string;
+  absences?: Absence[];
+}
+
+export interface Absence {
+  absenceDate: Date;
+  reason?: string;
 }

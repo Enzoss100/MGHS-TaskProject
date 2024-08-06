@@ -8,6 +8,7 @@ import { fetchUserDetails } from '@/app/services/UserService';
 import { useEffect, useState } from 'react';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import styles from './taskview.module.css';
+import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function TaskView() {
     const session = useSession({
@@ -56,6 +57,7 @@ export default function TaskView() {
     };
 
     return (
+      <InternProtectedRoute>
       <div className={styles.container}>
         <HamburgerMenu internName={internName} />
         <main>
@@ -104,6 +106,7 @@ export default function TaskView() {
           )}
         </main>
       </div>
+      </InternProtectedRoute>
     );
 }
 

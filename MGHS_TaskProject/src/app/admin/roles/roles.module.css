@@ -1,6 +1,7 @@
-/* InternRoles.module.css */
-
 .container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -8,15 +9,17 @@
 
 .main {
     display: flex;
+    flex: 1;
 }
 
 .sidebar {
     background-color: #5C4033;
     padding: 20px;
     width: 200px;
+    flex-shrink: 0;
 }
 
-.sidebar .addRole {
+.addRole {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -24,6 +27,8 @@
     cursor: pointer;
     width: 100%;
     margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .roleList {
@@ -39,9 +44,14 @@
     cursor: pointer;
     text-align: left;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
 .role:hover {
+    background-color: #4CAF50;
+}
+
+.activeRole {
     background-color: #4CAF50;
 }
 
@@ -50,36 +60,155 @@
     padding: 20px;
 }
 
-.addIntern {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+.roleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.roleActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editIcon,
+.deleteIcon {
+    color: #5C4033;
     cursor: pointer;
-    margin-bottom: 20px;
+}
+
+.editIcon:hover,
+.deleteIcon:hover {
+    color: #4CAF50;
 }
 
 .internList {
     background-color: #f4f4f4;
     padding: 20px;
     border: 1px solid #ddd;
+    margin-top: 20px;
 }
 
-.internList .intern {
+.intern {
     background-color: #d3d3d3;
     padding: 10px;
     margin-bottom: 10px;
 }
 
-.body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+.heading {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
-#root {
-    flex-grow: 1;
+.description {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.noRoleSelected {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+}
+
+/*For the Modal*/
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto; 
+}
+  
+.modalContent {
+    background-color: white;
+    margin: 0 auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-height: 90vh; 
+    overflow: auto;
+}
+  
+.show {
+    display: block;
+}
+  
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+  
+.closeBtn:hover, .closeBtn:focus {
+    color: black;
+    text-decoration: none;
+}
+  
+.input {
+    width: 100%; 
+    max-width: 600px; 
+    height: 40px; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+  
+.tasktextarea {
+    width: 90%; 
+    max-width: 600px; 
+    height: 200px; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: auto; 
+}
+  
+.renderBtn {
+    display: inline-block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+  
+.renderBtn.cancel {
+    background-color: gray;
+}
+  
+.renderBtn.cancel:hover {
+    background-color: darkgray;
 }
