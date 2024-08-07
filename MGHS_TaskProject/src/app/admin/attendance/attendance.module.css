@@ -233,3 +233,28 @@
     background-color: #e53935;
 }
 
+/*For Editing*/
+
+.absenceItem {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .absenceActions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .deleteIcon {
+    background-color: #ce3242; /* Red color for delete icon */
+    cursor: pointer;
+    color:white;
+    padding:10px;
+    border:none;
+    border-radius: 5px;
+  }
+  
+  .deleteIcon:hover{
+    background-color: #b52c39;
+  }
