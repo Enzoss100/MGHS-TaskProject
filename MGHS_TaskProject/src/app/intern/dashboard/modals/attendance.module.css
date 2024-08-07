@@ -79,3 +79,18 @@
     cursor: pointer;
     margin-top: 20px;
 }
+
+.attendanceh2 {
+    margin-bottom: 20px;
+}
+
+.attendancetextarea {
+    width: 100%; 
+    max-width: 600px; 
+    height: 200px; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: auto; 
+}

@@ -15,6 +15,7 @@ interface OvertimeModalProps {
 const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState, initialRecord, recordID, onAddSuccess }) => {
     
     const { data: session } = useSession();
+    const [errors, setErrors] = useState<string[]>([]);
     
   const [overtime, setOvertime] = useState<Overtime>({
     otDate: initialRecord?.otDate ? new Date(initialRecord.otDate) : new Date(),
@@ -57,6 +58,9 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setOvertime({ ...overtime, [name]: value });
+
+    // Validate the updated time fields
+    validateTimes();
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -64,9 +68,39 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
     setOvertime({ ...overtime, [name]: value });
   };
 
+  const validateTimes = () => {
+    const errors: string[] = [];
+    const { otStart, otEnd, otBreakStart, otBreakEnd } = overtime;
+
+    if (otStart && otEnd && otStart > otEnd) {
+      errors.push('Time In cannot be greater than Time Out.');
+    }
+    if (otBreakStart && otStart && otBreakStart > otStart) {
+      errors.push('Break Time Start cannot be greater than Time In.');
+    }
+    if (otBreakEnd && otBreakStart && otBreakEnd < otBreakStart) {
+      errors.push('Break Time End cannot be less than Break Time Start.');
+    }
+    if (otBreakStart && otEnd && otBreakStart > otEnd) {
+      errors.push('Break Time Start cannot be greater than Time Out.');
+    }
+    if (otBreakEnd && otEnd && otBreakEnd > otEnd) {
+      errors.push('Break Time End cannot be greater than Time Out.');
+    }
+
+    setErrors(errors);
+    return errors;
+  };
+
   const saveRecord = async (event: React.FormEvent) => {
     event.preventDefault(); 
   
+    const validationErrors = validateTimes();
+    if (validationErrors.length > 0) {
+      toast.error(validationErrors.join(' '));
+      return;
+    }
+
     try {
       const updatedOvertime = {
         ...overtime,

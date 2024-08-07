@@ -4,14 +4,62 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AdminMenu from '@/app/components/AdminMenu';
 import styles from './batch.module.css';
 import { fetchAllBatches, Batch, deleteBatch } from '@/app/services/BatchService';
-import { deleteUser, fetchAllInternDetails, fetchInternsByBatch, updateUserDetails } from '@/app/services/UserService';
+import { fetchAllInternDetails, fetchInternsByBatch, updateUserDetails } from '@/app/services/UserService';
 import BatchModal from './BatchModal';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiDownload, FiEdit, FiTrash } from 'react-icons/fi';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import { toast } from 'sonner';
 import { Timestamp } from 'firebase/firestore';
 import { UserDetails } from '@/types/user-details';
 import { fetchAllRoles, Role } from '@/app/services/RoleService';
+import UserDetailsPopup from './UserDetailsPopup';
+import * as XLSX from 'xlsx'; 
+
+// Function to export user details to Excel
+const exportToExcel = (students: UserDetails[]) => {
+    // Create a worksheet from the data
+    const ws = XLSX.utils.json_to_sheet(students.map(student => ({
+        'First Name': student.firstname || 'N/A',
+        'Last Name': student.lastname || 'N/A',
+        'Personal Email': student.personalemail || 'N/A',
+        'School Email': student.schoolemail || 'N/A',
+        'MGHS Email': student.mghsemail || 'N/A',
+        'Status': student.onboarded || 'N/A',
+        'Start Date': student.startDate ? formatDate(student.startDate) : 'N/A',
+        'Batch Name': student.batchName || 'N/A',
+        'Total Rendered Hours': student.totalHoursRendered || 'N/A',
+        'Total Hours Needed': student.hoursNeeded || 'N/A',
+        'Total Hours Left': student.hoursNeeded - student.totalHoursRendered,
+    })));
+
+    // Create a new workbook and add the worksheet to it
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Interns');
+
+    // Export the workbook to a file
+    XLSX.writeFile(wb, 'interns.xlsx');
+};
+
+const formatDate = (timestamp: { seconds: number; nanoseconds: number } | Date | string) => {
+    let date: Date;
+    if (timestamp instanceof Date) {
+        date = timestamp;
+    } else if (typeof timestamp === 'string') {
+        date = new Date(timestamp);
+    } else if (timestamp && typeof timestamp === 'object' && 'seconds' in timestamp) {
+        date = new Date(timestamp.seconds * 1000);
+    } else {
+        return 'N/A';
+    }
+    if (isNaN(date.getTime())) return 'N/A';
+    
+    // Format date as words
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit'
+    });
+};
 
 export default function BatchPage() {
     const [currentBatch, setCurrentBatch] = useState<Batch | null>(null);
@@ -23,6 +71,8 @@ export default function BatchPage() {
     const [localRoles, setLocalRoles] = useState<{ [key: number]: string }>({});
     const [localBatches, setLocalBatches] = useState<{ [key: number]: string }>({});
     const [batchEditingIndex, setBatchEditingIndex] = useState<number | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null); 
+    const [showPopup, setShowPopup] = useState(false); 
 
     const fetchBatches = useCallback(async () => {
         const batchDetails = await fetchAllBatches();
@@ -192,6 +242,16 @@ export default function BatchPage() {
         setBatchEditingIndex(null);
     };
 
+    const handleUserNameClick = (user: UserDetails) => {
+        setSelectedUser(user);
+        setShowPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        setSelectedUser(null);
+    };
+
     return (
         <ProtectedRoute>
             <div className={styles.container}>
@@ -213,6 +273,9 @@ export default function BatchPage() {
                                     </div>
                         </div>
                     <div className={styles.content}>
+                    <button className={`${styles.button} ${styles['buttonExport']}`} onClick={() => exportToExcel(students)}>
+                        <FiDownload /> Export to Excel
+                    </button>
                         {currentBatch ? (
                             <div>
                                 <div className={styles.roleHeader}>
@@ -236,67 +299,78 @@ export default function BatchPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {students.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} className={styles.noUsersMessage}>No users in this batch yet</td>
-                                        </tr>
-                                    ) : (
-                                        students.map((student, index) => (
-                                            <tr key={student.id}>
-                                                <td>{index + 1}</td>
-                                                <td>{`${student.firstname} ${student.lastname}`}</td>
-                                                <td>
-                                                    {editingIndex === index ? (
-                                                        <select 
-                                                            value={localRoles[index]} 
-                                                            onChange={event => handleRoleChange(index, event)}
-                                                        >
-                                                            <option value="">Select Role</option>
-                                                            {roles.map(role => (
-                                                                <option key={role.id} value={role.roleName}>{role.roleName}</option>
-                                                            ))}
-                                                        </select>
-                                                    ) : (
-                                                        student.role || 'N/A'
-                                                    )}
-                                                </td>
-                                                <td>{formatDate(student.startDate!)}</td>
-                                                <td>
-                                                    {editingIndex === index ? (
-                                                        <div className={styles['button-group']}>
-                                                            <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
-                                                            <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
-                                                        </div>
-                                                    ) : (
-                                                        <div className={styles.iconContainer}>
-                                                            <FiEdit onClick={() => handleEditClick(index)} />
-                                                        </div>        
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    {batchEditingIndex === index ? (
-                                                        <div className={styles['button-group']}>
-                                                            <select className={styles.batchSelect} value={localBatches[index]} onChange={event => handleBatchChange(index, event)}>
-                                                                {batches.map(batch => (
-                                                                    <option key={batch.id} value={batch.name}>{batch.name}</option>
-                                                                ))}
-                                                            </select>
-                                                            <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
-                                                            <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
-                                                        </div>
-                                                    ) : (
-                                                        <button
-                                                            className={styles.changeBatchBtn}
-                                                            onClick={() => handleBatchEditClick(index)}
-                                                        >
-                                                            Change Batch
-                                                        </button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
+    {students.length === 0 ? (
+        <tr>
+            <td colSpan={6} className={styles.noUsersMessage}>No users in this batch yet</td>
+        </tr>
+    ) : (
+        students.map((student, index) => {
+            // Determine the row class based on the student's status and hours left
+            const rowClass = student.onboarded === 'offboarding' ? styles.offboarding
+                : student.onboarded === 'offboarded' ? styles.offboarded
+                : student.hoursNeeded - student.totalHoursRendered <= 40 ? styles.lessHours
+                : '';
+
+                    return (
+                        <tr key={student.id} className={rowClass}>
+                            <td>{index + 1}</td>
+                            <td className={styles.nameClick} onClick={() => handleUserNameClick(student)}>
+                                {student.firstname} {student.lastname}
+                            </td>
+                            <td>
+                                {editingIndex === index ? (
+                                    <select 
+                                        value={localRoles[index]} 
+                                        onChange={event => handleRoleChange(index, event)}
+                                    >
+                                        <option value="">Select Role</option>
+                                        {roles.map(role => (
+                                            <option key={role.id} value={role.roleName}>{role.roleName}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    student.role || 'N/A'
+                                )}
+                            </td>
+                            <td>{formatDate(student.startDate!)}</td>
+                            <td>
+                                {editingIndex === index ? (
+                                    <div className={styles['button-group']}>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <div className={styles.iconContainer}>
+                                        <FiEdit onClick={() => handleEditClick(index)} />
+                                    </div>        
+                                )}
+                            </td>
+                            <td>
+                                {batchEditingIndex === index ? (
+                                    <div className={styles['button-group']}>
+                                        <select className={styles.batchSelect} value={localBatches[index]} onChange={event => handleBatchChange(index, event)}>
+                                            {batches.map(batch => (
+                                                <option key={batch.id} value={batch.name}>{batch.name}</option>
+                                            ))}
+                                        </select>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        className={styles.changeBatchBtn}
+                                        onClick={() => handleBatchEditClick(index)}
+                                    >
+                                        Change Batch
+                                    </button>
+                                )}
+                            </td>
+                        </tr>
+                                );
+                        })
+                    )}
+                    </tbody>
+                                
                                 </table>
                             </div>
                         ) : (
@@ -309,6 +383,9 @@ export default function BatchPage() {
                             batchID={currentBatch?.id || null} 
                             setModalState={handleModalClose} />}
                 </main>
+                {showPopup && selectedUser && (
+                <UserDetailsPopup user={selectedUser} onClose={handleClosePopup} />
+            )}
             </div>
         </ProtectedRoute>
     );
