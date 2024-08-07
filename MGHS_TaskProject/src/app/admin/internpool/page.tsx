@@ -191,10 +191,11 @@ export default function InternPool() {
                                             <option className={styles['status-pending']} value="pending">Pending</option>
                                             <option className={styles['status-approved']} value="approved">Approved</option>
                                             <option className={styles['status-backout']} value="backout">Backout</option>
+                                            <option className={styles['status-offboarded']} value="offboarded">Offboarded</option>
                                         </select>
                                     ) : (
                                         <span className={`${styles['status-select']} ${styles[localStatuses[index] || 'pending']}`}>
-                                            {localStatuses[index] === 'approved' ? 'Approved' : localStatuses[index] === 'backout' ? 'Backout' : 'Pending'}
+                                            {localStatuses[index] === 'approved' ? 'Approved' : localStatuses[index] === 'backout' ? 'Backout' : localStatuses[index] === 'offboarded' ? 'Offboarded' : 'Pending'}
                                         </span>
                                     )}
                                 </td>
@@ -205,9 +206,9 @@ export default function InternPool() {
                                             <button className={`${styles.button} ${styles['buttonCancel']}`} onClick={handleCancelClick}>Cancel</button>
                                         </div>
                                     ) : (
-                                        <div className={styles['icon-container']}>
-                                            <FiEdit className={styles['edit-icon']} onClick={() => handleEditClick(index)} />
-                                            <FiTrash className={styles['delete-icon']} onClick={() => handleDeleteClick(index)} />
+                                        <div className={styles.iconContainer}>
+                                            <FiEdit onClick={() => handleEditClick(index)} />
+                                            <FiTrash onClick={() => handleDeleteClick(index)} />
                                         </div>
                                     )}
                                 </td>

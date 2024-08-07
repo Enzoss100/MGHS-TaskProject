@@ -6,14 +6,16 @@ import styles from './accomplish.module.css';
 import { fetchTasks, Task, deleteTask } from '@/app/services/TaskService';
 import TaskModal from './TaskModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { fetchAccompByTask } from '@/app/services/AccomplishmentService';
+import { Accomplishment, fetchAllAccomplishments } from '@/app/services/AccomplishmentService';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 export default function InternTasks() {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [modalStat, setModalState] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [accomplishments, setAccomplishments] = useState<{ [key: string]: string[] }>({});
+  const [accomplishments, setAccomplishments] = useState<Accomplishment[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterDate, setFilterDate] = useState('');
 
   const getTasks = useCallback(async () => {
     const tasks = await fetchTasks();
@@ -35,8 +37,9 @@ export default function InternTasks() {
   };
 
   const showAccomplishments = async (task: Task) => {
-    const internAccomplishments = await fetchAccompByTask(task.taskName);
-    setAccomplishments((prev) => ({ ...prev, [task.taskName]: internAccomplishments.map(accomp => accomp.id) }));
+    const allAccomplishments = await fetchAllAccomplishments();
+    const filteredAccomplishments = allAccomplishments.filter(accomp => accomp.taskID === task.id);
+    setAccomplishments(filteredAccomplishments);
     setCurrentTask(task);
   };
 
@@ -53,6 +56,14 @@ export default function InternTasks() {
     }
   };
 
+  const filteredAccomplishments = accomplishments.filter(accomplishment =>
+    ( (accomplishment.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (accomplishment.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (accomplishment.userName || '').toLowerCase().includes(searchQuery.toLowerCase()) ) &&
+    (!filterDate || new Date(accomplishment.accDate).toDateString() === new Date(filterDate).toDateString())
+  );
+  
+
   return (
     <ProtectedRoute>
       <div className={styles.container}>
@@ -63,8 +74,8 @@ export default function InternTasks() {
             <div className={styles.taskList}>
               {tasks.map((task) => (
                 <button
-                  key={task.taskName}
-                  className={`${styles.task} ${currentTask?.taskName === task.taskName ? styles.activeTask : ''}`}
+                  key={task.id}
+                  className={`${styles.task} ${currentTask?.id === task.id ? styles.activeTask : ''}`}
                   onClick={() => showAccomplishments(task)}
                 >
                   {task.taskName}
@@ -83,13 +94,42 @@ export default function InternTasks() {
                   </div>
                 </div>
                 <p className={styles.description}>{currentTask.taskDesc}</p>
-                <div className={styles.internList}>
-                  {accomplishments[currentTask.taskName] && accomplishments[currentTask.taskName].length > 0 ? (
-                    accomplishments[currentTask.taskName].map((intern, index) => (
-                      <div key={index} className={styles.intern}>{intern}</div>
+
+                <h4 className={styles.heading}>Accomplishments</h4>
+                <div className={styles.searchAndFilter}>
+                  <input
+                    type="text"
+                    placeholder="Search Accomplishments..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={styles.searchBar}
+                  />
+                  <input
+                    type="date"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className={styles.dateInput}
+                  />
+                </div>
+                <div>
+                  {filteredAccomplishments.length > 0 ? (
+                    filteredAccomplishments.map(accomplishment => (
+                      <div key={accomplishment.id} className={styles.intern}>
+                        <div>
+                          <span className={styles.userName}>{accomplishment.userName}</span>
+                        </div>
+                        <div>
+                          <h4>{accomplishment.title}</h4>
+                          <p className={styles.description}>{accomplishment.description}</p>
+                          {accomplishment.link && <a href={accomplishment.link} target="_blank" rel="noopener noreferrer">View Link</a>}
+                        </div>
+                        <div>
+                          <span className={styles.accDate}>{accomplishment.accDate.toDateString()}</span>
+                        </div>
+                      </div>
                     ))
                   ) : (
-                    <div>No Interns Have Submitted Accomplishments for this Task</div>
+                    <div>No Accomplishments Found for this Task</div>
                   )}
                 </div>
               </>

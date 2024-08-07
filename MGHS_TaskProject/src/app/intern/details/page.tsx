@@ -4,12 +4,13 @@ import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
-import { fetchUserDetails, updateUserDetails, fetchAllInternDetails, updateFirebaseEmail } from '@/app/services/UserService';
+import { fetchUserDetails, updateUserDetails, fetchAllInternDetails, updateFirebaseEmail, fetchInternsByBatch } from '@/app/services/UserService';
 import { useEffect, useState } from 'react';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import styles from './details.module.css';
 import { getAuth, updateEmail, sendEmailVerification } from 'firebase/auth';
 import InternProtectedRoute from '@/app/components/InternProtectedRoute';
+import { Timestamp } from 'firebase/firestore';
 
 export default function InternDetails() {
     const { data: session } = useSession({
@@ -22,6 +23,8 @@ export default function InternDetails() {
     const [internDetails, setInternDetails] = useState<UserDetails | null>(null);
     const [allInterns, setAllInterns] = useState<UserDetails[]>([]);
     const [isEditing, setIsEditing] = useState(false);
+    const [isEditingStartDate, setIsEditingStartDate] = useState(false);
+    const [hoursLeft, setHoursLeft] = useState('');
 
     useEffect(() => {
         const getInternDetails = async () => {
@@ -38,6 +41,14 @@ export default function InternDetails() {
                 if (userDetails.length > 0) {
                     const user = userDetails[0] as UserDetails;
                     setInternDetails(user);
+
+                    // Fetch interns in the same batch
+                    const interns = await fetchInternsByBatch(user.batchName);
+                    setAllInterns(interns);
+                    
+                    const hours = user.hoursNeeded - user.totalHoursRendered;
+                    setHoursLeft(hours.toString());
+                    
                 } else {
                     toast.error('User not found');
                 }
@@ -47,18 +58,7 @@ export default function InternDetails() {
             }
         };
 
-        const getAllInternDetails = async () => {
-            try {
-                const interns = await fetchAllInternDetails();
-                setAllInterns(interns);
-            } catch (error) {
-                toast.error('An error occurred while fetching all intern details');
-                console.error(error);
-            }
-        };
-
         getInternDetails();
-        getAllInternDetails();
     }, [session]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,11 +70,24 @@ export default function InternDetails() {
         setIsEditing(!isEditing);
     };
 
+    const handleStartDateEditToggle = () => {
+        setIsEditingStartDate(!isEditingStartDate);
+    };    
+
     const handleSave = async () => {
         if (internDetails) {
+            // Convert startDate from string to Date object, default to null if invalid
+            const startDate = isEditingStartDate && internDetails.startDate ? new Date(internDetails.startDate) : undefined;
+    
+            // Update the internDetails with the Date object
+            const updatedDetails: UserDetails = {
+                ...internDetails,
+                startDate: startDate, 
+            };
+    
             try {
-                await updateUserDetails(internDetails.id as string, internDetails);
-                
+                await updateUserDetails(internDetails.id as string, updatedDetails);
+    
                 if (internDetails.mghsemail !== session?.user?.email) {
                     await updateFirebaseEmail(internDetails.mghsemail);
                     const auth = getAuth();
@@ -83,18 +96,23 @@ export default function InternDetails() {
                 } else {
                     toast.success('Details updated successfully');
                 }
-                
+    
                 setIsEditing(false);
+                setIsEditingStartDate(false); // Ensure start date editing is turned off
             } catch (error) {
                 toast.error('Failed to update details');
                 console.error(error);
             }
         }
     };
+    
 
-    const formatDate = (date: Date | null) => {
+    const formatDate = (date: Date | Timestamp | null) => {
         if (!date) return '';
-        const d = new Date(date);
+        
+        // Convert Firebase Timestamp to Date if needed
+        const d = date instanceof Timestamp ? date.toDate() : new Date(date);
+    
         const year = d.getFullYear();
         const month = ('0' + (d.getMonth() + 1)).slice(-2);
         const day = ('0' + d.getDate()).slice(-2);
@@ -108,6 +126,29 @@ export default function InternDetails() {
             <div className={styles.content}>
                 <div className={styles.leftContainer}>
                     <form className={styles.detailForm} method='POST'>
+                    <div className={styles.infoItem}>
+                            <label htmlFor="start-date" className={styles.detailLabel}>Start Date:</label>
+                            <input 
+                                type="date" 
+                                id="start-date" 
+                                name="startDate" 
+                                className={styles.detailInput} 
+                                value={formatDate(internDetails?.startDate || null)}
+                                onChange={handleInputChange}
+                                readOnly={!isEditingStartDate}
+                                required 
+                            />
+                            <div className={styles.buttonContainer}>
+                            {isEditingStartDate ? (
+                                <>
+                                    <button type="button" className={styles.editButton} onClick={handleSave}>Save</button>
+                                    <button type="button" className={styles.editButton} onClick={handleStartDateEditToggle}>Cancel</button>
+                                </>
+                            ) : (
+                                <button type="button" className={styles.editButton} onClick={handleStartDateEditToggle}>Edit Start Date</button>
+                            )}
+                            </div>
+                        </div>
                         <label htmlFor="mghs-email" className={styles.detailLabel}>MGHS Email:</label>
                         <input 
                             type="email" 
@@ -153,8 +194,9 @@ export default function InternDetails() {
 
                 <div className={styles.notification}>
                     <p>Note:</p>
-                    <p>Your Position and Role fields can only be edited by an admin.</p>
+                    <p>Your Role field can only be edited by an admin.</p>
                     <p>Changing your MGHS Email will change your email for login.</p>
+                    <p>Please edit your Hours Needed to Render for this internship</p>
                 </div>
 
                 </div>
@@ -162,7 +204,7 @@ export default function InternDetails() {
                 <div className={styles.rightContainer}>
                     <form className={styles.detailForm} method='POST'>
                         <div className={styles.infoItem}>
-                            <label htmlFor="intern-name" className={styles.detailLabel}>Intern Name:</label>
+                            <label htmlFor="intern-name" className={styles.detailLabel}>Intern First Name:</label>
                             <input 
                                 type="text" 
                                 id="intern-name" 
@@ -173,6 +215,7 @@ export default function InternDetails() {
                                 readOnly={!isEditing}
                                 placeholder="First Name" 
                             />
+                            <label htmlFor="intern-name" className={styles.detailLabel}>Intern Last Name:</label>
                             <input 
                                 type="text" 
                                 id="intern-lastname" 
@@ -185,19 +228,6 @@ export default function InternDetails() {
                             />
                         </div>
                         <div className={styles.infoItem}>
-                            <label htmlFor="role" className={styles.detailLabel}>Role:</label>
-                            <input 
-                                type="text"
-                                id="role" 
-                                name="role" 
-                                className={styles.detailInput} 
-                                value={internDetails?.role || ''}
-                                onChange={handleInputChange}
-                                readOnly={true}
-                                placeholder="Role" 
-                            />
-                        </div>
-                        <div className={styles.infoItem}>
                             <label htmlFor="position" className={styles.detailLabel}>Position:</label>
                             <input 
                                 type="text" 
@@ -206,21 +236,8 @@ export default function InternDetails() {
                                 className={styles.detailInput}
                                 value={internDetails?.position || ''}
                                 onChange={handleInputChange}
-                                readOnly={true}
-                                placeholder="Position" />
-                        </div>
-                        <div className={styles.infoItem}>
-                            <label htmlFor="start-date" className={styles.detailLabel}>Start Date:</label>
-                            <input 
-                                type="date" 
-                                id="start-date" 
-                                name="startDate" 
-                                className={styles.detailInput} 
-                                value={formatDate(internDetails?.startDate || null)}
-                                onChange={handleInputChange}
                                 readOnly={!isEditing}
-                                required 
-                            />
+                                placeholder="Position" />
                         </div>
                         <div className={styles.infoItem}>
                             <label htmlFor="hoursNeeded" className={styles.detailLabel}>Hours Needed:</label>
@@ -232,7 +249,13 @@ export default function InternDetails() {
                                 value={internDetails?.hoursNeeded || ''}
                                 onChange={handleInputChange}
                                 readOnly={!isEditing}
-                                placeholder="Position" />
+                                placeholder="Place your Hours Needed to Render here..." />
+                        </div>
+                        <div className={styles.infoItem}>
+                            <label htmlFor="role" className={styles.detailLabel}>Role: {internDetails?.role || ''}</label>
+                        </div>
+                        <div className={styles.infoItem}>
+                            <label htmlFor="hoursNeeded" className={styles.detailLabel}>Hours Left: {hoursLeft}</label>
                         </div>
                         <div className={styles.buttonContainer}>
                             {isEditing ? (
@@ -245,6 +268,7 @@ export default function InternDetails() {
                             )}
                         </div>
                     </form>
+
                     <table className={styles.batchTable}>
                         <thead>
                             <tr>

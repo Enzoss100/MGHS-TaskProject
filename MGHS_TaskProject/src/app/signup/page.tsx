@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import logo from "./../assets/logo.jpg";
 import styles from './signup.module.css';
+import { fetchUserByEmail } from '../services/AllUsersService';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -33,6 +34,13 @@ export default function Signup() {
 
     if (!newUser.firstname || !newUser.lastname || !email || !newUser.personalemail || !newUser.schoolemail || !password || !passwordAgain) {
       toast.error('All fields are required');
+      return;
+    }
+
+    // Check if email already exists
+    const existingUser = await fetchUserByEmail(email);
+    if (existingUser) {
+      toast.error('An account with this email already exists');
       return;
     }
 

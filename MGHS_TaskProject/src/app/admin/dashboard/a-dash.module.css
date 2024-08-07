@@ -1,91 +1,66 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+.pageBackground {
+    background-color: #418043; 
+    min-height: 100vh; 
 }
 
-.header {
+.mainContainer {
+    margin-top: 80px; 
+    padding: 20px;
+    width: 100%;
+    height: calc(100vh - 80px); 
+    overflow-y: auto; 
+    box-sizing: border-box; 
+}
+
+/* Dashboard section styling */
+.dashboardSection {
+    width: 100%;
+}
+
+/* Dashboard container */
+.dashboardContainer {
     display: flex;
-    align-items: center;
-    background-color: #5C4033;
-    padding: 10px 20px;
-    color: white;
-    position: relative;
-}
-
-.header .logo img {
-    width: 50px;
-    height: 50px;
-}
-
-.header h1 {
-    flex-grow: 1;
-    margin: 0;
-    text-align: center;
-}
-
-.hamburger-menu {
-    font-size: 30px;
-    cursor: pointer;
-}
-
-.nav-menu {
-    display: none;
-    flex-direction: column;
-    background-color: #5C4033;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-}
-
-.nav-menu button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-}
-
-.nav-menu button.dashboard,
-.nav-menu button.internpool,
-.nav-menu button.batches,
-.nav-menu button.internrole,
-.nav-menu button.accomplishment,
-.nav-menu button.attendance {
-    background-color: #5C4033;
-}
-
-.dashboard-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    flex-wrap: wrap;
     gap: 20px;
-    padding: 20px;
-    margin-top: 20px;
 }
 
-.dashboard-card {
-    background-color: #4CAF50;
-    color: white;
+/* Dashboard card styling */
+.dashboardCard {
+    background: white;
+    color: black;
     padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border: none;
-    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 200px;
 }
 
-.dashboard-card h2,
-.dashboard-card p {
+.dashboardCard h2 {
     margin: 0;
+    font-size: 20px;
 }
 
+.cardDescription {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Responsive styles for smaller screens */
 @media (max-width: 768px) {
-    .nav-menu {
-        position: relative;
-        top: 0;
+    .mainContainer {
+        margin-top: 60px; /* Adjust top margin for smaller screens if needed */
+    }
+
+    .dashboardContainer {
+        padding: 10px;
+        gap: 10px; /* Adjusted gap */
+    }
+
+    .dashboardCard h2 {
+        font-size: 1rem; /* Adjusted size */
+    }
+
+    .dashboardCard p {
+        font-size: 1.25rem; /* Adjusted size */
     }
 }

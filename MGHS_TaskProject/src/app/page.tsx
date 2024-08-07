@@ -14,7 +14,6 @@ export default function Home() {
 
   useEffect(() => {
     if (status === 'loading') {
-      // Optionally, you can handle loading state here
       return;
     }
 

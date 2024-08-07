@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Absence, UserDetails } from '@/types/user-details';
 import styles from './attendance.module.css';
 import { Timestamp } from 'firebase/firestore'; // Import Timestamp if you're using Firebase
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 interface AbsenceModalProps {
   student: UserDetails;
@@ -31,6 +32,19 @@ const AbsenceModal: React.FC<AbsenceModalProps> = ({ student, onClose, onSave })
     onClose(); // Close the modal after saving
   };
 
+  const handleDelete = (index: number) => {
+    const updatedAbsences = [...(student.absences || [])];
+    updatedAbsences.splice(index, 1);
+
+    const updatedStudent: UserDetails = {
+      ...student,
+      absences: updatedAbsences,
+    };
+
+    onSave(updatedStudent);
+  };
+
+
   return (
     <div className={`${styles.modal} ${styles.show}`}>
       <div className={styles.modalContent}>
@@ -40,9 +54,10 @@ const AbsenceModal: React.FC<AbsenceModalProps> = ({ student, onClose, onSave })
         {student.absences && student.absences.length > 0 ? (
           <ul>
             {student.absences.map((absence, index) => (
-              <li key={index}>
+              <li key={index} className={styles.absenceItem}>
                 <p>Date: {absence.absenceDate instanceof Timestamp ? absence.absenceDate.toDate().toDateString() : new Date(absence.absenceDate).toDateString()}</p>
                 <p>Reason: {absence.reason || 'No reason provided'}</p>
+                  <button onClick={() => handleDelete(index)} className={styles.deleteIcon} >Delete Absence</button>
               </li>
             ))}
           </ul>
