@@ -280,3 +280,8 @@
     width: 100%; /* Full width on smaller screens */
     max-width: 150px; /* Max width for larger screens */
 }
+
+.noUsersMessage {
+    text-align: center;
+    color: #888; /* Adjust color as needed */
+}

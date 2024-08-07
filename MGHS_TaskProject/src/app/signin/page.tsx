@@ -46,6 +46,7 @@ export default function Signin() {
 
     } catch (error:any) {
       console.error('Sign in error:', error.message);
+      toast.error('Sign in error. Please try again.');
     }
   };
 

@@ -99,31 +99,37 @@ export default function AdminAttendance() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {students.filter(student => student.batchName === batch.name).map((student, index) => (
-                                            <tr key={student.id}>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    {`${student.firstname} ${student.lastname}`}
-                                                </td>
-                                                <td>
-                                                    {student.absences ? student.absences.length : 0}
-                                                </td>
-                                                <td>
-                                                    {student.totalHoursRendered ?? 'None'}
-                                                </td>
-                                                <td>
-                                                    {student.hoursNeeded ?? 'None'}
-                                                </td>
-                                                <td>
-                                                    {student.hoursNeeded && student.totalHoursRendered
-                                                        ? student.hoursNeeded - student.totalHoursRendered
-                                                        : 'None'}
-                                                </td>
-                                                <td>
-                                                    <button onClick={() => handleMarkAbsent(student)} className={styles.buttonMarkAbsent}>Mark Absent</button>
-                                                </td>
+                                        {students.filter(student => student.batchName === batch.name).length === 0 ? (
+                                            <tr>
+                                                <td colSpan={7} className={styles.noUsersMessage}>No users in this batch yet</td>
                                             </tr>
-                                        ))}
+                                        ) : (
+                                            students.filter(student => student.batchName === batch.name).map((student, index) => (
+                                                <tr key={student.id}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {`${student.firstname} ${student.lastname}`}
+                                                    </td>
+                                                    <td>
+                                                        {student.absences ? student.absences.length : 0}
+                                                    </td>
+                                                    <td>
+                                                        {student.totalHoursRendered ?? 'None'}
+                                                    </td>
+                                                    <td>
+                                                        {student.hoursNeeded ?? 'None'}
+                                                    </td>
+                                                    <td>
+                                                        {student.hoursNeeded && student.totalHoursRendered
+                                                            ? student.hoursNeeded - student.totalHoursRendered
+                                                            : 'None'}
+                                                    </td>
+                                                    <td>
+                                                        <button onClick={() => handleMarkAbsent(student)} className={styles.buttonMarkAbsent}>Mark Absent</button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
                             )}

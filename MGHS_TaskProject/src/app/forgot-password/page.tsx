@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { FaArrowLeft } from 'react-icons/fa';  // Import the React icon
 import styles from './forgotpass.module.css';
+import { fetchUserByEmail } from '../services/AllUsersService';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,14 @@ export default function ForgotPassword() {
 
   const resetEmail = async () => {
     try {
+      // Check if the email exists in Firebase
+      const user = await fetchUserByEmail(email);
+      if (!user) {
+        toast.error('Email does not exist');
+        return;
+      }
+
+      // Send password reset email
       await sendPasswordResetEmail(auth, email);
       toast.success('Password Reset Sent To Your Email');
     } catch (error) {
