@@ -236,62 +236,67 @@ export default function BatchPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {students.map((student, index) => (
+                                    {students.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className={styles.noUsersMessage}>No users in this batch yet</td>
+                                        </tr>
+                                    ) : (
+                                        students.map((student, index) => (
                                             <tr key={student.id}>
                                                 <td>{index + 1}</td>
                                                 <td>{`${student.firstname} ${student.lastname}`}</td>
                                                 <td>
-                                                {editingIndex === index ? (
-                                                    <select 
-                                                    value={localRoles[index]} 
-                                                    onChange={event => handleRoleChange(index, event)}
-                                                    >
-                                                        <option value="">Select Role</option>
-                                                        {roles.map(role => (
-                                                            <option key={role.id} value={role.roleName}>{role.roleName}</option>
-                                                        ))}
-                                                    </select>
-                                                 ) : (
-                                                    student.role || 'N/A'
+                                                    {editingIndex === index ? (
+                                                        <select 
+                                                            value={localRoles[index]} 
+                                                            onChange={event => handleRoleChange(index, event)}
+                                                        >
+                                                            <option value="">Select Role</option>
+                                                            {roles.map(role => (
+                                                                <option key={role.id} value={role.roleName}>{role.roleName}</option>
+                                                            ))}
+                                                        </select>
+                                                    ) : (
+                                                        student.role || 'N/A'
                                                     )}
                                                 </td>
                                                 <td>{formatDate(student.startDate!)}</td>
                                                 <td>
-                                                {editingIndex === index ? (
-                                                    <div className={styles['button-group']}>
-                                                      <button className={styles.button + ' ' + styles.buttonSave} onClick={() => handleSaveClick(index)}>Save</button>
-                                                      <button className={styles.button + ' ' + styles.buttonCancel} onClick={handleCancelClick}>Cancel</button>
-                                                    </div>
+                                                    {editingIndex === index ? (
+                                                        <div className={styles['button-group']}>
+                                                            <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                                            <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
+                                                        </div>
                                                     ) : (
-                                                    <div className={styles.iconContainer}>
-                                                      <FiEdit onClick={() => handleEditClick(index)} />
-                                                    </div>        
-                                                  )}
+                                                        <div className={styles.iconContainer}>
+                                                            <FiEdit onClick={() => handleEditClick(index)} />
+                                                        </div>        
+                                                    )}
                                                 </td>
-                                                <td>                                        
+                                                <td>
                                                     {batchEditingIndex === index ? (
                                                         <div className={styles['button-group']}>
                                                             <select className={styles.batchSelect} value={localBatches[index]} onChange={event => handleBatchChange(index, event)}>
-                                                               
                                                                 {batches.map(batch => (
                                                                     <option key={batch.id} value={batch.name}>{batch.name}</option>
                                                                 ))}
                                                             </select>
-                                                            <button className={styles.button + ' ' + styles.buttonSave} onClick={() => handleSaveClick(index)}>Save</button>
-                                                            <button className={styles.button + ' ' + styles.buttonCancel} onClick={handleCancelClick}>Cancel</button>
+                                                            <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                                            <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
                                                         </div>
                                                     ) : (
                                                         <button
-                                                        className={styles.changeBatchBtn}
-                                                        onClick={() => handleBatchEditClick(index)}
-                                                    >
-                                                        Change Batch
-                                                    </button>
+                                                            className={styles.changeBatchBtn}
+                                                            onClick={() => handleBatchEditClick(index)}
+                                                        >
+                                                            Change Batch
+                                                        </button>
                                                     )}
                                                 </td>
                                             </tr>
-                                        ))}
-                                    </tbody>
+                                        ))
+                                    )}
+                                </tbody>
                                 </table>
                             </div>
                         ) : (
