@@ -1,47 +1,91 @@
 
 .container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-y: auto;
 }
 
 .main {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    background-color: #5C4033;
+    padding: 20px;
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.addRole {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.roleList {
+    display: flex;
+    flex-direction: column;
+}
+
+.role {
+    background-color: #5C4033;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.role:hover {
+    background-color: #4CAF50;
+}
+
+.activeRole {
+    background-color: #4CAF50;
+}
+
+.content {
+    flex-grow: 1;
     padding: 20px;
 }
 
-.info {
-    margin-bottom: 20px;
+.roleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.batchContainer {
-    margin-bottom: 20px;
+.roleActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editIcon,
+.deleteIcon {
+    color: #5C4033;
+    cursor: pointer;
+}
+
+.editIcon:hover,
+.deleteIcon:hover {
+    color: #4CAF50;
 }
 
 .batch {
     margin-bottom: 10px;
-}
-
-.batchHeader {
-    width: 100%;
-    padding: 10px;
-    background-color: #418043;
-    color: white;
-    border: 3px solid #000000;
-    cursor: pointer;
-    text-align: center;
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-}
-
-.batchHeader h3 {
-    margin: 0;
-    margin-right: 20px;
-}
-
-.collapseIcon {
-    cursor: pointer;
-    width: 50px;
 }
 
 .intern-table {
@@ -53,14 +97,13 @@
 .intern-table td {
     padding: 8px;
     text-align: left;
-    border-bottom: 3px solid #000000;
-    border-left: 3px solid #000000;
-    border-right: 3px solid #000000;
+    border: 3px solid #000000;
 }
 
 .intern-table th {
     background-color: #418043;
     color: white;
+    text-align: center;
 }
 
 .icon-container {
@@ -231,4 +274,9 @@
 .changeBatchBtn:focus {
     outline: none; /* Remove default focus outline */
     box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5); /* Add a focus shadow for accessibility */
+}
+
+.batchSelect {
+    width: 100%; /* Full width on smaller screens */
+    max-width: 150px; /* Max width for larger screens */
 }

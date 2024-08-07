@@ -5,13 +5,12 @@ import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 
 interface BatchModalProps {
-  isVisible: boolean;
   setModalState: (state: boolean) => void;
   initialBatch?: Batch;
   batchID?: string | null;
 }
 
-const BatchModal: React.FC<BatchModalProps> = ({ isVisible, setModalState, initialBatch, batchID }) => {
+const BatchModal: React.FC<BatchModalProps> = ({ setModalState, initialBatch, batchID }) => {
   const [batch, setBatch] = useState<Batch>({
     name: initialBatch?.name || '',
     startDate: initialBatch?.startDate ? new Date(initialBatch.startDate) : new Date(),
@@ -73,9 +72,13 @@ const BatchModal: React.FC<BatchModalProps> = ({ isVisible, setModalState, initi
   };
 
   return (
-    <div className={`${styles.modal} ${isVisible ? styles.show : ''}`}>
+    <div className={`${styles.modal} ${styles.show}`}>
       <div className={styles.modalContent}>
-        <span className={styles.closeBtn} onClick={() => setModalState(false)}>&times;</span>
+        <span className={styles.closeBtn} 
+          onClick={() => setModalState(false)}
+          >
+            &times;
+        </span>
         <h2 className={styles.modalTitle}>{batchID ? 'Edit Batch' : 'Create New Batch'}</h2>
         <form onSubmit={saveBatch}>
           <div className={styles.formGroup}>
