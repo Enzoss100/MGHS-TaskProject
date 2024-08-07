@@ -2,6 +2,7 @@
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-y: auto; 
 }
 
 .header {
@@ -91,6 +92,11 @@ table.intern-table th {
     color: white;
 }
 
+.status-offboarded {
+    background-color: rgb(52, 51, 51);
+    color: white;
+}
+
 table.intern-table input {
     width: 100%;
     padding: 5px;
@@ -111,9 +117,15 @@ table.intern-table select {
     align-items: center;
 }
 
-.icon-container svg {
+.iconContainer svg {
     cursor: pointer;
-    font-size: 20px; /* Adjust icon size as needed */
+    transition: background-color 0.3s ease;
+    padding: 5px;
+    font-size: 20px;
+}
+
+.iconContainer svg:hover {
+    background-color: #e0e0e0;
 }
 
 /* Button styles */
@@ -132,11 +144,21 @@ table.intern-table select {
 }
 
 .buttonSave {
-    background-color: green;
+    background-color: #4CAF50;
+    color: white;
 }
 
+.buttonSave:hover {
+    background-color: #3f9043;
+}   
+
 .buttonCancel {
-    background-color: red;
+    background-color: #f44336;
+    color: white;
+}
+
+.buttonCancel:hover {
+    background-color: #e53935;
 }
 
 @media (max-width: 768px) {

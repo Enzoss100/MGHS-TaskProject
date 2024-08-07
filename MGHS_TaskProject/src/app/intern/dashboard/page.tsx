@@ -85,7 +85,6 @@ export default function Dashboard() {
               totalHoursRendered: totalHours, // update the field as per your structure
           };
           await updateUserDetails(user.id!, updatedUserDetails);
-          toast.success('User details updated with total rendered hours');
         }
       } catch (error) {
         toast.error('An error occurred while fetching attendance records or updating user details');

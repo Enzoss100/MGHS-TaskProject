@@ -1,136 +1,265 @@
-/* taskview.module.css */
 .container {
-  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto; 
+}
+
+.main {
+  display: flex;
+  flex: 1;
 }
 
 .sidebar {
-  width: 200px;
-  background-color: #418043;
-  color: white;
-  position: fixed;
-  top: 74px;
-  bottom: 0;
+  background-color: #5c4033;
   padding: 20px;
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center-align items in the sidebar */
 }
 
 .sidebarTitle {
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: center;
+  color: white;
+  margin: 0;
+  text-align: center; /* Center-align title text */
 }
 
 .divider {
-  border: 1px solid black;
+  border: 0;
+  border-top: 1px solid #ddd;
   margin: 10px 0;
+  width: 100%; /* Ensure divider spans full width */
 }
 
-.sidebarLink {
+.task {
+  background-color: #5c4033;
   color: white;
-  text-decoration: underline;
-  display: block;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: center; /* Center-align text */
   margin-bottom: 10px;
-  text-align: center;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  width: 100%; /* Ensure task takes full width of the sidebar */
+}
+
+.task:hover {
+  background-color: #4caf50;
+}
+
+.activeTask {
+  background-color: #4caf50;
+  color: white;
 }
 
 .content {
-  margin-left: 220px;
-  padding: 5px;
-  background-color: white;
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start */
 }
 
-.contentTitle {
-  text-align: center;
-  background-color: white;
-  font-size: 30px;
-  padding: 5px;
+.taskHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.heading {
+  font-size: 24px;
   margin-bottom: 10px;
 }
 
 .description {
+  font-size: 18px;
   margin-bottom: 20px;
-  text-align: left;
-  background-color: white;
-  margin-left: 50px;
+  white-space: pre-wrap;
 }
 
-.accomplishmentsBtn {
-  display: block;
-  margin: 0 auto 20px auto;
-  padding: 10px 20px;
-  background-color: green;
+.addTask {
+  background-color: #4caf50;
   color: white;
-  border: 1px solid black;
-  text-decoration: underline;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 10px; /* Adjust position */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.noTaskSelected {
+  text-align: center;
+  font-size: 1.2em;
+  color: #555;
+  margin-top: 20px;
+}
+
+.intern {
+  background-color: #d3d3d3;
+  padding: 15px; /* Increase padding for better spacing */
+  margin-bottom: 15px; /* Increase margin for better spacing between cards */
   border-radius: 4px;
+  width: 100%; /* Ensure card stretches across available width */
+  box-sizing: border-box; /* Include padding and border in width */
+  border-top: 2px solid #5c4033; /* Top border */
+  border-bottom: 2px solid #5c4033; /* Bottom border */
+  position: relative; /* Position relative to position the icons */
+}
+
+.intern h4 {
+  border-bottom: 2px solid #5c4033; /* Line under the title */
+  padding-bottom: 5px; /* Space between title and border */
+  margin-bottom: 10px; /* Space between border and content */
+}
+
+.intern .iconContainer {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.intern .iconContainer button {
+  background: transparent;
+  border: none;
   cursor: pointer;
 }
 
-.accomplishmentsBtn:hover {
-  background-color: darkgreen;
+.intern .iconContainer button:hover {
+  color: #0070f3;
 }
 
-.accomplishmentSection {
-  background-color: #c2c5c9;
-  padding: 15px;
-  margin-bottom: 10px;
-}
-
-.accomplishmentTitle,
-.accomplishmentDescription {
-  margin: 0;
-  margin-left: 50px;
+/* Optional: Style for edit and delete icons */
+.intern .iconContainer .editIcon,
+.intern .iconContainer .deleteIcon {
+  font-size: 16px; /* Adjust icon size if needed */
 }
 
 .accomplishmentLink {
-  color: black;
-  text-decoration: underline;
-  margin-left: 50px;
+  color: #0070f3;
+  text-decoration: none;
 }
 
-/* Add Accomplishment Pop up*/
-.popup {
-  display: flex; /* Changed to flex */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+.accomplishmentLink:hover {
+  text-decoration: underline;
+}
+
+/* Modal styling */
+.modal {
+  display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
 }
 
-.popupContent {
+.modalContent {
   background-color: white;
-  padding: 15px;
-  border: 1px solid black;
-  width: 60%;
-  position: relative;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.show {
+  display: block;
 }
 
 .closeBtn {
   position: absolute;
   top: 10px;
-  right: 20px;
-  font-size: 30px;
+  right: 10px;
+  color: #aaa;
+  font-size: 24px;
   font-weight: bold;
-  color: black;
   cursor: pointer;
 }
 
-.submitBtn {
+.closeBtn:hover,
+.closeBtn:focus {
+  color: black;
+  text-decoration: none;
+}
+
+/* Form styling */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.label {
   display: block;
-  margin: 20px auto 0 auto;
-  padding: 10px 20px;
+  font-size: 0.9rem; 
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  max-width: 600px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.tasktextarea {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.renderBtn {
+  display: inline-block;
+  padding: 10px;
   background-color: green;
   color: white;
-  border: 1px solid black;
-  text-decoration: underline;
+  border: 2px solid black;
   border-radius: 4px;
+  text-align: center;
   cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.renderBtn:hover {
+  background-color: darkgreen;
+  border-color: darkgreen;
+}
+
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
 }

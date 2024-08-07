@@ -5,6 +5,7 @@
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-y: auto; 
 }
 
 .main {
@@ -103,6 +104,7 @@
 .description {
     font-size: 18px;
     margin-bottom: 20px;
+    white-space: pre-wrap;
 }
 
 .noTaskSelected {
@@ -121,6 +123,76 @@
         width: 100%;
     }
 }
+
+/* General styles for each accomplishment card */
+.intern {
+    background-color: #d3d3d3;
+    padding: 15px; /* Increase padding for better spacing */
+    margin-bottom: 15px; /* Increase margin for better spacing between cards */
+    border-radius: 4px;
+    width: 100%; /* Ensure card stretches across available width */
+    box-sizing: border-box; /* Include padding and border in width */
+    border-top: 2px solid #5c4033; /* Top border */
+    border-bottom: 2px solid #5c4033; /* Bottom border */
+    position: relative; /* Position relative to position the icons */
+}
+
+/* Title styling */
+.intern h4 {
+    border-bottom: 2px solid #5c4033; /* Line under the title */
+    padding-bottom: 5px; /* Space between title and border */
+    margin-bottom: 15px; /* Space between border and content */
+}
+
+/* Link styling */
+.accomplishmentLink {
+    color: #0070f3;
+    text-decoration: none;
+}
+
+.accomplishmentLink:hover {
+    text-decoration: underline;
+}
+
+/* Style for user name */
+.userName {
+    position: absolute; /* Position absolutely within the .intern container */
+    top: 10px; /* Adjust based on your design */
+    right: 15px; /* Adjust based on your design */
+    font-weight: bold;
+    color: #333; /* Ensure contrast with background */
+}
+
+/* Style for accomplishment date */
+.accDate {
+    position: absolute; /* Position absolutely within the .intern container */
+    bottom: 10px; /* Adjust based on your design */
+    right: 15px; /* Adjust based on your design */
+    font-size: 0.8rem;
+    color: #666; /* Lighter color for the date */
+}
+  
+  .searchAndFilter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .searchBar {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .dateInput {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
 
 /*For the Modal*/
 
@@ -171,6 +243,18 @@
     text-decoration: none;
 }
   
+
+.formGroup {
+    margin-bottom: 20px;
+  }
+  
+.label {
+    display: block;
+    font-size: 0.9rem; 
+    font-weight: bold;
+    margin-bottom: 0.5rem; 
+ }
+
 .input {
     width: 100%; 
     max-width: 600px; 

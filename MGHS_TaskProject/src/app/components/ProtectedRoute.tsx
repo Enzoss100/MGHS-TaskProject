@@ -38,8 +38,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return (
       <>
         {children} {/* Render the page content behind the modal */}
-        <div className={styles.loadingModal}>
-          <div className={styles.loadingText}>Loading...</div>
+        <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <div className={styles.loadingText}>Loading Data...</div>
         </div>
       </>
     );

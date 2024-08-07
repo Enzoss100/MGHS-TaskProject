@@ -6,6 +6,7 @@ import { fetchAllInternDetails } from '@/app/services/UserService';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import styles from './a-dash.module.css';
 import AdminMenu from '@/app/components/AdminMenu';
+import { fetchAllInterns } from '@/app/services/AllUsersService';
 
 export default function Dashboard() {
     const [dashboardData, setDashboardData] = useState({
@@ -28,7 +29,7 @@ export default function Dashboard() {
                 const totalBatches = batches.length;
                 
                 const currentInterns = interns.length;
-                const allInternsCount = (await fetchAllInternDetails()).length;
+                const allInternsCount = (await fetchAllInterns()).length;
                 const undergoingOnboarding = interns.filter(intern => intern.onboarded === 'pending').length;
 
                 const internsWithOneWeekLeft = interns.filter(intern => {
@@ -59,6 +60,7 @@ export default function Dashboard() {
 
     return (
         <ProtectedRoute>
+            <div className={styles.pageBackground}>
             <AdminMenu pageName='Admin Dashboard'/>
             <div className={styles.container}>
                 <main className={styles.mainContainer}>
@@ -77,7 +79,7 @@ export default function Dashboard() {
                             <div className={styles.dashboardCard}>
                                 <h2>All Interns</h2>
                                 <p>{dashboardData.allInterns}</p>
-                                <p className={styles.cardDescription}>The total number of interns registered in the system.</p>
+                                <p className={styles.cardDescription}>The number of all interns previously or currently registered.</p>
                             </div>
                             <div className={styles.dashboardCard}>
                                 <h2>Undergoing Onboarding</h2>
@@ -97,6 +99,7 @@ export default function Dashboard() {
                         </div>
                     </section>
                 </main>
+            </div>
             </div>
         </ProtectedRoute>
     );
