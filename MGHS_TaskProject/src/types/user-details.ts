@@ -10,7 +10,7 @@ export interface UserDetails {
   admin: boolean;
   position?: string;
   onboarded: string;
-  startDate: Date;
+  startDate?: Date | null;
   hoursNeeded: number;
   totalHoursRendered: number;
   batchName: string;

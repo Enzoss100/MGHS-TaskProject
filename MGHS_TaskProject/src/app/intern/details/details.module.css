@@ -61,6 +61,20 @@
     cursor: pointer;
 }
 
+.editButton {
+    display: block;
+    width: 25%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: green;
+    color: white;
+    text-align: center;
+    text-decoration: underline;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .detailButton:hover {
     background-color: darkgreen;
 }
@@ -85,8 +99,14 @@
 
 .batchTable th,
 .batchTable td {
-    border: 1px solid black;
+    border: 3px solid black;
     padding: 8px;
+    text-align: center;
+}
+
+.batchTable th {
+    background-color: green;
+    color: white;
     text-align: center;
 }
 
@@ -96,7 +116,7 @@
 
 .buttonContainer {
     display: flex;
-    justify-content: space-between;
+    gap: 5%;
 }
 
 .notification {

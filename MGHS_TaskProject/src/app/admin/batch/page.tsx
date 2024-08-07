@@ -255,7 +255,7 @@ export default function BatchPage() {
                                                     student.role || 'N/A'
                                                     )}
                                                 </td>
-                                                <td>{formatDate(student.startDate)}</td>
+                                                <td>{formatDate(student.startDate!)}</td>
                                                 <td>
                                                 {editingIndex === index ? (
                                                     <div className={styles['button-group']}>
