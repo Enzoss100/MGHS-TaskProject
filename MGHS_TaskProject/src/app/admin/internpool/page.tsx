@@ -10,8 +10,6 @@ import { toast } from 'sonner';
 import { fetchAllBatches, createBatch, Batch, updateUserBatches } from '@/app/services/BatchService';
 import { Timestamp } from 'firebase/firestore';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
-import UserDetailsPopup from './UserDetailsPopup';
-import * as XLSX from 'xlsx'; 
 
 // Function to get the current date
 const getCurrentDate = () => {
@@ -27,60 +25,12 @@ const generateBatchName = (startDate: Date) => {
     return `Batch-${year}-${month < 10 ? `0${month}` : month}`;
 };
 
-const formatDate = (timestamp: { seconds: number; nanoseconds: number } | Date | string) => {
-    let date: Date;
-    if (timestamp instanceof Date) {
-        date = timestamp;
-    } else if (typeof timestamp === 'string') {
-        date = new Date(timestamp);
-    } else if (timestamp && typeof timestamp === 'object' && 'seconds' in timestamp) {
-        date = new Date(timestamp.seconds * 1000);
-    } else {
-        return 'N/A';
-    }
-    if (isNaN(date.getTime())) return 'N/A';
-    
-    // Format date as words
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: '2-digit'
-    });
-};
-
-// Function to export user details to Excel
-const exportToExcel = (students: UserDetails[]) => {
-    // Create a worksheet from the data
-    const ws = XLSX.utils.json_to_sheet(students.map(student => ({
-        'First Name': student.firstname || 'N/A',
-        'Last Name': student.lastname || 'N/A',
-        'Personal Email': student.personalemail || 'N/A',
-        'School Email': student.schoolemail || 'N/A',
-        'MGHS Email': student.mghsemail || 'N/A',
-        'Status': student.onboarded || 'N/A',
-        'Start Date': student.startDate ? formatDate(student.startDate) : 'N/A',
-        'Batch Name': student.batchName || 'N/A',
-        'Total Rendered Hours': student.totalHoursRendered || 'N/A',
-        'Total Hours Needed': student.hoursNeeded || 'N/A',
-        'Total Hours Left': student.hoursNeeded - student.totalHoursRendered,
-    })));
-
-    // Create a new workbook and add the worksheet to it
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Interns');
-
-    // Export the workbook to a file
-    XLSX.writeFile(wb, 'interns.xlsx');
-};
-
 export default function InternPool() {
 
     const [students, setStudents] = useState<UserDetails[]>([]);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [localStatuses, setLocalStatuses] = useState<{ [key: number]: string }>({});
     const [batches, setBatches] = useState<Batch[]>([]);
-    const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null); 
-    const [showPopup, setShowPopup] = useState(false); 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -207,24 +157,11 @@ export default function InternPool() {
         }
     };
 
-    const handleUserNameClick = (user: UserDetails) => {
-        setSelectedUser(user);
-        setShowPopup(true);
-    };
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-        setSelectedUser(null);
-    };
-
     return (
         <ProtectedRoute>
         <div className={styles.container}>
             <AdminMenu pageName='Intern Pool Table'/>
             <main className={styles.main}>
-                <button className={`${styles.button} ${styles['buttonExport']}`} onClick={() => exportToExcel(students)}>
-                    <FiDownload /> Export to Excel
-                </button>
                 <table className={styles['intern-table']}>
                     <thead>
                         <tr>
@@ -238,7 +175,7 @@ export default function InternPool() {
                         {students.map((student, index) => (
                             <tr key={student.id}>
                                 <td>{index + 1}</td>
-                                <td className={styles.nameClick} onClick={() => handleUserNameClick(student)}>
+                                <td>
                                     {student.firstname} {student.lastname}
                                 </td>
                                 <td className={styles[`status-${localStatuses[index] || 'pending'}`]}>
@@ -252,11 +189,16 @@ export default function InternPool() {
                                             <option className={styles['status-pending']} value="pending">Pending</option>
                                             <option className={styles['status-approved']} value="approved">Approved</option>
                                             <option className={styles['status-backout']} value="backout">Backout</option>
+                                            <option className={styles['status-offboarding']} value="offboarding">Offboarding</option>
                                             <option className={styles['status-offboarded']} value="offboarded">Offboarded</option>
                                         </select>
                                     ) : (
                                         <span className={`${styles['status-select']} ${styles[localStatuses[index] || 'pending']}`}>
-                                            {localStatuses[index] === 'approved' ? 'Approved' : localStatuses[index] === 'backout' ? 'Backout' : localStatuses[index] === 'offboarded' ? 'Offboarded' : 'Pending'}
+                                            {localStatuses[index] === 'approved' ? 'Approved' : 
+                                            localStatuses[index] === 'backout' ? 'Backout' : 
+                                            localStatuses[index] === 'offboarded' ? 'Offboarded' :
+                                            localStatuses[index] === 'offboarding' ? 'Offboarding' : 
+                                            'Pending'}
                                         </span>
                                     )}
                                 </td>
@@ -278,9 +220,6 @@ export default function InternPool() {
                     </tbody>
                 </table>
             </main>
-            {showPopup && selectedUser && (
-                <UserDetailsPopup user={selectedUser} onClose={handleClosePopup} />
-            )}
         </div>
         </ProtectedRoute>
     );

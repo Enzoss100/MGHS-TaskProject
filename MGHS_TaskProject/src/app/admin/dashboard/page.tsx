@@ -31,13 +31,9 @@ export default function Dashboard() {
                 const currentInterns = interns.length;
                 const allInternsCount = (await fetchAllInterns()).length;
                 const undergoingOnboarding = interns.filter(intern => intern.onboarded === 'pending').length;
+                const undergoingOffboarding = interns.filter(intern => intern.onboarded === 'offboarding').length;
 
                 const internsWithOneWeekLeft = interns.filter(intern => {
-                    const hoursLeft = intern.hoursNeeded - intern.totalHoursRendered;
-                    return hoursLeft <= 40; 
-                }).length;
-
-                const undergoingOffboarding = interns.filter(intern => {
                     const hoursLeft = intern.hoursNeeded - intern.totalHoursRendered;
                     return hoursLeft <= 40; 
                 }).length;
