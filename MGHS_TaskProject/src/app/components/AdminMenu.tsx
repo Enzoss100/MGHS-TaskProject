@@ -11,6 +11,15 @@ interface AdminMenuProps {
 }
 
 const AdminMenu: React.FC<AdminMenuProps> = ({ pageName }) => {
+
+  const handleLogout = () => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Are you sure you want to log out?');
+    if (isConfirmed) {
+      signOut(); // Proceed with logout
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.menuLogo}>
@@ -29,7 +38,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ pageName }) => {
       </div>
       <div className={styles.welcome}>{pageName == null ? 'loading' : pageName}</div>
       <div className={styles.logout}>
-        <button className={styles.logoutbutton} onClick={() => signOut()}>
+        <button className={styles.logoutbutton} onClick={handleLogout}>
           <FaSignOutAlt size={30} />
         </button>
       </div>
