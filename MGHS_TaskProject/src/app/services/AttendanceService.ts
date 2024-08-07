@@ -10,6 +10,7 @@ export interface Attendance {
   timeBreakEnd: string;
   userID: string;
   renderedHours: number;
+  report: string;
 }
 
 export const fetchAttendance = async (userEmail: string): Promise<Attendance[]> => {

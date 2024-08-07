@@ -167,20 +167,21 @@ export default function Dashboard() {
         <table className={styles.attendanceTable}>
   <thead>
     <tr>
-      <th colSpan={5} className={styles.tableHeader}>Overview of Attendance</th>
+      <th colSpan={6} className={styles.tableHeader}>Overview of Attendance</th>
     </tr>
     <tr>
       <th className={styles.attendanceTableth}>Date</th>
       <th className={styles.attendanceTableth}>Clock In</th>
       <th className={styles.attendanceTableth}>Clock Out</th>
-      <th className={styles.attendanceTableth}>Total Hours Rendered</th>
+      <th className={styles.attendanceTableth}>Hours Rendered</th>
+      <th className={styles.attendanceTableth}>Report</th>
       <th className={styles.attendanceTableth}>Actions</th>
     </tr>
   </thead>
     <tbody>
         {attendanceRecords.length === 0 ? (
         <tr>
-            <td colSpan={5} className={styles.noRecords}>No Recorded Attendance</td>
+            <td colSpan={6} className={styles.noRecords}>No Recorded Attendance</td>
         </tr>
         ) : (
         attendanceRecords.map((record) => (
@@ -191,6 +192,14 @@ export default function Dashboard() {
             <td className={styles.attendanceTabletd}>{record.timeStart}</td>
             <td className={styles.attendanceTabletd}>{record.timeEnd}</td>
             <td className={styles.attendanceTabletd}>{record.renderedHours}</td>
+            <td className={styles.attendanceTabletd}>
+              {(record.report || '').split(',').map((line: string, index: React.Key | null | undefined) => (
+                <React.Fragment key={index}>
+                  {line.trim()}
+                  <br />
+                </React.Fragment>
+              ))}
+            </td>
             <td className={styles.attendanceTabletd}>
                 <button 
                     className={`${styles.actionButton} ${styles.editButton}`} 

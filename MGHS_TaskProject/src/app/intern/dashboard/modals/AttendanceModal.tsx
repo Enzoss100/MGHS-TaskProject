@@ -3,6 +3,7 @@ import styles from './attendance.module.css';
 import { Attendance, createAttendance, updateAttendance } from '@/app/services/AttendanceService';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
+import { createOT, Overtime } from '@/app/services/OvertimeService';
 
 interface AttendanceModalProps {
   isVisible: boolean;
@@ -11,9 +12,22 @@ interface AttendanceModalProps {
   recordID: string | null;
 }
 
+const calculateTotalHours = (start: string, end: string, breakStart: string, breakEnd: string): number => {
+  const startTime = new Date(`1970-01-01T${start}:00`);
+  const endTime = new Date(`1970-01-01T${end}:00`);
+  const breakStartTime = new Date(`1970-01-01T${breakStart}:00`);
+  const breakEndTime = new Date(`1970-01-01T${breakEnd}:00`);
+  
+  const workDuration = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60); // Convert to hours
+  const breakDuration = (breakEndTime.getTime() - breakStartTime.getTime()) / (1000 * 60 * 60); // Convert to hours
+
+  return parseFloat((workDuration - breakDuration).toFixed(2)); // Return as number
+};
+
 const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalState, initialRecord, recordID }) => {
   
   const { data: session } = useSession();
+  const [errors, setErrors] = useState<string[]>([]);
 
   const [attendance, setAttendance] = useState<Attendance>({
     attendanceDate: initialRecord?.attendanceDate ? new Date(initialRecord.attendanceDate) : new Date(),
@@ -23,6 +37,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     timeBreakEnd: initialRecord?.timeBreakEnd || '',
     userID: session?.user?.email || '',
     renderedHours: initialRecord?.renderedHours || 0,
+    report: initialRecord?.report || '',
   });
 
   useEffect(() => {
@@ -35,6 +50,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         timeBreakEnd: initialRecord.timeBreakEnd || '',
         userID: session?.user?.email || '',
         renderedHours: initialRecord?.renderedHours || 0,
+        report: '',
       });
     } else {
       setAttendance({
@@ -45,6 +61,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         timeBreakEnd: '',
         userID: session?.user?.email || '',
         renderedHours: 0,
+        report: '',
       });
     }
   }, [initialRecord, session]);
@@ -52,16 +69,78 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAttendance({ ...attendance, [name]: value });
+
+    // Validate the updated time fields
+    validateTimes();
+  };
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setAttendance({ ...attendance, [name]: value });
+  };
+
+  const validateTimes = () => {
+    const errors: string[] = [];
+    const { timeStart, timeEnd, timeBreakStart, timeBreakEnd } = attendance;
+
+    if (timeStart && timeEnd && timeStart > timeEnd) {
+      errors.push('Time In cannot be greater than Time Out.');
+    }
+    if (timeBreakStart && timeStart && timeBreakStart > timeStart) {
+      errors.push('Break Time Start cannot be greater than Time In.');
+    }
+    if (timeBreakEnd && timeBreakStart && timeBreakEnd < timeBreakStart) {
+      errors.push('Break Time End cannot be less than Break Time Start.');
+    }
+    if (timeBreakStart && timeEnd && timeBreakStart > timeEnd) {
+      errors.push('Break Time Start cannot be greater than Time Out.');
+    }
+    if (timeBreakEnd && timeEnd && timeBreakEnd > timeEnd) {
+      errors.push('Break Time End cannot be greater than Time Out.');
+    }
+
+    setErrors(errors);
+    return errors;
   };
 
   const saveRecord = async (event: React.FormEvent) => {
     event.preventDefault(); 
   
+    const validationErrors = validateTimes();
+    if (validationErrors.length > 0) {
+      toast.error(validationErrors.join(' '));
+      return;
+    }
+
     try {
+      const renderedHours = calculateTotalHours(
+        attendance.timeStart,
+        attendance.timeEnd,
+        attendance.timeBreakStart,
+        attendance.timeBreakEnd
+      );
+      
       const updatedAttendance = {
         ...attendance,
-        attendanceDate: new Date(attendance.attendanceDate), 
+        attendanceDate: new Date(attendance.attendanceDate),
+        renderedHours,
       };
+  
+      if (renderedHours > 8) {
+        const overtime: Overtime = {
+          otDate: updatedAttendance.attendanceDate,
+          otStart: updatedAttendance.timeStart,
+          otEnd: updatedAttendance.timeEnd,
+          otBreakStart: updatedAttendance.timeBreakStart,
+          otBreakEnd: updatedAttendance.timeBreakEnd,
+          otReport: updatedAttendance.report,
+          otrenderedHours: renderedHours,
+          userID: updatedAttendance.userID,
+        };
+        toast.warning('Rendered Hours Exceeds 8. Converting Attendance to Overtime record...');
+        await createOT(overtime);
+        toast.success('Attendance Successfully Converted to Overtime!')
+      }
   
       if (recordID) {
         await updateAttendance(recordID, updatedAttendance);
@@ -141,6 +220,17 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
             onChange={handleInputChange}
             className={styles.dashboardforminput} 
             required 
+          />
+          <h2 className={styles.attendanceh2}>TASKS REPORT</h2>
+          <textarea 
+            id="report" 
+            name="report"  
+            rows={10} 
+            cols={50} 
+            value={attendance.report}
+            onChange={handleTextareaChange}  
+            placeholder="Enter your task report here..." 
+            className={styles.attendancetextarea}
           />
           <button type="submit" className={`${styles.renderBtn} ${styles.dashboardbutton}`}>
             {recordID ? 'Update' : 'Render'}

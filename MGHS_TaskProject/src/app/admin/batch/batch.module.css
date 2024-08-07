@@ -14,6 +14,8 @@
     flex: 1;
 }
 
+/* Side Bar Design */
+
 .sidebar {
     background-color: #5C4033;
     padding: 20px;
@@ -88,6 +90,8 @@
     margin-bottom: 10px;
 }
 
+/* Table Design */
+
 .intern-table {
     width: 100%;
     border-collapse: collapse;
@@ -126,6 +130,8 @@
     padding: 10px 20px;
     cursor: pointer;
 }
+
+/* Batch Modal Design */
 
 .modal {
     position: fixed;
@@ -284,4 +290,47 @@
 .noUsersMessage {
     text-align: center;
     color: #888; /* Adjust color as needed */
+}
+
+/* Export button styles */
+.buttonExport {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove borders */
+    padding: 10px 20px; /* Add some padding */
+    text-align: center; /* Center align text */
+    text-decoration: none; /* Remove underline */
+    display: inline-flex; /* Align items flexibly */
+    align-items: center; /* Center align items vertically */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Larger font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-bottom: 20px; /* Add margin below button */
+}
+
+.buttonExport:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.buttonExport svg {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+/* Design for User Cells */
+
+.offboarding {
+    background-color: rgba(255, 166, 0, 0.708);
+}
+
+.offboarded {
+    background-color: rgba(255, 0, 0, 0.498);
+}
+
+.less-hours {
+    background-color: rgba(255, 255, 0, 0.527);
+}
+
+.nameClick:hover{
+    background-color: #cacaca;
+    cursor:pointer;
 }
