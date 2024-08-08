@@ -10,6 +10,7 @@ import { fetchInternsByRole } from '@/app/services/UserService';
 import RoleModal from './RoleModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import { toast } from 'sonner';
 
 export default function InternRoles() {
     const [currentRole, setCurrentRole] = useState<Role | null>(null);
@@ -47,11 +48,17 @@ export default function InternRoles() {
         setModalState(true);
     };
 
-    const handleDeleteRole = async (roleName: string) => {
-        if (confirm(`Are you sure you want to delete the role "${roleName}"?`)) {
-            await deleteRole(roleName);
-            fetchRoles();
-            setCurrentRole(null);
+    const handleDeleteRole = async (role: Role) => {
+        if (confirm(`Are you sure you want to delete the role "${role.roleName}"?`)) {
+            try{
+                await deleteRole(role.id!);
+                fetchRoles();
+                setCurrentRole(null);
+                toast.success('Role deleted successfully');
+            }  catch (error){
+                console.error('Error deleting role:', error);
+                toast.error('Failed to delete role.');
+            }
         }
     };
 
@@ -81,7 +88,7 @@ export default function InternRoles() {
                                 <h2 className={styles.heading}>{currentRole.roleName}</h2>
                                 <div className={styles.roleActions}>
                                     <FaEdit className={styles.editIcon} onClick={() => handleEditRole(currentRole)} />
-                                    <FaTrash className={styles.deleteIcon} onClick={() => handleDeleteRole(currentRole.roleName)} />
+                                    <FaTrash className={styles.deleteIcon} onClick={() => handleDeleteRole(currentRole)} />
                                 </div>
                             </div>
                             <p className={styles.description}>{currentRole.roleDesc}</p>
