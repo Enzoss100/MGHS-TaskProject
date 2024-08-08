@@ -13,7 +13,7 @@ import OvertimeModal from './modals/OvertimeModal';
 import styles from './dashboard.module.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
-import { Overtime } from '@/app/services/OvertimeService';
+import { fetchOT, Overtime } from '@/app/services/OvertimeService';
 import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 
 export default function Dashboard() {
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [currentRecord, setCurrentRecord] = useState<Attendance | null>(null);
   const [currentOTRecord, setCurrentOTRecord] = useState<Overtime | null>(null);
   const [totalRenderedHours, setTotalRenderedHours] = useState<number>(0);
+  const [allRenderedHours, setAllRenderedHours] = useState<number>(0);
 
   useEffect(() => {
     const getInternName = async () => {
@@ -70,11 +71,27 @@ export default function Dashboard() {
           attendanceDate: record.attendanceDate instanceof Timestamp ? record.attendanceDate.toDate() : record.attendanceDate,
         }));
         
-        // Calculate total rendered hours
-        const totalHours = recordsWithDate.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
-        setTotalRenderedHours(totalHours);
+        // Fetch overtime records
+        const overtimeData = await fetchOT(session.data.user.email);
+
+        // Calculate total Attendance rendered hours
+        const totalAttendanceHours = recordsWithDate.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
+
+        // Calculate total Overtime Rendered Hours
+        const totalOvertimeHours = overtimeData.reduce((sum, record) => sum + (record.otrenderedHours || 0), 0);
+
+        // Overall Hours Rendered in Attendance and Overtime
+        const overallHours = totalAttendanceHours + totalOvertimeHours;
+
+        // Set Overall Hours rendered shown in page
+        setAllRenderedHours(overallHours);
+
+        // Set Total Rendered hours shown in the page
+        setTotalRenderedHours(totalAttendanceHours);
+
+        // Set Attendance Record
         setAttendanceRecords(recordsWithDate);
-  
+
         // Fetch user details to update
         const userDetails: UserDetails[] = await fetchUserDetails(session.data.user.email);
         if (userDetails.length > 0) {
@@ -82,7 +99,7 @@ export default function Dashboard() {
           // Update user details with the total rendered hours
           const updatedUserDetails: UserDetails = {
             ...user,
-              totalHoursRendered: totalHours, // update the field as per your structure
+              totalHoursRendered: overallHours, // update the field as per your structure
           };
           await updateUserDetails(user.id!, updatedUserDetails);
         }
@@ -148,6 +165,9 @@ export default function Dashboard() {
       <HamburgerMenu internName={internName} />
       <main className={styles.content}>
         <h1 className={styles.dashboardh1}>Dashboard</h1>
+        <div className={styles.totalHoursContainer}>
+              <h3 className={styles.totalHoursHeader}>All Rendered Hours {'(Attendance and Overtime)'} : {allRenderedHours} hours</h3>
+          </div>
         <div className={styles.squareContainer}>
             <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
             onClick={handleAttendanceAdd}>
@@ -160,7 +180,7 @@ export default function Dashboard() {
         </div>
         <center>
         <div className={styles.totalHoursContainer}>
-            <h3 className={styles.totalHoursHeader}>Total Rendered Hours</h3>
+            <h3 className={styles.totalHoursHeader}>Total Attendance Rendered Hours</h3>
             <p className={styles.totalHoursValue}>{totalRenderedHours} hours</p>
         </div>
         </center>
@@ -181,7 +201,7 @@ export default function Dashboard() {
     <tbody>
         {attendanceRecords.length === 0 ? (
         <tr>
-            <td colSpan={6} className={styles.noRecords}>No Recorded Attendance</td>
+            <td colSpan={6} className={styles.attendanceTabletd}>No Recorded Attendance</td>
         </tr>
         ) : (
         attendanceRecords.map((record) => (

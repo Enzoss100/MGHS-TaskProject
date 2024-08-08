@@ -26,7 +26,8 @@ export const fetchAttendance = async (userEmail: string): Promise<Attendance[]> 
         timeBreakStart: data.timeBreakStart,
         timeBreakEnd: data.timeBreakEnd,
         userID: data.userID,
-        renderedHours: parseFloat(data.renderedHours)
+        renderedHours: parseFloat(data.renderedHours),
+        report: data.report,
       } as Attendance;
     });
   };

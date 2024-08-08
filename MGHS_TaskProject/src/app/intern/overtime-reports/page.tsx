@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { fetchUserDetails } from '@/app/services/UserService';
+import { fetchUserDetails, updateUserDetails } from '@/app/services/UserService';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
@@ -13,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import { deleteOT, fetchOT, Overtime } from '@/app/services/OvertimeService';
 import OvertimeModal from '../dashboard/modals/OvertimeModal';
 import InternProtectedRoute from '@/app/components/InternProtectedRoute';
+import { fetchAttendance } from '@/app/services/AttendanceService';
 
 export default function OvertimeView() {
   const session = useSession({
@@ -63,12 +64,34 @@ export default function OvertimeView() {
           ...record,
           otDate: record.otDate instanceof Timestamp ? record.otDate.toDate() : record.otDate,
         }));
+
+        // Fetch Attendance records
+        const attendanceData = await fetchAttendance(session.data.user.email);
+
+        // Calculate total Attendance rendered hours
+        const totalAttendanceHours = attendanceData.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
         
         // Calculate total rendered hours
         const totalHours = recordsWithDate.reduce((sum, record) => sum + (record.otrenderedHours || 0), 0);
+        
+        // Overall Hours Rendered in Attendance and Overtime
+        const overallHours = totalAttendanceHours + totalHours;
+
         setTotalRenderedHours(totalHours);
-  
         setOvertimeRecords(recordsWithDate);
+
+        // Fetch user details to update
+        const userDetails: UserDetails[] = await fetchUserDetails(session.data.user.email);
+        if (userDetails.length > 0) {
+          const user = userDetails[0] as UserDetails;
+          // Update user details with the total rendered hours
+          const updatedUserDetails: UserDetails = {
+            ...user,
+              totalHoursRendered: overallHours, // update the field as per your structure
+          };
+          await updateUserDetails(user.id!, updatedUserDetails);
+        }
+
       } catch (error) {
         toast.error('An error occurred while fetching overtime records');
         console.error(error);
@@ -133,7 +156,7 @@ export default function OvertimeView() {
     <tbody>
         {overtimeRecords.length === 0 ? (
         <tr>
-            <td colSpan={6} className={styles.noRecords}>No Recorded Overtime</td>
+            <td colSpan={6} className={styles.attendanceTabletd}>No Recorded Overtime</td>
         </tr>
         ) : (
         overtimeRecords.map((record) => (
