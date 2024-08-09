@@ -313,6 +313,22 @@
     margin-right: 8px; /* Space between icon and text */
 }
 
+.searchBar {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.searchBar:focus {
+    border-color: #007BFF; /* Changes border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Adds a slight shadow on focus */
+}
+
 /* Design for User Cells */
 
 .offboarding {

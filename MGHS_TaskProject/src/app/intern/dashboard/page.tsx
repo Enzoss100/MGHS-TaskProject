@@ -15,6 +15,66 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Timestamp } from 'firebase/firestore';
 import { fetchOT, Overtime } from '@/app/services/OvertimeService';
 import InternProtectedRoute from '@/app/components/InternProtectedRoute';
+import * as XLSX from 'xlsx'; 
+import { FiDownload } from 'react-icons/fi';
+
+const exportAttendanceToExcel = (attendanceRecords: any[], overtimeRecords: any[]) => {
+
+  const confirmation = window.confirm("Are you sure you want to download the Excel file?");
+  
+  if (!confirmation) {
+    return; // If the user cancels, do nothing
+  }
+
+  // Combine attendance and overtime records into a single sheet
+  const ws = XLSX.utils.json_to_sheet([
+    ...attendanceRecords.map(record => ({
+      'Date': new Date(record.attendanceDate).toLocaleDateString(),
+      'Type': 'Attendance',
+      'Start Time': record.timeStart,
+      'End Time': record.timeEnd,
+      'Rendered Hours': record.renderedHours,
+      'Report': record.report,
+    })),
+    ...overtimeRecords.map(record => ({
+      'Date': new Date(record.otDate).toLocaleDateString(),
+      'Type': 'Overtime',
+      'Start Time': record.otStart,
+      'End Time': record.otEnd,
+      'Rendered Hours': record.otrenderedHours,
+      'Report': record.otReport,
+    })),
+  ]);
+
+  // Create a new workbook and add the worksheet to it
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Attendance and Overtime');
+
+  // Export the workbook to a file
+  XLSX.writeFile(wb, 'attendance_overtime.xlsx');
+};
+
+
+const formatDate = (timestamp: { seconds: number; nanoseconds: number } | Date | string) => {
+  let date: Date;
+  if (timestamp instanceof Date) {
+      date = timestamp;
+  } else if (typeof timestamp === 'string') {
+      date = new Date(timestamp);
+  } else if (timestamp && typeof timestamp === 'object' && 'seconds' in timestamp) {
+      date = new Date(timestamp.seconds * 1000);
+  } else {
+      return 'N/A';
+  }
+  if (isNaN(date.getTime())) return 'N/A';
+  
+  // Format date as words
+  return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit'
+  });
+};
 
 export default function Dashboard() {
   const session = useSession({
@@ -30,6 +90,7 @@ export default function Dashboard() {
   const [attendancePopup, setAttendancePopup] = useState(false);
   const [overtimePopup, setOvertimePopup] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState<{ [key: string]: any }[]>([]);
+  const [overtimeRecords, setOvertimeRecords] = useState<Overtime[]>([]);
   const [currentRecord, setCurrentRecord] = useState<Attendance | null>(null);
   const [currentOTRecord, setCurrentOTRecord] = useState<Overtime | null>(null);
   const [totalRenderedHours, setTotalRenderedHours] = useState<number>(0);
@@ -73,6 +134,7 @@ export default function Dashboard() {
         
         // Fetch overtime records
         const overtimeData = await fetchOT(session.data.user.email);
+        setOvertimeRecords(overtimeData);
 
         // Calculate total Attendance rendered hours
         const totalAttendanceHours = recordsWithDate.reduce((sum, record) => sum + (record.renderedHours || 0), 0);
@@ -167,6 +229,9 @@ export default function Dashboard() {
         <h1 className={styles.dashboardh1}>Dashboard</h1>
         <div className={styles.totalHoursContainer}>
               <h3 className={styles.totalHoursHeader}>All Rendered Hours {'(Attendance and Overtime)'} : {allRenderedHours} hours</h3>
+              <button className={`${styles.button} ${styles['buttonExport']}`} onClick={() => exportAttendanceToExcel(attendanceRecords, overtimeRecords)}>
+                  <FiDownload /> Export Attendance to Excel
+              </button>
           </div>
         <div className={styles.squareContainer}>
             <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
