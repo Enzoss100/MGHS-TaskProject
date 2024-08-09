@@ -75,8 +75,8 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
     if (otStart && otEnd && otStart > otEnd) {
       errors.push('Time In cannot be greater than Time Out.');
     }
-    if (otBreakStart && otStart && otBreakStart > otStart) {
-      errors.push('Break Time Start cannot be greater than Time In.');
+    if (otBreakStart && otStart && otBreakStart < otStart) {
+      errors.push('Break Time Start cannot be less than Time In.');
     }
     if (otBreakEnd && otBreakStart && otBreakEnd < otBreakStart) {
       errors.push('Break Time End cannot be less than Break Time Start.');

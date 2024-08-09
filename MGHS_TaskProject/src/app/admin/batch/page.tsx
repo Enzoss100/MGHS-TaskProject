@@ -209,29 +209,47 @@ export default function BatchPage() {
         setBatchEditingIndex(index);
     };
 
-    const handleSaveClick = async (index: number) => {
+    // Save role changes
+    const handleSaveRole = async (index: number) => {
         const newRole = localRoles[index];
-        const newBatch = localBatches[index];
 
-        if (window.confirm('Are you sure you want to save the changes?')) {
+        if (window.confirm('Are you sure you want to save the role change?')) {
+            const updatedStudent = { ...students[index], role: newRole };
             const newStudents = [...students];
-            const updatedStudent = { ...newStudents[index] };
-
-            updatedStudent.role = newRole;
-            updatedStudent.batchName = newBatch;
-
             newStudents[index] = updatedStudent;
             setStudents(newStudents);
 
             try {
                 await updateUserDetails(updatedStudent.id!, updatedStudent);
-                toast.success('User details updated successfully!');
+                toast.success('Role updated successfully!');
             } catch (error) {
-                console.error('Error updating user details:', error);
-                toast.error('Failed to update user details.');
+                console.error('Error updating role:', error);
+                toast.error('Failed to update role.');
             }
 
             setEditingIndex(null);
+            fetchBatches();
+        }
+    };
+
+    // Save batch changes
+    const handleSaveBatch = async (index: number) => {
+        const newBatch = localBatches[index];
+
+        if (window.confirm('Are you sure you want to save the batch change?')) {
+            const updatedStudent = { ...students[index], batchName: newBatch };
+            const newStudents = [...students];
+            newStudents[index] = updatedStudent;
+            setStudents(newStudents);
+
+            try {
+                await updateUserDetails(updatedStudent.id!, updatedStudent);
+                toast.success('Batch updated successfully!');
+            } catch (error) {
+                console.error('Error updating batch:', error);
+                toast.error('Failed to update batch.');
+            }
+
             setBatchEditingIndex(null);
             fetchBatches();
         }
@@ -336,13 +354,16 @@ export default function BatchPage() {
                             <td>
                                 {editingIndex === index ? (
                                     <div className={styles['button-group']}>
-                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveRole(index)}>Save</button>
                                         <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
                                     </div>
                                 ) : (
-                                    <div className={styles.iconContainer}>
-                                        <FiEdit onClick={() => handleEditClick(index)} />
-                                    </div>        
+                                    <button
+                                        className={styles.changeBatchBtn}
+                                        onClick={() => handleEditClick(index)}
+                                    >
+                                        Change Intern's Role
+                                    </button>     
                                 )}
                             </td>
                             <td>
@@ -353,7 +374,7 @@ export default function BatchPage() {
                                                 <option key={batch.id} value={batch.name}>{batch.name}</option>
                                             ))}
                                         </select>
-                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveBatch(index)}>Save</button>
                                         <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
                                     </div>
                                 ) : (
@@ -361,7 +382,7 @@ export default function BatchPage() {
                                         className={styles.changeBatchBtn}
                                         onClick={() => handleBatchEditClick(index)}
                                     >
-                                        Change Batch
+                                        Change Intern's Batch
                                     </button>
                                 )}
                             </td>

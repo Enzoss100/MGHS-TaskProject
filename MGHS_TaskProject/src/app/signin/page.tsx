@@ -57,7 +57,7 @@ export default function Signin() {
       <div className={styles.logoContainer}>
       <Image src={logo.src} alt="Company Logo" width={250} height={250} className={styles.logo} /><br/>
       <div className={styles.logoLabelContainer}>
-        <p className={styles.logoLabel}>MGHS Solution Advertising Services</p>
+        <p className={styles.logoLabel}>MGHS InternLink</p>
       </div>
       </div>
       </div>
