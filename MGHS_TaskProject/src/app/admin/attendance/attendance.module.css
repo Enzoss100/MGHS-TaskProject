@@ -111,6 +111,7 @@
     display: none;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
 }
 
 .noUsersMessage {
@@ -128,7 +129,9 @@
     border-radius: 10px;
     width: 90%;
     max-width: 500px;
+    max-height: 90vh;
     position: relative;
+    overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 

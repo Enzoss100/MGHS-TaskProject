@@ -6,7 +6,7 @@ import { auth, db } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { toast } from 'sonner';
 import Image from 'next/image';
-import logo from "./../assets/logo.jpg";
+import logo from "./../assets/logo.png";
 import styles from './signup.module.css';
 import { fetchUserByEmail } from '../services/AllUsersService';
 

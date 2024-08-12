@@ -2,7 +2,7 @@
 
 import styles from './processing.module.css';
 import Image from 'next/image';
-import logo from "./../../assets/logo.jpg";
+import logo from "./../../assets/logo.png";
 import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { FaSignOutAlt } from 'react-icons/fa';
@@ -20,6 +20,15 @@ export default function Processing() {
       });
       
     const [internName, setInternName] = useState('');
+
+    const handleLogout = () => {
+      // Show a confirmation dialog
+      const isConfirmed = window.confirm('Are you sure you want to log out?');
+      if (isConfirmed) {
+        signOut(); // Proceed with logout
+      }
+    };
+  
       
     useEffect(() => {
         const getInternName = async () => {
@@ -54,7 +63,7 @@ export default function Processing() {
           <Image src={logo.src} alt="Company Logo" width={50} height={50} className={styles.logo} />
           <div className={styles.welcome}>Hello, {internName}</div>
           <div className={styles.logout}>
-            <button className={styles.logoutbutton} onClick={() => signOut()}>
+            <button className={styles.logoutbutton} onClick={handleLogout}>
                 <FaSignOutAlt size={30} />
             </button>
           </div>

@@ -50,7 +50,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         timeBreakEnd: initialRecord.timeBreakEnd || '',
         userID: session?.user?.email || '',
         renderedHours: initialRecord?.renderedHours || 0,
-        report: '',
+        report: initialRecord?.report || '',
       });
     } else {
       setAttendance({
