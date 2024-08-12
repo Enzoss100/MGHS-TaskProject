@@ -8,6 +8,7 @@ import TaskModal from './TaskModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Accomplishment, fetchAllAccomplishments } from '@/app/services/AccomplishmentService';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
+import { toast } from 'sonner';
 
 export default function InternTasks() {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
@@ -48,11 +49,17 @@ export default function InternTasks() {
     setModalState(true);
   };
 
-  const handleDeleteTask = async (taskName: string) => {
-    if (confirm(`Are you sure you want to delete the task "${taskName}"?`)) {
-      await deleteTask(taskName);
-      getTasks();
-      setCurrentTask(null);
+  const handleDeleteTask = async (task: Task) => {
+    if (confirm(`Are you sure you want to delete the task "${task.taskName}"?`)) {
+      try{
+        await deleteTask(task.id!);
+        getTasks();
+        setCurrentTask(null);
+        toast.success('Task deleted successfully');
+      }  catch (error){
+        console.error('Error deleting task:', error);
+        toast.error('Failed to delete task.');
+      }
     }
   };
 
@@ -90,7 +97,7 @@ export default function InternTasks() {
                   <h2 className={styles.heading}>{currentTask.taskName}</h2>
                   <div className={styles.taskActions}>
                     <FaEdit className={styles.editIcon} onClick={() => handleEditTask(currentTask)} />
-                    <FaTrash className={styles.deleteIcon} onClick={() => handleDeleteTask(currentTask.taskName)} />
+                    <FaTrash className={styles.deleteIcon} onClick={() => handleDeleteTask(currentTask)} />
                   </div>
                 </div>
                 <p className={styles.description}>{currentTask.taskDesc}</p>

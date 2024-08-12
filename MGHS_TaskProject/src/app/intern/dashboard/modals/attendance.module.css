@@ -8,8 +8,6 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     overflow: auto;
-    /* To prevent scrollbars appearing on body */
-    overflow: hidden;
 }
 
 .modalContent {
@@ -24,6 +22,8 @@
     left: 50%; /* Center horizontally */
     transform: translate(-50%, -50%); /* Adjust for centering */
     text-align: center;
+    max-height: 90vh; 
+    overflow: auto;
 }
 
 .modalContenth2 {
@@ -56,13 +56,15 @@
 }
 
 .dashboardformlabel {
-    align-self: flex-start;
+    width: 30%; 
+    margin-right: 10px;
+    text-align: center;
     margin-top: 10px;
 }
 
 .dashboardforminput {
-    width: 100%;
-    padding: 8px;
+    width: 70%;
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;

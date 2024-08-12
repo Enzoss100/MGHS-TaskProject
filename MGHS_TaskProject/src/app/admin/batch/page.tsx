@@ -17,6 +17,11 @@ import * as XLSX from 'xlsx';
 
 // Function to export user details to Excel
 const exportToExcel = (students: UserDetails[]) => {
+    const confirmation = window.confirm("Are you sure you want to download the Excel file?");
+  
+    if (!confirmation) {
+      return; // If the user cancels, do nothing
+    }
     // Create a worksheet from the data
     const ws = XLSX.utils.json_to_sheet(students.map(student => ({
         'First Name': student.firstname || 'N/A',
@@ -73,6 +78,7 @@ export default function BatchPage() {
     const [batchEditingIndex, setBatchEditingIndex] = useState<number | null>(null);
     const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null); 
     const [showPopup, setShowPopup] = useState(false); 
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchBatches = useCallback(async () => {
         const batchDetails = await fetchAllBatches();
@@ -201,37 +207,57 @@ export default function BatchPage() {
         }));
     };
 
-    const handleEditClick = (index: number) => {
-        setEditingIndex(index);
+    const handleEditClick = (filteredIndex: number) => {
+        const originalIndex = students.findIndex(student => student.id === filteredStudents[filteredIndex].id);
+        setEditingIndex(originalIndex);
+    };
+    
+    const handleBatchEditClick = (filteredIndex: number) => {
+        const originalIndex = students.findIndex(student => student.id === filteredStudents[filteredIndex].id);
+        setBatchEditingIndex(originalIndex);
     };
 
-    const handleBatchEditClick = (index: number) => {
-        setBatchEditingIndex(index);
-    };
-
-    const handleSaveClick = async (index: number) => {
+    // Save role changes
+    const handleSaveRole = async (index: number) => {
         const newRole = localRoles[index];
-        const newBatch = localBatches[index];
 
-        if (window.confirm('Are you sure you want to save the changes?')) {
+        if (window.confirm('Are you sure you want to save the role change?')) {
+            const updatedStudent = { ...students[index], role: newRole };
             const newStudents = [...students];
-            const updatedStudent = { ...newStudents[index] };
-
-            updatedStudent.role = newRole;
-            updatedStudent.batchName = newBatch;
-
             newStudents[index] = updatedStudent;
             setStudents(newStudents);
 
             try {
                 await updateUserDetails(updatedStudent.id!, updatedStudent);
-                toast.success('User details updated successfully!');
+                toast.success('Role updated successfully!');
             } catch (error) {
-                console.error('Error updating user details:', error);
-                toast.error('Failed to update user details.');
+                console.error('Error updating role:', error);
+                toast.error('Failed to update role.');
             }
 
             setEditingIndex(null);
+            fetchBatches();
+        }
+    };
+
+    // Save batch changes
+    const handleSaveBatch = async (index: number) => {
+        const newBatch = localBatches[index];
+
+        if (window.confirm('Are you sure you want to save the batch change?')) {
+            const updatedStudent = { ...students[index], batchName: newBatch };
+            const newStudents = [...students];
+            newStudents[index] = updatedStudent;
+            setStudents(newStudents);
+
+            try {
+                await updateUserDetails(updatedStudent.id!, updatedStudent);
+                toast.success('Batch updated successfully!');
+            } catch (error) {
+                console.error('Error updating batch:', error);
+                toast.error('Failed to update batch.');
+            }
+
             setBatchEditingIndex(null);
             fetchBatches();
         }
@@ -251,6 +277,13 @@ export default function BatchPage() {
         setShowPopup(false);
         setSelectedUser(null);
     };
+
+    const filteredStudents = students.filter(student => 
+        student.firstname.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        student.lastname.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        student.personalemail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.schoolemail.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <ProtectedRoute>
@@ -273,9 +306,7 @@ export default function BatchPage() {
                                     </div>
                         </div>
                     <div className={styles.content}>
-                    <button className={`${styles.button} ${styles['buttonExport']}`} onClick={() => exportToExcel(students)}>
-                        <FiDownload /> Export to Excel
-                    </button>
+                    
                         {currentBatch ? (
                             <div>
                                 <div className={styles.roleHeader}>
@@ -286,7 +317,19 @@ export default function BatchPage() {
                                         <FiTrash size={20} onClick={(e) => { e.stopPropagation(); handleDeleteBatch(currentBatch); }} />
                                 </div>
                                 </div>
+
+                                <button className={`${styles.button} ${styles['buttonExport']}`} onClick={() => exportToExcel(students)}>
+                                    <FiDownload /> Export to Excel
+                                </button>
                                 
+                                <input 
+                                    type="text" 
+                                    placeholder="Search students..." 
+                                    value={searchQuery} 
+                                    onChange={(e) => setSearchQuery(e.target.value)} 
+                                    className={styles.searchBar}
+                                />  
+
                                 <table className={styles['intern-table']}>
                                     <thead>
                                         <tr>
@@ -304,7 +347,8 @@ export default function BatchPage() {
             <td colSpan={6} className={styles.noUsersMessage}>No users in this batch yet</td>
         </tr>
     ) : (
-        students.map((student, index) => {
+        filteredStudents.map((student, filteredIndex) => {
+            const originalIndex = students.findIndex(s => s.id === student.id);
             // Determine the row class based on the student's status and hours left
             const rowClass = student.onboarded === 'offboarding' ? styles.offboarding
                 : student.onboarded === 'offboarded' ? styles.offboarded
@@ -313,15 +357,15 @@ export default function BatchPage() {
 
                     return (
                         <tr key={student.id} className={rowClass}>
-                            <td>{index + 1}</td>
+                            <td>{filteredIndex + 1}</td>
                             <td className={styles.nameClick} onClick={() => handleUserNameClick(student)}>
                                 {student.firstname} {student.lastname}
                             </td>
                             <td>
-                                {editingIndex === index ? (
+                                {editingIndex === originalIndex ? (
                                     <select 
-                                        value={localRoles[index]} 
-                                        onChange={event => handleRoleChange(index, event)}
+                                        value={localRoles[originalIndex]} 
+                                        onChange={event => handleRoleChange(originalIndex, event)}
                                     >
                                         <option value="">Select Role</option>
                                         {roles.map(role => (
@@ -334,34 +378,37 @@ export default function BatchPage() {
                             </td>
                             <td>{formatDate(student.startDate!)}</td>
                             <td>
-                                {editingIndex === index ? (
+                                {editingIndex === originalIndex ? (
                                     <div className={styles['button-group']}>
-                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
-                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
-                                    </div>
-                                ) : (
-                                    <div className={styles.iconContainer}>
-                                        <FiEdit onClick={() => handleEditClick(index)} />
-                                    </div>        
-                                )}
-                            </td>
-                            <td>
-                                {batchEditingIndex === index ? (
-                                    <div className={styles['button-group']}>
-                                        <select className={styles.batchSelect} value={localBatches[index]} onChange={event => handleBatchChange(index, event)}>
-                                            {batches.map(batch => (
-                                                <option key={batch.id} value={batch.name}>{batch.name}</option>
-                                            ))}
-                                        </select>
-                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveClick(index)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveRole(originalIndex)}>Save</button>
                                         <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
                                     </div>
                                 ) : (
                                     <button
                                         className={styles.changeBatchBtn}
-                                        onClick={() => handleBatchEditClick(index)}
+                                        onClick={() => handleEditClick(filteredIndex)}
                                     >
-                                        Change Batch
+                                        Change Intern's Role
+                                    </button>     
+                                )}
+                            </td>
+                            <td>
+                                {batchEditingIndex === originalIndex ? (
+                                    <div className={styles['button-group']}>
+                                        <select className={styles.batchSelect} value={localBatches[originalIndex]} onChange={event => handleBatchChange(originalIndex, event)}>
+                                            {batches.map(batch => (
+                                                <option key={batch.id} value={batch.name}>{batch.name}</option>
+                                            ))}
+                                        </select>
+                                        <button className={`${styles.button} ${styles.buttonSave}`} onClick={() => handleSaveBatch(originalIndex)}>Save</button>
+                                        <button className={`${styles.button} ${styles.buttonCancel}`} onClick={handleCancelClick}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        className={styles.changeBatchBtn}
+                                        onClick={() => handleBatchEditClick(filteredIndex)}
+                                    >
+                                        Change Intern's Batch
                                     </button>
                                 )}
                             </td>

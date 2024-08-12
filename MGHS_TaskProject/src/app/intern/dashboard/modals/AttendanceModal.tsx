@@ -86,8 +86,8 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     if (timeStart && timeEnd && timeStart > timeEnd) {
       errors.push('Time In cannot be greater than Time Out.');
     }
-    if (timeBreakStart && timeStart && timeBreakStart > timeStart) {
-      errors.push('Break Time Start cannot be greater than Time In.');
+    if (timeBreakStart && timeStart && timeBreakStart < timeStart) {
+      errors.push('Break Time Start cannot be less than Time In.');
     }
     if (timeBreakEnd && timeBreakStart && timeBreakEnd < timeBreakStart) {
       errors.push('Break Time End cannot be less than Break Time Start.');
@@ -170,7 +170,8 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
       <div className={styles.modalContent}>
         <span className={styles.closeBtn} onClick={() => setModalState(false)}>&times;</span>
         <h2 className={styles.modalContenth2}>ATTENDANCE MONITORING</h2>
-        <form className={styles.dashboardform} onSubmit={saveRecord} method='POST'>
+        <form onSubmit={saveRecord} method='POST'>
+          <div className = {styles.dashboardform}>
           <label htmlFor="attendanceDate" className={styles.dashboardformlabel}><b>Date:</b></label>
           <input 
             type="date" 
@@ -235,6 +236,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
           <button type="submit" className={`${styles.renderBtn} ${styles.dashboardbutton}`}>
             {recordID ? 'Update' : 'Render'}
           </button>
+          </div>
         </form>
       </div>
     </div>

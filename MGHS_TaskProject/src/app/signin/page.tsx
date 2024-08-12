@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import logo from "./../assets/logo.jpg";
+import logo from "./../assets/logo.png";
 import styles from './signin.module.css';
 import { fetchUserDetails } from '../services/UserService';
 import { UserDetails } from '@/types/user-details';
@@ -57,7 +57,7 @@ export default function Signin() {
       <div className={styles.logoContainer}>
       <Image src={logo.src} alt="Company Logo" width={250} height={250} className={styles.logo} /><br/>
       <div className={styles.logoLabelContainer}>
-        <p className={styles.logoLabel}>MGHS Solution Advertising Services</p>
+        <p className={styles.logoLabel}>MGHS InterLink</p>
       </div>
       </div>
       </div>

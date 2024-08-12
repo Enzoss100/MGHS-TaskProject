@@ -74,20 +74,40 @@ export default function InternDetails() {
         setIsEditingStartDate(!isEditingStartDate);
     };    
 
-    const handleSave = async () => {
+    const handleSaveStartDate = async () => {
         if (internDetails) {
-            // Convert startDate from string to Date object, default to null if invalid
-            const startDate = isEditingStartDate && internDetails.startDate ? new Date(internDetails.startDate) : undefined;
-    
+            // Validate and parse the startDate
+            const startDate = internDetails.startDate ? new Date(internDetails.startDate) : null;
+            if (startDate && isNaN(startDate.getTime())) {
+                toast.error('Invalid start date');
+                return;
+            }
+
             // Update the internDetails with the Date object
-            const updatedDetails: UserDetails = {
+            const updatedDetails = {
                 ...internDetails,
-                startDate: startDate, 
+                startDate,
             };
-    
+
             try {
                 await updateUserDetails(internDetails.id as string, updatedDetails);
-    
+                toast.success('Start date updated successfully');
+                setIsEditingStartDate(false);
+            } catch (error) {
+                toast.error('Failed to update start date');
+                console.error(error);
+            }
+        }
+    };
+
+    const handleSaveDetails = async () => {
+        if (internDetails) {
+            const updatedDetails = { 
+                ...internDetails };
+            
+            try {
+                await updateUserDetails(internDetails.id as string, updatedDetails);
+
                 if (internDetails.mghsemail !== session?.user?.email) {
                     await updateFirebaseEmail(internDetails.mghsemail);
                     const auth = getAuth();
@@ -96,9 +116,8 @@ export default function InternDetails() {
                 } else {
                     toast.success('Details updated successfully');
                 }
-    
+
                 setIsEditing(false);
-                setIsEditingStartDate(false); // Ensure start date editing is turned off
             } catch (error) {
                 toast.error('Failed to update details');
                 console.error(error);
@@ -141,7 +160,7 @@ export default function InternDetails() {
                             <div className={styles.buttonContainer}>
                             {isEditingStartDate ? (
                                 <>
-                                    <button type="button" className={styles.editButton} onClick={handleSave}>Save</button>
+                                    <button type="button" className={styles.editButton} onClick={handleSaveStartDate}>Save</button>
                                     <button type="button" className={styles.editButton} onClick={handleStartDateEditToggle}>Cancel</button>
                                 </>
                             ) : (
@@ -260,7 +279,7 @@ export default function InternDetails() {
                         <div className={styles.buttonContainer}>
                             {isEditing ? (
                                 <>
-                                    <button type="button" className={styles.detailButton} onClick={handleSave}>Save</button>
+                                    <button type="button" className={styles.detailButton} onClick={handleSaveDetails}>Save</button>
                                     <button type="button" className={styles.detailButton} onClick={handleEditToggle}>Cancel</button>
                                 </>
                             ) : (
