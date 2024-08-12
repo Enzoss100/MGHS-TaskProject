@@ -3,7 +3,7 @@
 import styles from './adminMenu.module.css'
 import { FaBars, FaSignOutAlt } from 'react-icons/fa';
 import Image from 'next/image';
-import logo from './../assets/logo.jpg';
+import logo from './../assets/logo.png';
 import { signOut } from 'next-auth/react';
 
 interface AdminMenuProps {

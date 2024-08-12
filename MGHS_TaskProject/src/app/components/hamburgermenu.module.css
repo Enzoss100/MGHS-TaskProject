@@ -32,6 +32,13 @@
   color: white;
 }
 
+.logoutbutton:hover {
+  background: #45301f;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
 .dropdown {
   position: relative;
   display: inline-block;
