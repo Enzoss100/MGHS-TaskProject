@@ -1,7 +1,8 @@
 import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { UserDetails } from '@/types/user-details';
-import { getAuth, updateEmail } from 'firebase/auth';
+import { getAuth, sendEmailVerification, updateEmail } from 'firebase/auth';
 import { db } from '../firebase';
+import { toast } from 'sonner';
 
 export const fetchUserDetails = async (userEmail: string): Promise<UserDetails[]> => {
   const q = query(collection(db, 'users'), where('mghsemail', '==', userEmail));
@@ -62,18 +63,6 @@ export const updateUserDetails = async (userID: string, user: UserDetails) => {
     }
 };
 
-export const updateFirebaseEmail = async (newEmail: string) => {
-    const auth = getAuth();
-    if (auth.currentUser) {
-        try {
-            await updateEmail(auth.currentUser, newEmail);
-        } catch (error) {
-            console.error('Error updating Firebase email:', error);
-            throw error;
-        }
-    }
-};
-
 const deleteRelatedData = async (userID: string) => {
     try {
       // Delete user attendance records
@@ -105,6 +94,7 @@ const deleteRelatedData = async (userID: string) => {
     }
   };
   
+  // Currently can't delete the authentication so you have to manually delete the user in firebase
   export const deleteUser = async (userID: string) => {
     try {
       await deleteRelatedData(userID); // First delete related data
