@@ -15,6 +15,8 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [passwordAgain, setPasswordAgain] = useState('');
   const [newUser, setUser] = useState({ firstname: '', lastname: '', personalemail: '', schoolemail: '' });
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationType, setConfirmationType] = useState('');
 
   const router = useRouter();
 
@@ -44,32 +46,38 @@ export default function Signup() {
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    setConfirmationType('signup');
+    setShowConfirmation(true);
+  };
 
-      // Add user details to Firestore
-      await addDoc(collection(db, 'users'), {
-        firstname: newUser.firstname.trim(),
-        lastname: newUser.lastname.trim(),
-        mghsemail: email.trim(),
-        personalemail: newUser.personalemail.trim(),
-        schoolemail: newUser.schoolemail.trim(),
-        uid: user.uid, // adding UID for reference
-        admin: false,
-        onboarded: false,
-        role: 'Intern',
-        position: 'Junior Web Manager',
-      });
+  const handleConfirmation = async (confirmed: boolean) => {
+    if (confirmed) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      toast.success('Account Successfully Created!');
-      // Redirect to sign-in page
-      router.push('signin');
-    } catch (error: any) {
-      console.error('Error creating user:', error.message);
-      // Handle error
-      toast.error('Error creating account:', error.message);
+        // Add user details to Firestore
+        await addDoc(collection(db, 'users'), {
+          firstname: newUser.firstname.trim(),
+          lastname: newUser.lastname.trim(),
+          mghsemail: email.trim(),
+          personalemail: newUser.personalemail.trim(),
+          schoolemail: newUser.schoolemail.trim(),
+          uid: user.uid, // adding UID for reference
+          admin: false,
+          onboarded: false,
+          role: 'Intern',
+          position: 'Junior Web Manager',
+        });
+
+        toast.success('Account Successfully Created!');
+        router.push('/signin');
+      } catch (error: any) {
+        console.error('Error creating user:', error.message);
+        toast.error('Error creating account: ' + error.message);
+      }
     }
+    setShowConfirmation(false);
   };
 
   return (
@@ -131,7 +139,7 @@ export default function Signup() {
           />
 
           <div className={styles.recoveryEmailSection}>
-            <label className={styles.recoveryEmailLabel}>Recovery Email:</label>
+            <label className={styles.recoveryEmailLabel}>Other Emails:</label>
             <label htmlFor="personalemail" className={styles.label}>*Personal Email:</label>
             <input
               type="email"
@@ -157,6 +165,18 @@ export default function Signup() {
           <a href="signin" className={styles.backToLogin}>Back to Login</a>
         </form>
       </div>
+
+      {showConfirmation && (
+      <div className={styles.confirmationModal}>
+        <div className={styles.modalContent}>
+          <h2>Confirm Registration</h2>
+          <p>Are you sure you want to register with the provided details? Please note that your MGHS email cannot be changed once registered.</p>
+          <button onClick={() => handleConfirmation(true)}>Yes</button>
+          <button onClick={() => handleConfirmation(false)}>No</button>
+        </div>
+      </div>
+    )}
+
     </div>
   );
 }

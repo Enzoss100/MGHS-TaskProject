@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { UserDetails } from '@/types/user-details';
 import { toast } from 'sonner';
-import { fetchUserDetails, updateUserDetails, fetchAllInternDetails, updateFirebaseEmail, fetchInternsByBatch } from '@/app/services/UserService';
+import { fetchUserDetails, updateUserDetails, fetchInternsByBatch } from '@/app/services/UserService';
 import { useEffect, useState } from 'react';
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import styles from './details.module.css';
@@ -24,6 +24,7 @@ export default function InternDetails() {
     const [allInterns, setAllInterns] = useState<UserDetails[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingStartDate, setIsEditingStartDate] = useState(false);
+    const [isEditingMGHSEmail, setIsEditingMGHSEmail] = useState(false);
     const [hoursLeft, setHoursLeft] = useState('');
 
     useEffect(() => {
@@ -72,7 +73,11 @@ export default function InternDetails() {
 
     const handleStartDateEditToggle = () => {
         setIsEditingStartDate(!isEditingStartDate);
-    };    
+    }; 
+    
+    const handleEditMGHS = () => {
+        setIsEditingMGHSEmail(!isEditingMGHSEmail);
+    }; 
 
     const handleSaveStartDate = async () => {
         if (internDetails) {
@@ -107,16 +112,8 @@ export default function InternDetails() {
             
             try {
                 await updateUserDetails(internDetails.id as string, updatedDetails);
-
-                if (internDetails.mghsemail !== session?.user?.email) {
-                    await updateFirebaseEmail(internDetails.mghsemail);
-                    const auth = getAuth();
-                    await sendEmailVerification(auth.currentUser!);
-                    toast.success('Verification Email Sent. Please check your email to change your Email.');
-                } else {
-                    toast.success('Details updated successfully');
-                }
-
+                toast.success('Details updated successfully');
+        
                 setIsEditing(false);
             } catch (error) {
                 toast.error('Failed to update details');
@@ -124,8 +121,7 @@ export default function InternDetails() {
             }
         }
     };
-    
-
+     
     const formatDate = (date: Date | Timestamp | null) => {
         if (!date) return '';
         
@@ -174,9 +170,8 @@ export default function InternDetails() {
                             id="mghs-email" 
                             name="mghsemail"
                             value={internDetails?.mghsemail || ''}
-                            className={styles.detailInput} 
-                            onChange={handleInputChange}
-                            readOnly={!isEditing}
+                            className={styles.detailInput}
+                            readOnly={true}
                         />
 
                         <label htmlFor="personal-email" className={styles.detailLabel}>Personal Email:</label>
@@ -214,7 +209,7 @@ export default function InternDetails() {
                 <div className={styles.notification}>
                     <p>Note:</p>
                     <p>Your Role field can only be edited by an admin.</p>
-                    <p>Changing your MGHS Email will change your email for login.</p>
+                    <p>You cannot change your MGHS email.</p>
                     <p>Please edit your Hours Needed to Render for this internship</p>
                 </div>
 
