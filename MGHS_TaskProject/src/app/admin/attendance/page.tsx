@@ -78,9 +78,6 @@ export default function AdminAttendance() {
             <div className={styles.container}>
                 <AdminMenu pageName='Attendance' />
                 <div className={styles.legend}>
-                    <span className={styles['legend-item']}><span className={styles['status-pending']}></span> Pending</span>
-                    <span className={styles['legend-item']}><span className={styles['status-approved']}></span> Approved</span>
-                    <span className={styles['legend-item']}><span className={styles['status-backout']}></span> Backout</span>
                     <span className={styles['legend-item']}><span className={styles['status-offboarding']}></span> Offboarding</span>
                     <span className={styles['legend-item']}><span className={styles['status-offboarded']}></span> Offboarded</span>
                 </div>
@@ -120,7 +117,7 @@ export default function AdminAttendance() {
                                             </tr>
                                         ) : (
                                             students.filter(student => student.batchName === batch.name).map((student, index) => (
-                                                <tr key={student.id} className={styles[`status-${student.onboarded || 'pending'}`]}>
+                                                <tr key={student.id} className={styles[`status-${student.onboarded}`]}>
                                                     <td>{index + 1}</td>
                                                     <td>
                                                         {`${student.firstname} ${student.lastname}`}

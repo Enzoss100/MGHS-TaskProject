@@ -290,20 +290,6 @@
 
 /* Status colors */
 /* Status cell background colors */
-.status-pending {
-    background-color: yellow;
-    color: black;
-}   
-
-.status-approved {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.status-backout {
-    background-color: red;
-    color: white;
-}
 
 .status-offboarding {
     background-color: rgb(78, 78, 78);
@@ -317,9 +303,6 @@
 
 /* Apply status colors to table rows */
 
-.status-pending td,
-.status-approved td,
-.status-backout td,
 .status-offboarding td,
 .status-offboarded td {
     background-color: inherit;
