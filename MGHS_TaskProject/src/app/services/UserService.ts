@@ -3,6 +3,7 @@ import { UserDetails } from '@/types/user-details';
 import { getAuth, sendEmailVerification, updateEmail } from 'firebase/auth';
 import { db } from '../firebase';
 import { toast } from 'sonner';
+import { fetchAccomplishments } from './AccomplishmentService';
 
 export const fetchUserDetails = async (userEmail: string): Promise<UserDetails[]> => {
   const q = query(collection(db, 'users'), where('mghsemail', '==', userEmail));
@@ -35,7 +36,7 @@ export const fetchInternsByBatch = async (batchName: string): Promise<UserDetail
   };
 
   export const fetchInternsByRole = async (roleName: string): Promise<UserDetails[]> => {
-    const q = query(collection(db, 'users'), where('admin', '==', false), where('onboarded', '==', 'approved'), where('role', '==', roleName));
+    const q = query(collection(db, 'users'), where('admin', '==', false), where('role', '==', roleName));
     const querySnapshot = await getDocs(q);
   
     return querySnapshot.docs.map((doc) => {
@@ -80,14 +81,13 @@ const deleteRelatedData = async (userID: string) => {
       for (const doc of overtimeDocs) {
         await deleteDoc(doc.ref);
       }
-  
-      // Delete user tasks
-      const tasksQuery = query(collection(db, 'tasks'), where('userID', '==', userID));
-      const tasksSnapshot = await getDocs(tasksQuery);
-      const tasksDocs = tasksSnapshot.docs;
-      for (const doc of tasksDocs) {
-        await deleteDoc(doc.ref);
+      
+      // Delete user Accomplishments
+      const accomplishments = await fetchAccomplishments(userID);
+      for (const accomplishment of accomplishments) {
+        await deleteDoc(doc(db, 'accomplishments', accomplishment.id!));
       }
+
     } catch (error) {
       console.error('Error deleting related data:', error);
       throw error;

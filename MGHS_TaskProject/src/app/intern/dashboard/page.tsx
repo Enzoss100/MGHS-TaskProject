@@ -158,10 +158,15 @@ export default function Dashboard() {
         const userDetails: UserDetails[] = await fetchUserDetails(session.data.user.email);
         if (userDetails.length > 0) {
           const user = userDetails[0] as UserDetails;
+
+          // Determine onboarding status
+         const onboardingStatus = overallHours <= 40 ? 'offboarding' : user.onboarded || 'pending';
+
           // Update user details with the total rendered hours
           const updatedUserDetails: UserDetails = {
             ...user,
               totalHoursRendered: overallHours, // update the field as per your structure
+              onboarded: onboardingStatus,
           };
           await updateUserDetails(user.id!, updatedUserDetails);
         }

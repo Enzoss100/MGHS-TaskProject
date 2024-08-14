@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { fetchAllBatches } from '@/app/services/BatchService';
-import { fetchAllInternDetails } from '@/app/services/UserService';
+import { fetchAllInternDetails, fetchAllStudents } from '@/app/services/UserService';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import styles from './a-dash.module.css';
 import AdminMenu from '@/app/components/AdminMenu';
-import { fetchAllInterns } from '@/app/services/AllUsersService';
 
 export default function Dashboard() {
     const [dashboardData, setDashboardData] = useState({
@@ -21,23 +20,24 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Fetch batches and interns
-                const batches = await fetchAllBatches();
-                const interns = await fetchAllInternDetails();
+                // Fetch all interns, including those not yet approved or offboarding
+                const allInterns = await fetchAllStudents();
                 
                 // Total Batches
+                const batches = await fetchAllBatches();
                 const totalBatches = batches.length;
-                
-                const currentInterns = interns.length;
-                const allInternsCount = (await fetchAllInterns()).length;
-                const undergoingOnboarding = interns.filter(intern => intern.onboarded === 'pending').length;
-                const undergoingOffboarding = interns.filter(intern => intern.onboarded === 'offboarding').length;
-
-                const internsWithOneWeekLeft = interns.filter(intern => {
+    
+                const currentInterns = (await fetchAllInternDetails()).length; // only those with onboarded === 'approved'
+                const allInternsCount = allInterns.length;
+    
+                const undergoingOnboarding = allInterns.filter(intern => intern.onboarded === 'pending').length;
+                const undergoingOffboarding = allInterns.filter(intern => intern.onboarded === 'offboarding').length;
+    
+                const internsWithOneWeekLeft = allInterns.filter(intern => {
                     const hoursLeft = intern.hoursNeeded - intern.totalHoursRendered;
-                    return hoursLeft <= 40; 
+                    return hoursLeft <= 40 && intern.onboarded === 'approved'; 
                 }).length;
-
+    
                 setDashboardData({
                     totalBatches,
                     currentInterns,
@@ -50,7 +50,7 @@ export default function Dashboard() {
                 console.error('Error fetching dashboard data:', error);
             }
         };
-
+    
         fetchDashboardData();
     }, []);
 
