@@ -71,7 +71,7 @@ export const updateUserBatches = async () => {
     const interns = await fetchAllInternDetails();
 
     for (const intern of interns) {
-      const internStartDate = new Date(intern.startDate);
+      const internStartDate = new Date(intern.startDate!);
       const currentBatch = batches.find(batch => {
         const startDate = new Date(batch.startDate);
         const endDate = new Date(batch.endDate);

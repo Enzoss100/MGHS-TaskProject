@@ -28,19 +28,23 @@ const generateBatchName = (startDate: Date) => {
 export default function InternPool() {
 
     const [students, setStudents] = useState<UserDetails[]>([]);
-    const [editingIndex, setEditingIndex] = useState<number | null>(null);
-    const [localStatuses, setLocalStatuses] = useState<{ [key: number]: string }>({});
+    const [editingIndex, setEditingIndex] = useState<string | null>(null);
+    const [localStatuses, setLocalStatuses] = useState<{ [key: string]: string }>({});
     const [batches, setBatches] = useState<Batch[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({});
+    const [originalStatuses, setOriginalStatuses] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const internDetails = await fetchAllStudents();
                 setStudents(internDetails);
-                const initialStatuses = internDetails.reduce((acc, student, index) => {
-                    acc[index] = student.onboarded || 'pending';
+                const initialStatuses = internDetails.reduce((acc, student) => {
+                    acc[student.id!] = student.onboarded || 'pending';
                     return acc;
-                }, {} as { [key: number]: string });
+                }, {} as { [key: string]: string });
                 setLocalStatuses(initialStatuses);
 
                 const batchDetails = await fetchAllBatches();
@@ -53,76 +57,69 @@ export default function InternPool() {
         fetchData();
     }, []);
 
-    const handleStatusChange = (index: number, event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleStatusChange = (studentId: string, event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setLocalStatuses(prevStatuses => ({
             ...prevStatuses,
-            [index]: newStatus
+            [studentId]: newStatus
         }));
     };
 
-    const handleEditClick = (index: number) => {
-        console.log(`Editing index: ${index}`);
-        setEditingIndex(index);
+    const handleEditClick = (studentId: string) => {
+        setEditingIndex(studentId);
+        setOriginalStatuses(prev => ({
+            ...prev,
+            [studentId]: localStatuses[studentId] || 'pending'
+        }));
+        setIsEditing(prev => ({ ...prev, [studentId]: true }));
     };
 
-    const handleSaveClick = async (index: number) => {
-        const newStatus = localStatuses[index];
+    const handleSaveClick = async (studentId: string) => {
+        const newStatus = localStatuses[studentId];
 
         if (window.confirm('Are you sure you want to change the status?')) {
-            
-            const newStudents = [...students];
-            const updatedStudent = { ...newStudents[index] };
 
+            const updatedStudent = students.find(student => student.id === studentId)!;
             updatedStudent.onboarded = newStatus;
 
-            // Update startDate if the status is 'approved'
             if (newStatus === 'approved') {
                 const currentDate = getCurrentDate();
                 updatedStudent.startDate = currentDate;
 
-                // Check if there is an existing batch for the start date
                 const batchExists = batches.some(batch => {
-                    const start = batch.startDate instanceof Timestamp? batch.startDate.toDate() : batch.startDate;
-                    const end = batch.endDate instanceof Timestamp? batch.endDate.toDate() : batch.endDate;
+                    const start = batch.startDate instanceof Timestamp ? batch.startDate.toDate() : batch.startDate;
+                    const end = batch.endDate instanceof Timestamp ? batch.endDate.toDate() : batch.endDate;
                     return currentDate >= start && currentDate <= end;
                 });
 
-                // If no batch exists, create a new one
                 if (!batchExists) {
                     const newBatchName = generateBatchName(currentDate);
                     const newBatch: Batch = {
                         name: newBatchName,
                         startDate: currentDate,
-                        endDate: new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days after start date
+                        endDate: new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000),
                     };
                     await createBatch(newBatch);
-
-                    // Update local batches state
                     setBatches(prevBatches => [...prevBatches, newBatch]);
-
                     toast.success("New Batch Created")
                 }
 
-                // Assign the batch name to the student
                 const assignedBatch = batches.find(batch => {
-                    const start = batch.startDate instanceof Timestamp? batch.startDate.toDate() : batch.startDate;
-                    const end = batch.endDate instanceof Timestamp? batch.endDate.toDate() : batch.endDate;
+                    const start = batch.startDate instanceof Timestamp ? batch.startDate.toDate() : batch.startDate;
+                    const end = batch.endDate instanceof Timestamp ? batch.endDate.toDate() : batch.endDate;
                     return currentDate >= start && currentDate <= end;
-                });              
-                
+                });
+
                 if (assignedBatch) {
                     updatedStudent.batchName = assignedBatch.name;
                     toast.success(`Student Assigned to ${assignedBatch.name}`);
                 }
             }
 
-            newStudents[index] = updatedStudent;
-            setStudents(newStudents);
-
             try {
                 await updateUserDetails(updatedStudent.id!, updatedStudent);
                 await updateUserBatches();
+                setStudents(prevStudents => prevStudents.map(student => student.id === studentId ? updatedStudent : student));
                 toast.success('User status updated successfully!');
             } catch (error) {
                 console.error('Error updating user details:', error);
@@ -130,23 +127,30 @@ export default function InternPool() {
             }
 
             setEditingIndex(null);
+            setIsEditing(prev => ({ ...prev, [studentId]: false }));
         }
     };
 
     const handleCancelClick = () => {
-        setEditingIndex(null);
+        if (editingIndex) {
+            // Restore the original status
+            setLocalStatuses(prevStatuses => ({
+                ...prevStatuses,
+                [editingIndex]: originalStatuses[editingIndex] || 'pending'
+            }));
+            setEditingIndex(null);
+            setIsEditing(prev => ({ ...prev, [editingIndex]: false }));
+        }
     };
 
-    const handleDeleteClick = async (index: number) => {
+    const handleDeleteClick = async (studentId: string) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            const userToDelete = students[index];
             try {
-                await deleteUser(userToDelete.id!);
-                const updatedStudents = students.filter((_, i) => i !== index);
-                setStudents(updatedStudents);
+                await deleteUser(studentId);
+                setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
                 setLocalStatuses(prevStatuses => {
                     const newStatuses = { ...prevStatuses };
-                    delete newStatuses[index];
+                    delete newStatuses[studentId];
                     return newStatuses;
                 });
                 toast.success('User deleted successfully!');
@@ -157,11 +161,42 @@ export default function InternPool() {
         }
     };
 
+    const filteredStudents = students.filter(student => {
+        const matchesSearch = student.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              student.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              student.personalemail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              student.schoolemail.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === 'all' || localStatuses[student.id!] === statusFilter;
+        const isBeingEdited = isEditing[student.id!] || false;
+        return (matchesSearch && matchesStatus) || isBeingEdited;
+    });
+
     return (
         <ProtectedRoute>
         <div className={styles.container}>
             <AdminMenu pageName='Intern Pool Table'/>
             <main className={styles.main}>
+            <div className={styles['search-filter-container']}>
+                <input 
+                    type="text" 
+                    placeholder="Search students..." 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)} 
+                    className={styles.searchBar}
+                />
+                <select 
+                    value={statusFilter} 
+                    onChange={(e) => setStatusFilter(e.target.value)} 
+                    className={styles.statusFilter}
+                >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="backout">Backout</option>
+                    <option value="offboarding">Offboarding</option>
+                    <option value="offboarded">Offboarded</option>
+                </select>
+             </div>
                 <table className={styles['intern-table']}>
                     <thead>
                         <tr>
@@ -172,51 +207,49 @@ export default function InternPool() {
                         </tr>
                     </thead>
                     <tbody>
-                        {students.map((student, index) => (
-                            <tr key={student.id}>
-                                <td>{index + 1}</td>
-                                <td>
-                                    {student.firstname} {student.lastname}
-                                </td>
-                                <td className={styles[`status-${localStatuses[index] || 'pending'}`]}>
-                                    {editingIndex === index ? (
-                                        <select 
-                                            id={`status-select-${index}`}
-                                            value={localStatuses[index] || 'pending'}
-                                            onChange={(event) => handleStatusChange(index, event)}
-                                            className={styles.select}
-                                        >
-                                            <option className={styles['status-pending']} value="pending">Pending</option>
-                                            <option className={styles['status-approved']} value="approved">Approved</option>
-                                            <option className={styles['status-backout']} value="backout">Backout</option>
-                                            <option className={styles['status-offboarding']} value="offboarding">Offboarding</option>
-                                            <option className={styles['status-offboarded']} value="offboarded">Offboarded</option>
-                                        </select>
-                                    ) : (
-                                        <span className={`${styles['status-select']} ${styles[localStatuses[index] || 'pending']}`}>
-                                            {localStatuses[index] === 'approved' ? 'Approved' : 
-                                            localStatuses[index] === 'backout' ? 'Backout' : 
-                                            localStatuses[index] === 'offboarded' ? 'Offboarded' :
-                                            localStatuses[index] === 'offboarding' ? 'Offboarding' : 
-                                            'Pending'}
-                                        </span>
-                                    )}
-                                </td>
-                                <td>
-                                    {editingIndex === index ? (
-                                        <div className={styles['button-group']}>
-                                            <button className={`${styles.button} ${styles['buttonSave']}`} onClick={() => handleSaveClick(index)}>Save</button>
-                                            <button className={`${styles.button} ${styles['buttonCancel']}`} onClick={handleCancelClick}>Cancel</button>
-                                        </div>
+                        {filteredStudents.map((student, filteredIndex) => {
+                            return (
+                                <tr key={student.id}>
+                                    <td>{filteredIndex + 1}</td>
+                                    <td>
+                                        {student.firstname} {student.lastname}
+                                    </td>
+                                    <td className={styles[`status-${localStatuses[student.id!] || 'pending'}`]}>
+                                        {editingIndex === student.id ? (
+                                            <select 
+                                                id={`status-select-${filteredIndex}`}
+                                                value={localStatuses[student.id!] || 'pending'}
+                                                onChange={(event) => handleStatusChange(student.id!, event)}
+                                                className={styles.select}
+                                            >
+                                                <option className={styles['status-pending']} value="pending">Pending</option>
+                                                <option className={styles['status-approved']} value="approved">Approved</option>
+                                                <option className={styles['status-backout']} value="backout">Backout</option>
+                                                <option className={styles['status-offboarding']} value="offboarding">Offboarding</option>
+                                                <option className={styles['status-offboarded']} value="offboarded">Offboarded</option>
+                                            </select>
+                                        ) : (
+                                            <span className={styles[`status-${localStatuses[student.id!] || 'pending'}`]}>
+                                                    {localStatuses[student.id!] || 'Pending'}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editingIndex === student.id ? (
+                                            <div className={styles['button-group']}>
+                                                <button className={`${styles.button} ${styles['buttonSave']}`} onClick={() => handleSaveClick(student.id!)}>Save</button>
+                                                <button className={`${styles.button} ${styles['buttonCancel']}`} onClick={handleCancelClick}>Cancel</button>
+                                            </div>
                                     ) : (
                                         <div className={styles.iconContainer}>
-                                            <FiEdit onClick={() => handleEditClick(index)} />
-                                            <FiTrash onClick={() => handleDeleteClick(index)} />
+                                            <FiEdit onClick={() => handleEditClick(student.id!)} />
+                                            <FiTrash onClick={() => handleDeleteClick(student.id!)} />
                                         </div>
                                     )}
                                 </td>
-                            </tr>
-                        ))}
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </main>

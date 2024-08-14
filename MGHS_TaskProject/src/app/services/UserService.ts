@@ -35,7 +35,7 @@ export const fetchInternsByBatch = async (batchName: string): Promise<UserDetail
   };
 
   export const fetchInternsByRole = async (roleName: string): Promise<UserDetails[]> => {
-    const q = query(collection(db, 'users'), where('admin', '==', false), where('onboarded', '==', 'approved'), where('role', '==', roleName));
+    const q = query(collection(db, 'users'), where('admin', '==', false), where('role', '==', roleName));
     const querySnapshot = await getDocs(q);
   
     return querySnapshot.docs.map((doc) => {
