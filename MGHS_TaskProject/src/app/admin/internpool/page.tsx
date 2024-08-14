@@ -144,7 +144,7 @@ export default function InternPool() {
     };
 
     const handleDeleteClick = async (studentId: string) => {
-        if (window.confirm('Are you sure you want to delete this user?')) {
+        if (window.confirm('Are you sure you want to delete this user? This will remove all their associated records like attendances and accomplishments.')) {
             try {
                 await deleteUser(studentId);
                 setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
@@ -153,7 +153,7 @@ export default function InternPool() {
                     delete newStatuses[studentId];
                     return newStatuses;
                 });
-                toast.success('User deleted successfully!');
+                toast.success('User and associated records deleted successfully!');
             } catch (error) {
                 console.error('Error deleting user:', error);
                 toast.error('Failed to delete user.');
