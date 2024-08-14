@@ -23,14 +23,23 @@ export default function AdminAttendance() {
             try {
                 const batchDetails = await fetchAllBatches();
                 setBatches(batchDetails);
-
+    
                 const studentDetails = await fetchAllStudents();
                 setStudents(studentDetails);
+    
+                // Initialize all batches as collapsed
+                const initialCollapsedState = batchDetails.reduce((acc, batch) => {
+                    acc[batch.name] = true; // true indicates collapsed
+                    return acc;
+                }, {} as { [key: string]: boolean });
+    
+                setCollapsedBatches(initialCollapsedState);
+    
             } catch (error) {
                 console.error('Error fetching details:', error);
             }
         };
-
+    
         fetchData();
     }, []);
 
@@ -68,7 +77,10 @@ export default function AdminAttendance() {
         <ProtectedRoute>
             <div className={styles.container}>
                 <AdminMenu pageName='Attendance' />
-
+                <div className={styles.legend}>
+                    <span className={styles['legend-item']}><span className={styles['status-offboarding']}></span> Offboarding</span>
+                    <span className={styles['legend-item']}><span className={styles['status-offboarded']}></span> Offboarded</span>
+                </div>
                 {batches.length === 0 ? (
                     <center><p>No Batch Tables were created yet</p></center>
                 ) : (
@@ -84,7 +96,7 @@ export default function AdminAttendance() {
                                     {collapsedBatches[batch.name] ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
                                 </div>
                             </div>
-
+                            
                             {!collapsedBatches[batch.name] && (
                                 <table className={styles['attendance-table']}>
                                     <thead>
@@ -105,7 +117,7 @@ export default function AdminAttendance() {
                                             </tr>
                                         ) : (
                                             students.filter(student => student.batchName === batch.name).map((student, index) => (
-                                                <tr key={student.id}>
+                                                <tr key={student.id} className={styles[`status-${student.onboarded}`]}>
                                                     <td>{index + 1}</td>
                                                     <td>
                                                         {`${student.firstname} ${student.lastname}`}

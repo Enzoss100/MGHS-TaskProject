@@ -1,13 +1,12 @@
-
 .container {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20;
-    overflow-y: auto; 
 }
 
 .main {
     padding: 20px;
+    overflow-y: auto; 
 }
 
 .info {
@@ -33,7 +32,7 @@
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    margin-top: 4%;
+    margin-top: 1%;
 }
 
 .batchHeader h3 {
@@ -84,7 +83,7 @@
 }
 
 .buttonMarkAbsent {
-    background-color: #4CAF50; 
+    background-color: #5799c5; 
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -96,7 +95,7 @@
 }
 
 .buttonMarkAbsent:hover {
-    background-color: #449b46;
+    background-color: #467b9f;
 }
 
 
@@ -266,3 +265,45 @@
   .deleteIcon:hover{
     background-color: #b52c39;
   }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2%;
+    font-size: 14px;
+    margin-top: 2%;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.legend-item span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+/* Status colors */
+/* Status cell background colors */
+
+.status-offboarding {
+    background-color: rgb(78, 78, 78);
+    color: white;
+}
+
+.status-offboarded {
+    background-color: rgb(12, 12, 12);
+    color: white;
+}
+
+/* Apply status colors to table rows */
+
+.status-offboarding td,
+.status-offboarded td {
+    background-color: inherit;
+}

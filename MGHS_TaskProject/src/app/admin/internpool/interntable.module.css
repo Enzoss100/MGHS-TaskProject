@@ -2,7 +2,6 @@
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    overflow-y: auto; 
 }
 
 .header {
@@ -56,6 +55,7 @@
 
 .main {
     padding: 20px;
+    overflow-y: auto; 
 }
 
 table.intern-table {
@@ -171,4 +171,46 @@ table.intern-table select {
         position: relative;
         top: 0;
     }
+}
+
+/* Container for search and filter */
+.search-filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Search Bar Styling */
+.searchBar {
+    width: 60%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.searchBar:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Status Filter Dropdown Styling */
+.statusFilter {
+    width: 35%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+}
+
+.statusFilter:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
 }
