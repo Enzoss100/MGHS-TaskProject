@@ -70,13 +70,13 @@ export default function Onboarding() {
             <li>Always remember to send an update every day on the number of hours rendered and hours left, together with your accomplishments within the day, and plan for the next day, this will be done through Telegram. This will be proof as well that you are present.</li>
             <li>Update your supervisor if you have 1 to 2 weeks left from your internship at MGHS so that all turnover files will be smoothly updated.</li>
           </ul>
-          <p>Kindly note that all your school's signed documents must be in your <u>school requirements folder</u>. Once the school has signed all necessary documents, you must send your supervisor the link to the cloud folder.</p>
+          <p>Kindly note that all your school&apos;s signed documents must be in your <u>school requirements folder</u>. Once the school has signed all necessary documents, you must send your supervisor the link to the cloud folder.</p>
           <p>After receiving this welcome email, please inform your supervisor of your newly created MGHS working email as instructed.</p>
-          <p>If you have questions or concerns, please email us at <span style={{ color: 'blue' }}>mghsconsultancyhr@gmail.com</span>, and we'll respond as soon as possible. Thank you, and God bless you.</p>
+          <p>If you have questions or concerns, please email us at <span style={{ color: 'blue' }}>mghsconsultancyhr@gmail.com</span>, and we&apos;ll respond as soon as possible. Thank you, and God bless you.</p>
         </div>
 
         <div className={styles.closing}>
-          <p><strong>We welcome you once again to our company virtually, and we hope your talent and skills will significantly contribute to our company's tremendous success.</strong></p>
+          <p><strong>We welcome you once again to our company virtually, and we hope your talent and skills will significantly contribute to our company&apos;s tremendous success.</strong></p>
           <p>We wish for a better future and a good experience.</p>
           <p>Thank you.</p>
           <p><em>N.B. If you receive this before your interview and other documents are required, please inform your supervisor immediately.</em></p>
