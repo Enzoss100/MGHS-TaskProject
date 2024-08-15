@@ -388,7 +388,7 @@ export default function BatchPage() {
                                         className={styles.changeBatchBtn}
                                         onClick={() => handleEditClick(filteredIndex)}
                                     >
-                                        Change Intern&apos;s Role
+                                        Change Intern Role
                                     </button>     
                                 )}
                             </td>
@@ -408,7 +408,7 @@ export default function BatchPage() {
                                         className={styles.changeBatchBtn}
                                         onClick={() => handleBatchEditClick(filteredIndex)}
                                     >
-                                        Change Intern's Batch
+                                        Change Intern Batch
                                     </button>
                                 )}
                             </td>
