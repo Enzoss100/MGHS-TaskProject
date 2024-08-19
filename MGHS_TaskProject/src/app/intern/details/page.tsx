@@ -286,7 +286,7 @@ export default function InternDetails() {
                     <table className={styles.batchTable}>
                         <thead>
                             <tr>
-                                <th colSpan={4} className={styles.batchHeader}>Batch 1</th>
+                                <th colSpan={4} className={styles.batchHeader}>{internDetails?.batchName}</th>
                             </tr>
                             <tr>
                                 <th>No.</th> 
