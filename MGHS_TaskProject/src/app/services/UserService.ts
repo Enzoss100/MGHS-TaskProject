@@ -1,10 +1,12 @@
-import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { UserDetails } from '@/types/user-details';
-import { getAuth, sendEmailVerification, updateEmail } from 'firebase/auth';
 import { db } from '../firebase';
-import { toast } from 'sonner';
 import { fetchAccomplishments } from './AccomplishmentService';
 
+
+/* FETCHING DETAILS */
+
+// Fetch all the Details of the Specific Intern
 export const fetchUserDetails = async (userEmail: string): Promise<UserDetails[]> => {
   const q = query(collection(db, 'users'), where('mghsemail', '==', userEmail));
   const querySnapshot = await getDocs(q);
@@ -15,6 +17,7 @@ export const fetchUserDetails = async (userEmail: string): Promise<UserDetails[]
   });
 };
 
+// Fetch the Details of All Interns
 export const fetchAllInternDetails = async (): Promise<UserDetails[]> => {
   const q = query(collection(db, 'users'), where('admin', '==', false), where('onboarded', '==', 'approved'));
   const querySnapshot = await getDocs(q);
@@ -25,6 +28,7 @@ export const fetchAllInternDetails = async (): Promise<UserDetails[]> => {
   });
 };
 
+// Fetch All Interns under the specific Batch
 export const fetchInternsByBatch = async (batchName: string): Promise<UserDetails[]> => {
     const q = query(collection(db, 'users'), where('admin', '==', false), where('onboarded', '==', 'approved'), where('batchName', '==', batchName));
     const querySnapshot = await getDocs(q);
@@ -35,6 +39,7 @@ export const fetchInternsByBatch = async (batchName: string): Promise<UserDetail
     });
   };
 
+  // Fetch All Interns under the specific role
   export const fetchInternsByRole = async (roleName: string): Promise<UserDetails[]> => {
     const q = query(collection(db, 'users'), where('admin', '==', false), where('role', '==', roleName));
     const querySnapshot = await getDocs(q);
@@ -45,6 +50,7 @@ export const fetchInternsByBatch = async (batchName: string): Promise<UserDetail
     });
   };
 
+// Fetch All interns regardless of onboarding status
 export const fetchAllStudents = async (): Promise<UserDetails[]> => {
     const q = query(collection(db, 'users'), where('admin', '==', false));
     const querySnapshot = await getDocs(q);
@@ -55,6 +61,9 @@ export const fetchAllStudents = async (): Promise<UserDetails[]> => {
     });
   };
 
+/* UPDATING DETAILS */
+
+// Update User
 export const updateUserDetails = async (userID: string, user: UserDetails) => {
     try {
         await setDoc(doc(db, 'users', userID), user);
@@ -63,6 +72,51 @@ export const updateUserDetails = async (userID: string, user: UserDetails) => {
         throw error;
     }
 };
+
+// Update the Batch Name of the Interns
+export const updateBatchNameForInterns = async (oldBatchName: string, newBatchName: string) => {
+  try {
+    const q = query(
+      collection(db, 'users'),
+      where('admin', '==', false),
+      where('onboarded', '==', 'approved'),
+      where('batchName', '==', oldBatchName)
+    );
+    const snapshot = await getDocs(q);
+
+    const batchUpdatePromises = snapshot.docs.map((docSnap) =>
+      updateDoc(docSnap.ref, { batchName: newBatchName })
+    );
+
+    await Promise.all(batchUpdatePromises);
+  } catch (error) {
+    console.error('Error updating batch name for interns:', error);
+    throw error;
+  }
+};
+
+// Update the Role Name of the Users
+export const updateRoleNameForUsers = async (oldRoleName: string, newRoleName: string) => {
+  try {
+    const q = query(
+      collection(db, 'users'),
+      where('role', '==', oldRoleName)
+    );
+    const snapshot = await getDocs(q);
+
+    const roleUpdatePromises = snapshot.docs.map((docSnap) =>
+      updateDoc(docSnap.ref, { role: newRoleName })
+    );
+
+    await Promise.all(roleUpdatePromises);
+  } catch (error) {
+    console.error('Error updating role name for users:', error);
+    throw error;
+  }
+};
+
+
+/* DELETING DETAILS */
 
 const deleteRelatedData = async (userID: string) => {
     try {

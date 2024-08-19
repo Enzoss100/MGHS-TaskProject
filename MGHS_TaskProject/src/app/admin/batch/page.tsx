@@ -158,7 +158,15 @@ export default function BatchPage() {
     };
 
     const handleDeleteBatch = async (batch: Batch) => {
-        if (window.confirm(`Are you sure you want to delete the batch "${batch.name}"? This will also delete all associated records.`)) {
+        // Check if there are any users assigned to the batch
+        const usersInBatch = students.filter(student => student.batchName === batch.name);
+        
+        if (usersInBatch.length > 0) {
+            toast.error('Cannot delete batch because there are still users assigned to this batch. Change the Batch of the Users or Edit the Batch Details instead.');
+            return;
+        }
+    
+        if (window.confirm(`Are you sure you want to delete the batch "${batch.name}"?`)) {
             try {
                 await deleteBatch(batch.id!);
                 fetchBatches();
