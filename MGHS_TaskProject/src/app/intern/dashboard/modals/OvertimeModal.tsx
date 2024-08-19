@@ -68,6 +68,7 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
     setOvertime({ ...overtime, [name]: value });
   };
 
+  // Validates the Time and Date Inputs in Overtime
   const validateTimes = () => {
     const errors: string[] = [];
     const { otStart, otEnd, otBreakStart, otBreakEnd } = overtime;
@@ -98,6 +99,7 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
     return errors;
   };
 
+  // Saves Overtime Record
   const saveRecord = async (event: React.FormEvent) => {
     event.preventDefault(); 
   
@@ -129,6 +131,7 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
     }
   };
     
+  // Formats Date shown in the table
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
     const year = d.getFullYear();

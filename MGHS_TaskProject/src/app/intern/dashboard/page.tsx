@@ -18,6 +18,7 @@ import InternProtectedRoute from '@/app/components/InternProtectedRoute';
 import * as XLSX from 'xlsx'; 
 import { FiDownload } from 'react-icons/fi';
 
+// Method to Export to excel
 const exportAttendanceToExcel = (attendanceRecords: any[], overtimeRecords: any[]) => {
 
   const confirmation = window.confirm("Are you sure you want to download the Excel file?");
@@ -52,28 +53,6 @@ const exportAttendanceToExcel = (attendanceRecords: any[], overtimeRecords: any[
 
   // Export the workbook to a file
   XLSX.writeFile(wb, 'attendance_overtime.xlsx');
-};
-
-
-const formatDate = (timestamp: { seconds: number; nanoseconds: number } | Date | string) => {
-  let date: Date;
-  if (timestamp instanceof Date) {
-      date = timestamp;
-  } else if (typeof timestamp === 'string') {
-      date = new Date(timestamp);
-  } else if (timestamp && typeof timestamp === 'object' && 'seconds' in timestamp) {
-      date = new Date(timestamp.seconds * 1000);
-  } else {
-      return 'N/A';
-  }
-  if (isNaN(date.getTime())) return 'N/A';
-  
-  // Format date as words
-  return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit'
-  });
 };
 
 export default function Dashboard() {
@@ -121,6 +100,7 @@ export default function Dashboard() {
     getInternName();
   }, [session]);
 
+  // Calls the Records for Attendance and sets the details on the page
   const getAttendanceRecords = useCallback(async () => {
     if (session.data?.user?.email) {
       try {
@@ -159,8 +139,11 @@ export default function Dashboard() {
         if (userDetails.length > 0) {
           const user = userDetails[0] as UserDetails;
 
-          // Determine onboarding status
-         const onboardingStatus = overallHours <= 40 ? 'offboarding' : user.onboarded || 'pending';
+          // Calculates the hours left of the user
+         const hoursLeft = user.hoursNeeded - overallHours;
+
+          // If the user's hours left is less than 40, then change the onboarded status to offboarding, else keep the user status
+         const onboardingStatus = hoursLeft <= 40 ? 'offboarding' : user.onboarded;
 
           // Update user details with the total rendered hours
           const updatedUserDetails: UserDetails = {
