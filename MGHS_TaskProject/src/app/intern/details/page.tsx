@@ -201,7 +201,7 @@ export default function InternDetails() {
                         <a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.detailButton} target="_blank" rel="noopener noreferrer">
                             DTR
                         </a>
-                        <a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.detailButton} target="_blank" rel="noopener noreferrer">
+                        <a href="https://drive.google.com/file/d/1IVQfR7It3rssB_ukbsSDkBSEgoyiEkTQ/view" className={styles.detailButton} target="_blank" rel="noopener noreferrer">
                             Worksheet
                         </a>
                     </form>

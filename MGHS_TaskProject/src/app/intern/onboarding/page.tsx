@@ -64,7 +64,7 @@ export default function Onboarding() {
           <h3>We have just a few reminders to take note:</h3>
           <ul>
             <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.dtr}>The DTR</a> updated file can be accessed here.</li>
-            <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.worksheetDirectory}>Worksheet Directory</a> and study records - this is used to put all output links for easy navigation it serves as a map directory.</li>
+            <li><a href="https://drive.google.com/file/d/1IVQfR7It3rssB_ukbsSDkBSEgoyiEkTQ/view?usp=sharing" className={styles.worksheetDirectory}>Worksheet Directory and Study Records </a> - this is used to put all output links for easy navigation it serves as a map directory.</li>
             <li>In some aspects, creating new emails for work purposes in MGHS will not work. Kindly change the pass from the date you begin your internship, for example. March192024</li>
             <li>Remember that your supervisor should be informed of the request for signatures, as our signing, sealing, and validation will take time.</li>
             <li>Always remember to send an update every day on the number of hours rendered and hours left, together with your accomplishments within the day, and plan for the next day, this will be done through Telegram. This will be proof as well that you are present.</li>

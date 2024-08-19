@@ -83,6 +83,13 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     const errors: string[] = [];
     const { timeStart, timeEnd, timeBreakStart, timeBreakEnd } = attendance;
 
+    const selectedDate = new Date(attendance.attendanceDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+  
+    if (selectedDate > today) {
+      errors.push('Attendance date cannot be in the future.');
+    }
     if (timeStart && timeEnd && timeStart > timeEnd) {
       errors.push('Time In cannot be greater than Time Out.');
     }

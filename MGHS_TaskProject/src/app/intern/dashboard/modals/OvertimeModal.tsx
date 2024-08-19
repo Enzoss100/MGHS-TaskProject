@@ -71,7 +71,13 @@ const OvertimeModal: React.FC<OvertimeModalProps> = ({ isVisible, setModalState,
   const validateTimes = () => {
     const errors: string[] = [];
     const { otStart, otEnd, otBreakStart, otBreakEnd } = overtime;
-
+    const selectedDate = new Date(overtime.otDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+  
+    if (selectedDate > today) {
+      errors.push('Attendance date cannot be in the future.');
+    }
     if (otStart && otEnd && otStart > otEnd) {
       errors.push('Time In cannot be greater than Time Out.');
     }
