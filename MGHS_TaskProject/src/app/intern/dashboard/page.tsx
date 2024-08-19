@@ -148,7 +148,7 @@ export default function Dashboard() {
           // Update user details with the total rendered hours
           const updatedUserDetails: UserDetails = {
             ...user,
-              totalHoursRendered: overallHours, // update the field as per your structure
+              totalHoursRendered: overallHours,
               onboarded: onboardingStatus,
           };
           await updateUserDetails(user.id!, updatedUserDetails);
