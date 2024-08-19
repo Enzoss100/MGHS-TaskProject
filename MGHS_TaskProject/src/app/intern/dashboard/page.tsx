@@ -63,11 +63,8 @@ export default function Dashboard() {
     },
   });
 
-  const router = useRouter();
-
   const [internName, setInternName] = useState('');
   const [attendancePopup, setAttendancePopup] = useState(false);
-  const [overtimePopup, setOvertimePopup] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState<{ [key: string]: any }[]>([]);
   const [overtimeRecords, setOvertimeRecords] = useState<Overtime[]>([]);
   const [currentRecord, setCurrentRecord] = useState<Attendance | null>(null);
@@ -167,32 +164,16 @@ export default function Dashboard() {
   const handleAttendanceEdit = (record: any) => {
     setCurrentRecord(record);
     setAttendancePopup(true);
-    setOvertimePopup(false);
   };
 
   const handleAttendanceAdd = () => {
     setCurrentRecord(null);
     setAttendancePopup(true);
-    setOvertimePopup(false);
-  };
-
-  const handleAddOT = () => {
-    setCurrentOTRecord(null);
-    setAttendancePopup(false);
-    setOvertimePopup(true);
   };
 
   const handleAttPopupClose = () => {
     setAttendancePopup(false);
     getAttendanceRecords();
-  };
-  
-  const handleOTPopupClose = () => {
-    setOvertimePopup(false);
-  };
-
-  const handleOTAddSuccess = () => {
-    router.push('/intern/overtime-reports');
   };
 
   const handleDelete = async (id: string) => {
@@ -225,10 +206,6 @@ export default function Dashboard() {
             <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
             onClick={handleAttendanceAdd}>
                 Render Attendance
-            </button>
-            <button className={`${styles.overtimeBtn} ${styles.dashboardbutton}`} 
-            onClick={handleAddOT}>
-                Render Overtime
             </button>
         </div>
         <center>
@@ -300,15 +277,6 @@ export default function Dashboard() {
         setModalState={handleAttPopupClose}
         initialRecord={currentRecord || undefined}
         recordID={currentRecord?.id || null}
-      />
-
-      {/* Overtime Modal */}
-      <OvertimeModal 
-        isVisible={overtimePopup} 
-        setModalState={handleOTPopupClose}
-        initialRecord={undefined}
-        recordID={null}
-        onAddSuccess={handleOTAddSuccess}
       />
     </div>
     </InternProtectedRoute>

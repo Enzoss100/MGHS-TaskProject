@@ -4,6 +4,7 @@ import { Attendance, createAttendance, updateAttendance } from '@/app/services/A
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { createOT, Overtime } from '@/app/services/OvertimeService';
+import { useRouter } from 'next/navigation';
 
 interface AttendanceModalProps {
   isVisible: boolean;
@@ -28,6 +29,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
   
   const { data: session } = useSession();
   const [errors, setErrors] = useState<string[]>([]);
+  const router = useRouter();
 
   const [attendance, setAttendance] = useState<Attendance>({
     attendanceDate: initialRecord?.attendanceDate ? new Date(initialRecord.attendanceDate) : new Date(),
@@ -87,7 +89,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
 
     const selectedDate = new Date(attendance.attendanceDate);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
   
     if (selectedDate > today) {
       errors.push('Attendance date cannot be in the future.');
@@ -152,6 +153,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         await createOT(overtime);
         toast.success('Attendance Successfully Converted to Overtime!')
         setModalState(false); // Close modal after saving overtime
+        router.push('/intern/overtime-reports')
         return; // Exit function early, no attendance record should be saved
       }
   
