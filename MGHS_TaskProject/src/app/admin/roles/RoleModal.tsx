@@ -2,6 +2,7 @@ import { updateRole, createRole } from '@/app/services/RoleService';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import styles from './roles.module.css';
+import { updateRoleNameForUsers } from '@/app/services/UserService';
 
 interface Props {
   setModalState: (state: boolean) => void;
@@ -43,6 +44,13 @@ const RoleModal = ({ setModalState, initialRole, roleID }: Props) => {
 
     try {
       if (roleID) {
+        // Check if the role name has changed
+        const oldRoleName = initialRole?.roleName;
+        if (oldRoleName && oldRoleName !== role.roleName) {
+            // Update the role name for all users with the old role name
+            await updateRoleNameForUsers(oldRoleName, role.roleName);
+        }
+        
         // Update existing role
         await updateRole(roleID, role);
         toast.success('Role Updated Successfully!');

@@ -4,6 +4,7 @@ import { Attendance, createAttendance, updateAttendance } from '@/app/services/A
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { createOT, Overtime } from '@/app/services/OvertimeService';
+import { useRouter } from 'next/navigation';
 
 interface AttendanceModalProps {
   isVisible: boolean;
@@ -28,6 +29,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
   
   const { data: session } = useSession();
   const [errors, setErrors] = useState<string[]>([]);
+  const router = useRouter();
 
   const [attendance, setAttendance] = useState<Attendance>({
     attendanceDate: initialRecord?.attendanceDate ? new Date(initialRecord.attendanceDate) : new Date(),
@@ -79,10 +81,18 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     setAttendance({ ...attendance, [name]: value });
   };
 
+
+  // Validates the Time and Date Inputs in Attendance
   const validateTimes = () => {
     const errors: string[] = [];
     const { timeStart, timeEnd, timeBreakStart, timeBreakEnd } = attendance;
 
+    const selectedDate = new Date(attendance.attendanceDate);
+    const today = new Date();
+  
+    if (selectedDate > today) {
+      errors.push('Attendance date cannot be in the future.');
+    }
     if (timeStart && timeEnd && timeStart > timeEnd) {
       errors.push('Time In cannot be greater than Time Out.');
     }
@@ -103,6 +113,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     return errors;
   };
 
+  // Saves the Attendance
   const saveRecord = async (event: React.FormEvent) => {
     event.preventDefault(); 
   
@@ -126,6 +137,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         renderedHours,
       };
   
+      // If the rendered hours of the users are greater than 8, it will automatically be an overtime record
       if (renderedHours > 8) {
         const overtime: Overtime = {
           otDate: updatedAttendance.attendanceDate,
@@ -140,6 +152,9 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
         toast.warning('Rendered Hours Exceeds 8. Converting Attendance to Overtime record...');
         await createOT(overtime);
         toast.success('Attendance Successfully Converted to Overtime!')
+        setModalState(false); // Close modal after saving overtime
+        router.push('/intern/overtime-reports')
+        return; // Exit function early, no attendance record should be saved
       }
   
       if (recordID) {
@@ -155,7 +170,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({ isVisible, setModalSt
     }
   };
   
-
+  // Formats the Date in the table
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
     const year = d.getFullYear();

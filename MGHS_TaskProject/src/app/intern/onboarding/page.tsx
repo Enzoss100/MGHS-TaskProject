@@ -64,19 +64,19 @@ export default function Onboarding() {
           <h3>We have just a few reminders to take note:</h3>
           <ul>
             <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.dtr}>The DTR</a> updated file can be accessed here.</li>
-            <li><a href="https://docs.google.com/spreadsheets/d/1USxRu_PoeUX-U_oOMd3MKQLpk3MXP4z_/edit?usp=sharing&ouid=113420244296512121808&rtpof=true&sd=true" className={styles.worksheetDirectory}>Worksheet Directory</a> and study records - this is used to put all output links for easy navigation it serves as a map directory.</li>
+            <li><a href="https://drive.google.com/file/d/1IVQfR7It3rssB_ukbsSDkBSEgoyiEkTQ/view?usp=sharing" className={styles.worksheetDirectory}>Worksheet Directory and Study Records </a> - this is used to put all output links for easy navigation it serves as a map directory.</li>
             <li>In some aspects, creating new emails for work purposes in MGHS will not work. Kindly change the pass from the date you begin your internship, for example. March192024</li>
             <li>Remember that your supervisor should be informed of the request for signatures, as our signing, sealing, and validation will take time.</li>
             <li>Always remember to send an update every day on the number of hours rendered and hours left, together with your accomplishments within the day, and plan for the next day, this will be done through Telegram. This will be proof as well that you are present.</li>
             <li>Update your supervisor if you have 1 to 2 weeks left from your internship at MGHS so that all turnover files will be smoothly updated.</li>
           </ul>
-          <p>Kindly note that all your school's signed documents must be in your <u>school requirements folder</u>. Once the school has signed all necessary documents, you must send your supervisor the link to the cloud folder.</p>
+          <p>Kindly note that all signed documents from your school must be in your <u>school requirements folder</u>. Once the school has signed all necessary documents, you must send your supervisor the link to the cloud folder.</p>
           <p>After receiving this welcome email, please inform your supervisor of your newly created MGHS working email as instructed.</p>
-          <p>If you have questions or concerns, please email us at <span style={{ color: 'blue' }}>mghsconsultancyhr@gmail.com</span>, and we'll respond as soon as possible. Thank you, and God bless you.</p>
+          <p>If you have questions or concerns, please email us at <span style={{ color: 'blue' }}>mghsconsultancyhr@gmail.com</span>, and we will respond as soon as possible. Thank you, and God bless you.</p>
         </div>
 
         <div className={styles.closing}>
-          <p><strong>We welcome you once again to our company virtually, and we hope your talent and skills will significantly contribute to our company's tremendous success.</strong></p>
+          <p><strong>We welcome you once again to our company virtually, and we hope your talent and skills will significantly contribute to the tremendous success of our company.</strong></p>
           <p>We wish for a better future and a good experience.</p>
           <p>Thank you.</p>
           <p><em>N.B. If you receive this before your interview and other documents are required, please inform your supervisor immediately.</em></p>

@@ -3,7 +3,7 @@
 
 import React, { useEffect, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { fetchUserDetails } from '@/app/services/UserService';
 import styles from './loading.module.css';
 
@@ -15,17 +15,19 @@ const InternProtectedRoute: React.FC<InternProtectedRouteProps> = ({ children })
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      redirect('/signin');
+      router.push('/signin');
     },
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     const checkInternStatus = async () => {
       if (session?.user?.email) {
         const userDetails = await fetchUserDetails(session.user.email);
         const user = userDetails[0];
-        if (user.onboarded !== 'approved') {
-          redirect('/signin');
+        if (user.onboarded === 'pending') {
+          router.push('/intern/processing');
         }
       }
     };
@@ -33,7 +35,7 @@ const InternProtectedRoute: React.FC<InternProtectedRouteProps> = ({ children })
     if (status === 'authenticated') {
       checkInternStatus();
     }
-  }, [session, status]);
+  }, [session, status, router]);
 
   if (status === 'loading') {
     return (

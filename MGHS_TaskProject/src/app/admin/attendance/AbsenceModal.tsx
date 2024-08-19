@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Absence, UserDetails } from '@/types/user-details';
 import styles from './attendance.module.css';
 import { Timestamp } from 'firebase/firestore'; // Import Timestamp if you're using Firebase
-import { FaEdit, FaTrash } from 'react-icons/fa';
 
 interface AbsenceModalProps {
   student: UserDetails;
