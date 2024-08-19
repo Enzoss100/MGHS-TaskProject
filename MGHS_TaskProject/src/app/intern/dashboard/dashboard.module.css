@@ -86,7 +86,7 @@
   }
 
   .editButton {
-    color: #252525;
+    color: #636363;
   }
   
   .editButton:hover {
@@ -98,7 +98,7 @@
   }
   
   .trashButton:hover {
-    color: #d32f2f; 
+    color: #ad2828; 
   }
 
   /* Export button styles */

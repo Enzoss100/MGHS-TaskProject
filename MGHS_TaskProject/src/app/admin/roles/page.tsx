@@ -5,7 +5,7 @@ import AdminMenu from '@/app/components/AdminMenu';
 import styles from './roles.module.css'; 
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { fetchAllRoles, Role, deleteRole } from '@/app/services/RoleService';
+import { fetchAllRoles, Role, deleteRole, initializeDefaultRole } from '@/app/services/RoleService';
 import { fetchInternsByRole } from '@/app/services/UserService';
 import RoleModal from './RoleModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
@@ -24,8 +24,9 @@ export default function InternRoles() {
     }, []);
 
     useEffect(() => {
+        initializeDefaultRole();
         fetchRoles();
-    }, [fetchRoles]);
+    }, [initializeDefaultRole, fetchRoles]);
 
     const addRole = () => {
         setCurrentRole(null);
@@ -49,13 +50,18 @@ export default function InternRoles() {
     };
 
     const handleDeleteRole = async (role: Role) => {
+        if (role.roleName === 'Intern') {
+            toast.error('The "Intern" role cannot be deleted.');
+            return;
+        }
+    
         if (confirm(`Are you sure you want to delete the role "${role.roleName}"?`)) {
-            try{
+            try {
                 await deleteRole(role.id!);
                 fetchRoles();
                 setCurrentRole(null);
                 toast.success('Role deleted successfully');
-            }  catch (error){
+            } catch (error) {
                 console.error('Error deleting role:', error);
                 toast.error('Failed to delete role.');
             }

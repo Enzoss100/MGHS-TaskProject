@@ -3,6 +3,7 @@ import styles from './batch.module.css'; // Adjust path if necessary
 import { Batch, createBatch, updateBatch } from '@/app/services/BatchService';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
+import { updateBatchNameForInterns } from '@/app/services/UserService';
 
 interface BatchModalProps {
   setModalState: (state: boolean) => void;
@@ -51,11 +52,18 @@ const BatchModal: React.FC<BatchModalProps> = ({ setModalState, initialBatch, ba
       };
 
       if (batchID) {
+        // Check if the batch name has changed
+        const oldBatchName = initialBatch?.name;
+        if (oldBatchName && oldBatchName !== newBatch.name) {
+            // Update the batch name for all associated interns
+            await updateBatchNameForInterns(oldBatchName, newBatch.name);
+        }
+
         await updateBatch(batchID, newBatch);
-        toast.success('Batch Updated Successfully!');
+        toast.success('Batch Updated Successfully! Refresh to See Updates.');
       } else {
-        await createBatch(newBatch);
-        toast.success('Batch Created Successfully!');
+          await createBatch(newBatch);
+          toast.success('Batch Created Successfully!');
       }
       setModalState(false);
     } catch (error: any) {

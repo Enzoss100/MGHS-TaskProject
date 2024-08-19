@@ -2,7 +2,7 @@
 
 import React, { useEffect, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { fetchUserDetails } from '@/app/services/UserService';
 import styles from './loading.module.css';
 
@@ -14,9 +14,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      redirect('/signin');
+      router.push('/signin');
     },
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -24,7 +26,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         const userDetails = await fetchUserDetails(session.user.email);
         const user = userDetails[0];
         if (!user.admin) {
-          redirect('/signin');
+          router.push('/signin');
         }
       }
     };
