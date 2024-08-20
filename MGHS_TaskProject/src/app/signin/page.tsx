@@ -1,21 +1,44 @@
 'use client';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import logo from "./../assets/logo.png";
 import styles from './signin.module.css';
 import { fetchUserDetails } from '../services/UserService';
 import { UserDetails } from '@/types/user-details';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Signin() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignIn = async () => {
+    if (!captchaValue) {
+      toast.error('Please complete the reCAPTCHA');
+      return;
+    }
+
+    // Verify reCAPTCHA with your API route
+    const res = await fetch('/api/verify-recaptcha', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ captchaValue }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      toast.error('reCAPTCHA verification failed');
+      return;
+    }  
+
     try {
       const login = await signIn('credentials', { email, password, redirect: false, method: 'POST'});
 
@@ -84,6 +107,11 @@ export default function Signin() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+          />
+
+          <ReCAPTCHA
+            sitekey="6LfU7CoqAAAAAD15EELRJR8LcCIGTV8UWI7t2s37"
+            onChange={(value: SetStateAction<string | null>) => setCaptchaValue(value)}
           />
 
           <a href="/forgot-password" className={styles.forgotPassword}>Forgot Password?</a>

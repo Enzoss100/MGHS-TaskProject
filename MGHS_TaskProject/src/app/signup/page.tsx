@@ -1,7 +1,7 @@
 'use client';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { auth, db } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { toast } from 'sonner';
@@ -9,6 +9,7 @@ import Image from 'next/image';
 import logo from "./../assets/logo.png";
 import styles from './signup.module.css';
 import { fetchUserByEmail } from '../services/AllUsersService';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -17,11 +18,32 @@ export default function Signup() {
   const [newUser, setUser] = useState({ firstname: '', lastname: '', personalemail: '', schoolemail: '' });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationType, setConfirmationType] = useState('');
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null)
 
   const router = useRouter();
 
   // Add and Authenticate User to the Database
   const signup = async () => {
+    if (!captchaValue) {
+      toast.error('Please complete the reCAPTCHA');
+      return;
+    }
+
+    // Verify reCAPTCHA with your API route
+    const res = await fetch('/api/verify-recaptcha', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ captchaValue }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      toast.error('reCAPTCHA verification failed');
+      return;
+    }
 
     // Error Handling
     if (password !== passwordAgain) {
@@ -160,7 +182,10 @@ export default function Signup() {
               required
             />
           </div>
-
+          <ReCAPTCHA
+            sitekey="6LfU7CoqAAAAAD15EELRJR8LcCIGTV8UWI7t2s37"
+            onChange={(value: SetStateAction<string | null>) => setCaptchaValue(value)}
+          />
           <button type="submit" className={styles.button}>Sign Up</button>
           <a href="signin" className={styles.backToLogin}>Back to Login</a>
         </form>
