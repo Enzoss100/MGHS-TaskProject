@@ -1,7 +1,7 @@
 'use client';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { auth, db } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { toast } from 'sonner';
@@ -9,7 +9,8 @@ import Image from 'next/image';
 import logo from "./../assets/logo.png";
 import styles from './signup.module.css';
 import { fetchUserByEmail } from '../services/AllUsersService';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import axios from 'axios';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -18,33 +19,41 @@ export default function Signup() {
   const [newUser, setUser] = useState({ firstname: '', lastname: '', personalemail: '', schoolemail: '' });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationType, setConfirmationType] = useState('');
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null)
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const router = useRouter();
 
   // Add and Authenticate User to the Database
   const signup = async () => {
-    if (!captchaValue) {
+
+    if (!executeRecaptcha) {
       toast.error('Please complete the reCAPTCHA');
+      console.log('Not Available to Execute reCAPTHCA')
       return;
     }
 
-    // Verify reCAPTCHA with your API route
-    const res = await fetch('/api/verify-recaptcha', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+
+    const response = await axios({
+      method: "post",
+      url: "/api/recaptchaSubmit",
+      data: {
+        gRecaptchaToken,
       },
-      body: JSON.stringify({ captchaValue }),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
     });
 
-    const data = await res.json();
-
-    if (!data.success) {
-      toast.error('reCAPTCHA verification failed');
-      return;
-    }
-
+    if (response?.data?.success === true) {
+      console.log(`Success with score: ${response?.data?.score}`);
+      toast.success('ReCaptcha Verified.')
+    } else {
+      console.log(`Failure with score: ${response?.data?.score}`);
+      toast.error("Failed to verify recaptcha.")
+    }  
+    
     // Error Handling
     if (password !== passwordAgain) {
       toast.error('Passwords do not match');
@@ -182,10 +191,7 @@ export default function Signup() {
               required
             />
           </div>
-          <ReCAPTCHA
-            sitekey="6LfU7CoqAAAAAD15EELRJR8LcCIGTV8UWI7t2s37"
-            onChange={(value: SetStateAction<string | null>) => setCaptchaValue(value)}
-          />
+
           <button type="submit" className={styles.button}>Sign Up</button>
           <a href="signin" className={styles.backToLogin}>Back to Login</a>
         </form>

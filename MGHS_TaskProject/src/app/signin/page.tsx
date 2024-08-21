@@ -8,35 +8,43 @@ import logo from "./../assets/logo.png";
 import styles from './signin.module.css';
 import { fetchUserDetails } from '../services/UserService';
 import { UserDetails } from '@/types/user-details';
-import ReCAPTCHA from 'react-google-recaptcha';
+import {useGoogleReCaptcha} from 'react-google-recaptcha-v3';
+import axios from 'axios';
 
 export default function Signin() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const router = useRouter();
 
   const handleSignIn = async () => {
-    if (!captchaValue) {
+    if (!executeRecaptcha) {
       toast.error('Please complete the reCAPTCHA');
+      console.log('Not Available to Execute reCAPTHCA')
       return;
     }
 
-    // Verify reCAPTCHA with your API route
-    const res = await fetch('/api/verify-recaptcha', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+
+    const response = await axios({
+      method: "post",
+      url: "/api/recaptchaSubmit",
+      data: {
+        gRecaptchaToken,
       },
-      body: JSON.stringify({ captchaValue }),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
     });
 
-    const data = await res.json();
-
-    if (!data.success) {
-      toast.error('reCAPTCHA verification failed');
-      return;
+    if (response?.data?.success === true) {
+      console.log(`Success with score: ${response?.data?.score}`);
+      toast.success('ReCaptcha Verified.')
+    } else {
+      console.log(`Failure with score: ${response?.data?.score}`);
+      toast.error("Failed to verify recaptcha.")
     }  
 
     try {
@@ -107,11 +115,6 @@ export default function Signin() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-          />
-
-          <ReCAPTCHA
-            sitekey="6LfU7CoqAAAAAD15EELRJR8LcCIGTV8UWI7t2s37"
-            onChange={(value: SetStateAction<string | null>) => setCaptchaValue(value)}
           />
 
           <a href="/forgot-password" className={styles.forgotPassword}>Forgot Password?</a>
