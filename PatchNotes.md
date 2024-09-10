@@ -1,5 +1,11 @@
 # Version 1.0.1
-*Deployment to Vercel is In Progress*
+- Deployed System to Vercel
+- Updated the Apache 2.0 License
+- Updated Dev Notes
+
+| Objective                      | Merged to `main` |
+| :----------------------------: | :--------------: |
+| Patched Environment Variables  | Yes              |
 
 # Version 1.0.0
 This is the first official release of the MGHS InterLink System.
