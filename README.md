@@ -34,6 +34,6 @@ The Official Document for Dev Notes has been **[REDACTED](.)**
 
 ## Project Accomplishments
 
-Please Update the README of the Main Repo by submitting a PR. Keeping track of what is accomplished will help with the overall Project Tracking. Notes on how to update the project will be in the [Dev Notes](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing)
+Please Update the README of the Main Repo by submitting a PR. Keeping track of what is accomplished will help with the overall Project Tracking. Notes on how to update the project will be in the **[REDACTED](.)**
 
 *The Accomplishments Table has been moved to the Dev Notes for tidyness*
