@@ -27,9 +27,10 @@ This Repository is licensed under the [Apache License 2.0](https://github.com/En
 - TypeScript
 - ReactJS
 - Firebase
+                                            
 
 ## Dev Notes
-Official Dev Notes Documents will be [here](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing) so that all changes can be documented properly.
+The Official Document for Dev Notes has been **[REDACTED](.)**
 
 ## Project Accomplishments
 
