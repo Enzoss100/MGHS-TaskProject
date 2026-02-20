@@ -1,3 +1,7 @@
+# Disclaimer
+This repository is no longer being maintained by any of the developers listed below. This project was built for an academic project, which is no longer being maintained.
+This repository will be archived in a later date.
+
 # Repository Breakdown
 This Repository is for the MGHS Group 4 OJT Project for IT199-9R.
 All documentation will be placed in an easily accessible Google Drive folder for everyone's reference
@@ -32,6 +36,3 @@ Official Dev Notes Documents will be [here](https://docs.google.com/document/d/1
 Please Update the README of the Main Repo by submitting a PR. Keeping track of what is accomplished will help with the overall Project Tracking. Notes on how to update the project will be in the [Dev Notes](https://docs.google.com/document/d/1rbsYG4QcpWT95PTeKNeRouIgSbypPMWizbPxFVZhteQ/edit?usp=sharing)
 
 *The Accomplishments Table has been moved to the Dev Notes for tidyness*
-
-
-*THIS README WILL BE UPDATED EVERY ONCE IN A WHILE TO REFLECT THE STATE OF THE PROJECT*
